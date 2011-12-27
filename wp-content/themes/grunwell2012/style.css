@@ -65,6 +65,8 @@ a:hover, a:active{text-decoration:underline;}
 #comments .comments{list-style:none;}
 
 /* Twitter module */
+#twitter-module h3{margin-bottom:0;}
+#twitter-module h3 + p{font-size:.9em;}
 .tweets{max-width:100%;}
 .tweet, .tweet small{display:block; line-height:1.5em;}
 .tweet{padding-bottom:.75em;}
