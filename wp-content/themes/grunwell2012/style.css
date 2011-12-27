@@ -25,7 +25,7 @@ html, body{padding:0 2%; font-family:'Helvetica Neue',sans-serif; font-size:13px
 #content{position:relative;}
 
 .primary, .secondary{display:inline; float:left; margin:0; padding:0;}
-.primary{max-width:640px; margin-right:36px;}
+.primary{min-width:640px; max-width:640px; margin-right:36px;}
 .secondary{width:auto; min-width:230px; max-width:230px;}
 footer{clear:both;}
 
@@ -36,7 +36,7 @@ footer{clear:both;}
 
 @media screen and (max-width:770px){
 	#content{padding-right:0;}
-  .primary{margin-right:0;}
+  .primary{min-width:128px; margin-right:0;}
 	.secondary{position:static; width:100%; max-width:640px;}
 }
 
@@ -55,6 +55,9 @@ p + h2, p + h3, p + h4, p + h5, p + h6{margin-top:2em;}
 
 a:link, a:visited{font-weight:bold; text-decoration:none; color:#812323;}
 a:hover, a:active{text-decoration:underline;}
+
+/* Header */
+#site-logo{font-size:28px;}
 
 /* Form styles */
 

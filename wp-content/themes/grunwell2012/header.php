@@ -13,6 +13,7 @@
 <link rel="profile" href="http://gmpg.org/xfn/11" />
 <link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo('stylesheet_url'); ?>" />
 <?php
+  wp_enqueue_script('site-scripts', get_bloginfo('template_url') . '/js/main.js', array('jquery'), '', true);
   wp_head();
 ?>
 </head>
