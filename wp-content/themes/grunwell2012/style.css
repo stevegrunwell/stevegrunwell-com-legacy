@@ -22,14 +22,22 @@ a img{border:none;}
 /* Site structure */
 html, body{padding:0 2%; font-family:'Helvetica Neue',sans-serif; font-size:13px; line-height:1.5em; color:#333; background:#333;}
 #wrapper{min-width:200px; max-width:908px; margin:24px auto; padding:3em 36px 36px; background:#fff; -moz-border-radius:10px; -webkit-border-radius:10px; -o-border-radius:10px; border-radius:10px;}
+#content{position:relative;}
 
 .primary, .secondary{display:inline; float:left; margin:0; padding:0;}
 .primary{max-width:640px; margin-right:36px;}
-.secondary{width:230px; min-width:230px; max-width:230px; width:auto;}
+.secondary{width:auto; min-width:230px; max-width:230px;}
 footer{clear:both;}
 
-@media screen and (max-width:780px){
+@media screen and (max-width:1060px){
+	#content{padding-right:230px;}
+	.secondary{position:absolute; right:0; top:0;}
+}
+
+@media screen and (max-width:770px){
+	#content{padding-right:0;}
   .primary{margin-right:0;}
+	.secondary{position:static; width:100%; max-width:640px;}
 }
 
 /* Base typography */
@@ -54,6 +62,7 @@ a:hover, a:active{text-decoration:underline;}
 #comments .comments{list-style:none;}
 
 /* Twitter module */
+.tweets{max-width:100%;}
 .tweet, .tweet small{display:block; line-height:1.5em;}
 .tweet{padding-bottom:.75em;}
 .tweet + .tweet{padding-top:.75em; border-top:1px dashed #dadada;}
