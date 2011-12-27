@@ -27,4 +27,9 @@ jQuery(function($){
   setContentHeight();
   $(window).resize(setContentHeight);
 
+	/** Add placeholder support for older browsers */
+	if( $.fn.placeholder ){
+		jQuery('#content').find('input').placeholder();
+	}
+	
 });
