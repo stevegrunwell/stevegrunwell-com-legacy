@@ -50,6 +50,9 @@ a:hover, a:active{text-decoration:underline;}
 
 /* Form styles */
 
+/* Comments */
+#comments .comments{list-style:none;}
+
 /* Twitter module */
 .tweet, .tweet small{display:block; line-height:1.5em;}
 .tweet{padding-bottom:.75em;}
