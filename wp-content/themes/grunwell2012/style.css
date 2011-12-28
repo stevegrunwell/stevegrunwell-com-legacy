@@ -31,12 +31,13 @@ footer{clear:both;}
 
 @media screen and (max-width:1060px){
 	#content{padding-right:230px;}
+	.primary{min-width:128px;}
 	.secondary{position:absolute; right:0; top:0;}
 }
 
 @media screen and (max-width:770px){
 	#content{padding-right:0;}
-  .primary{min-width:128px; margin-right:0;}
+  .primary{margin-right:0;}
 	.secondary{position:static; width:100%; max-width:640px;}
 }
 
@@ -50,6 +51,7 @@ h5{font-size:1em; margin-bottom:.5em;}
 h6{font-size:.9em; margin-bottom:.5em;}
 p{margin-bottom:1.5em;}
 small{font-size:.85em; line-height:.8em;}
+sup{position:relative; top:-.3em;}
 
 p + h2, p + h3, p + h4, p + h5, p + h6{margin-top:2em;}
 
@@ -57,11 +59,19 @@ a:link, a:visited{font-weight:bold; text-decoration:none; color:#812323;}
 a:hover, a:active{text-decoration:underline;}
 
 /* Header */
-#site-logo{font-size:28px;}
+#site-logo{margin-bottom:1em; font-size:28px;}
+
+header .search{float:right;}
+header .search label{display:none;}
+
+/* Post styles */
+.post-title{margin-bottom:.3em;}
+.entry-meta{margin-bottom:2em; font-size:.9em; color:#999;}
 
 /* Form styles */
 
 /* Comments */
+#comments{clear:both; margin-top:3em; padding-top:2em; border-top:2px solid #dadada;}
 #comments .comments{list-style:none;}
 
 /* Twitter module */
