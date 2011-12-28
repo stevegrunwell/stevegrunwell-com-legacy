@@ -10,9 +10,9 @@
 <?php while( have_posts() ): the_post(); ?>
 
   <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-    <h1 class="post-title"><?php the_title(); ?></h2>
+    <h1 class="post-title"><?php the_title(); ?></h1>
     <div class="entry-meta">
-      Posted January 1st, 2012
+      Posted <?php grunwell_the_date(); ?>
     </div>
 
     <?php the_excerpt(); ?>
