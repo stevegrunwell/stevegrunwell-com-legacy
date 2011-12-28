@@ -18,6 +18,6 @@ $salt = uniqid() + mt_rand();
   <fieldset>
     <label for="s-<?php echo $salt; ?>">Search for:</label>
     <input name="s" id="s-<?php echo $salt; ?>" type="text" value="<?php the_search_query(); ?>" placeholder="Search&hellip;" />
-    <input type="submit" value="Search" />
+    <button type="submit" value="Search">Search</button>
   </fieldset>
 </form><!-- // .search -->
