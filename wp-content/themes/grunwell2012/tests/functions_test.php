@@ -129,6 +129,10 @@ class TestOfFunctions extends UnitTestCase {
     $this->assertEqual(grunwell_superscript_dates('August third, 2012'), 'August third, 2012');
     $this->assertEqual(grunwell_superscript_dates('August fourth, 2012'), 'August fourth, 2012');
   }
+  
+  function testGrunwellGetCustomField(){
+
+  }
 }
 
 ?>

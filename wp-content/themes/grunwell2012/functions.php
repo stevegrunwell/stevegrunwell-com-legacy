@@ -6,6 +6,14 @@
  * @author Steve Grunwell <steve@stevegrunwell.com>
  */
 
+function grunwell_custom_menus(){
+  register_nav_menus(
+    array('primary-nav' => 'Primary Navigation')
+  );
+  return;
+}
+add_action('init', 'grunwell_custom_menus');
+
 /**
  * Assemble the page's <title> attribute
  * @param str $sep The string separator to use
@@ -44,7 +52,7 @@ function grunwell_get_the_date($date='', $inc_time=true, $class=''){
   global $post;
   $gmt = false;
   $format = 'F jS, Y' . ( $inc_time ? ' \a\\t g:ia' : '' );
-  
+
   if( strtolower($date) <= 0 ){
     if( isset($post->post_date, $post->post_date_gmt) && strtotime($post->post_date) > 0 ){ // Use global $post object
       $date = $post->post_date;
@@ -54,16 +62,16 @@ function grunwell_get_the_date($date='', $inc_time=true, $class=''){
     }
   }
   $date = strtotime($date);
-  
+
   if( !$gmt ){
     $offset = floatval(get_bloginfo('gmt_offset'));
     $gmt = $date + ($offset*60*60);
   }
-  
+
   if( $class != '' ){
     $class = sprintf(' class="%s"', $class);
   }
-  
+
   $return = sprintf('<time datetime="%s"%s>%s</time>', date('c', $gmt), $class, date($format, $date));
   return apply_filters('grunwell_get_the_date', $return);
 }
@@ -71,6 +79,7 @@ function grunwell_get_the_date($date='', $inc_time=true, $class=''){
 /** Shortcut for echo grunwell_the_date() */
 function grunwell_the_date($date='', $inc_time=true, $class=''){
   echo grunwell_get_the_date($date, $inc_time, $class);
+  return;
 }
 
 /**
@@ -88,5 +97,42 @@ function grunwell_superscript_dates($str){
   return $str;
 }
 add_filter('grunwell_get_the_date', 'grunwell_superscript_dates');
+
+/**
+ * Get a custom field stored in the Advanced Custom Fields plugin
+ * By running it through this function, we ensure that we don't die if the plugin is uninstalled/disabled (and thus the function is undefined)
+ * @global $post
+ * @param str $key The key to look for
+ * @param int $id The post ID
+ * @param mixed $default What to return if there's nothing
+ * @return mixed (dependent upon $echo)
+ * @uses get_field()
+ */
+function grunwell_get_custom_field($key, $id=false, $default=''){
+  global $post;
+  $key = trim(filter_var($key, FILTER_SANITIZE_STRING));
+  $result = '';
+
+  if( function_exists('get_field') ){
+    if( intval($id) > 0 ){
+      $result = get_field($key, intval($id));
+    } else if( isset($post->ID) ){
+      $result = get_field($key);
+    }
+
+    if( $result == '' ){
+      $result = $default;
+    }
+  } else { // get_field() is undefined, most likely due to the plugin being inactive
+    $result = $default;
+  }
+  return $result;
+}
+
+/** Shortcut for echo grunwell_get_custom_field() */
+function grunwell_custom_field($key, $id=false, $default=''){
+  echo grunwell_get_custom_field($key, $id, $default);
+  return;
+}
 
 ?>
