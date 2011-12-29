@@ -27,6 +27,7 @@ function grunwell_page_title($sep='|'){
  */
 function grunwell_sitelogo($content=false){
   $tag = ( is_front_page() ? 'h1' : 'div' );
+  $content = preg_replace('/\s+(\S+)$/', sprintf('<span class="last">%s</span>', '${1}'), trim($content));
   return ( $content ? sprintf('<%s id="site-logo">%s</%s>', $tag, $content, $tag) : $tag );
 }
 

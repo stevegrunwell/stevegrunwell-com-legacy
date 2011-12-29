@@ -63,12 +63,15 @@ class TestOfFunctions extends UnitTestCase {
     $this->assertIsA(grunwell_sitelogo('Hello world'), 'string');
     $this->assertEqual(grunwell_sitelogo(''), 'h1');
     $this->assertEqual(grunwell_sitelogo(false), 'h1');
-    $this->assertEqual(grunwell_sitelogo('Hello world'), '<h1 id="site-logo">Hello world</h1>');
+    $this->assertEqual(grunwell_sitelogo('Hello world'), '<h1 id="site-logo">Hello<span class="last">world</span></h1>');
     
     $is_front_page = false;
     $this->assertEqual(grunwell_sitelogo(''), 'div');
     $this->assertEqual(grunwell_sitelogo(false), 'div');
-    $this->assertEqual(grunwell_sitelogo('Hello world'), '<div id="site-logo">Hello world</div>');
+    $this->assertEqual(grunwell_sitelogo('Hello world'), '<div id="site-logo">Hello<span class="last">world</span></div>');
+    $this->assertEqual(grunwell_sitelogo('Hello'), '<div id="site-logo">Hello</div>');
+    $this->assertEqual(grunwell_sitelogo('Hello there, world'), '<div id="site-logo">Hello there,<span class="last">world</span></div>');
+    $this->assertEqual(grunwell_sitelogo('Hello  world'), '<div id="site-logo">Hello<span class="last">world</span></div>');
   }
   
   function testGrunwellGetTheDate(){

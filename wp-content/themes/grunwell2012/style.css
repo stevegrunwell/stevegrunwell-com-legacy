@@ -62,7 +62,8 @@ a:hover, a:active{text-decoration:underline;}
 input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea, select{display:block; padding:6px 8px; border:1px solid #dadada; -moz-border-radius:4px; -webkit-border-radius:4px; -o-border-radius:4px; border-radius:4px;}
 
 /* Header */
-#site-logo{margin-bottom:1em; font-size:28px;}
+#site-logo{margin:0 0 1em; padding:0; font-family:Gotham,'Helvetica Neue',sans-serif; font-size:48px; text-transform:uppercase; font-weight:bold;}
+#site-logo .last{font-weight:normal;}
 
 header .search{position:relative; float:right; width:230px; z-index:1;}
 header .search label{display:none;}
