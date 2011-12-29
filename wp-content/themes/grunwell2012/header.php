@@ -24,6 +24,15 @@
     <header>
       <?php echo get_search_form(); ?>
       <?php echo grunwell_sitelogo('<a href="' . home_url('/') . '" rel="home">' . get_bloginfo('name') . '</a>'); ?>
+
+      <?php
+        $args = array(
+          'container' => 'nav',
+          'container_id' => 'primary-nav',
+          'menu' => 'primary-nav'
+        );
+        wp_nav_menu($args);
+      ?>
     </header>
 
     <div id="content">

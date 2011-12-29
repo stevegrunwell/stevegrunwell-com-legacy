@@ -21,7 +21,7 @@ a img{border:none;}
 
 /* Site structure */
 html, body{padding:0 2%; font-family:'Helvetica Neue',sans-serif; font-size:13px; line-height:1.5em; color:#333; background:#333;}
-#wrapper{min-width:200px; max-width:908px; margin:24px auto; padding:3em 36px 36px; background:#fff; -moz-border-radius:10px; -webkit-border-radius:10px; -o-border-radius:10px; border-radius:10px;}
+#wrapper{min-width:200px; max-width:908px; margin:24px auto; padding:3em 36px 36px; background:url('img/site-bg.png') left top repeat-x #fff; -moz-border-radius:10px; -webkit-border-radius:10px; -o-border-radius:10px; border-radius:10px;}
 #content{position:relative;}
 
 .primary, .secondary{display:inline; float:left; margin:0; padding:0;}
@@ -62,13 +62,20 @@ a:hover, a:active{text-decoration:underline;}
 input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea, select{display:block; padding:6px 8px; border:1px solid #dadada; -moz-border-radius:4px; -webkit-border-radius:4px; -o-border-radius:4px; border-radius:4px;}
 
 /* Header */
-#site-logo{margin:0 0 1em; padding:0; font-family:Gotham,'Helvetica Neue',sans-serif; font-size:48px; text-transform:uppercase; font-weight:bold;}
+#site-logo{clear:none; display:block; margin:0 0 6px; padding:0; font-family:Gotham,'Helvetica Neue',sans-serif; font-size:46px; line-height:46px; text-transform:uppercase; font-weight:bold;}
+#site-logo a:link, #site-logo a:visited{color:#333;}
+#site-logo a:hover, #site-logo a:active{text-decoration:none;}
 #site-logo .last{font-weight:normal;}
 
 header .search{position:relative; float:right; width:230px; z-index:1;}
 header .search label{display:none;}
 header .search input[type="text"]{width:172px; padding-right:48px;}
 header .search button{position:absolute; right:0; top:0; display:block; width:40px; height:100%; font-size:0; line-height:0; text-indent:-9999px; background:url('img/magnifying-glass.png') center center no-repeat transparent; border:none; cursor:pointer;}
+
+#primary-nav{clear:both; display:block; margin-bottom:44px;}
+#primary-nav li{display:inline; margin-right:24px;}
+#primary-nav a{font-size:20px; text-transform:lowercase; font-weight:300; color:#aaa;}
+#primary-nav a:hover, #primary-nav a:active, #primary-nav .current-menu-item a, #primary-nav .current_page_parent a{text-decoration:none; color:#333;}
 
 /* Post styles */
 .post .post-title{margin-bottom:.3em;}
