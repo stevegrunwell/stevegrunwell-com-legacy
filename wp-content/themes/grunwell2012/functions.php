@@ -6,6 +6,28 @@
  * @author Steve Grunwell <steve@stevegrunwell.com>
  */
 
+/**
+* Creates the "Portfolio" custom post type
+* @return void
+*/
+function grunwell_create_portfolio_post_type() {
+  $args = array(
+    'labels' => array(
+      'name' => 'Portfolio',
+      'singular_name' => 'Portfolio piece'
+    ),
+    'public' => true,
+    'has_archive' => false,
+    'rewrite' => array(
+      'slug' => 'portfolio',
+      'with_front' => false
+    )
+  );
+  register_post_type('grunwell_portfolio', $args);
+  return;
+}
+add_action('init', 'grunwell_create_portfolio_post_type');
+
 function grunwell_custom_menus(){
   register_nav_menus(
     array('primary-nav' => 'Primary Navigation')
