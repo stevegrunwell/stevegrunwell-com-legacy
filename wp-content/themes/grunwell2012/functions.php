@@ -17,7 +17,7 @@ function grunwell_create_portfolio_post_type() {
       'singular_name' => 'Portfolio piece'
     ),
     'public' => true,
-    'has_archive' => false,
+    'has_archive' => true,
     'rewrite' => array(
       'slug' => 'portfolio',
       'with_front' => false
