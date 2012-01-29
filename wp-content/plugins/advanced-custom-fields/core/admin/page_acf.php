@@ -18,7 +18,7 @@
 			
 			<h3><?php _e("Resources",'acf'); ?></h3>
 			<p><?php _e("Read documentation, learn the functions and find some tips &amp; tricks for your next web project.",'acf'); ?><br />
-			<a href="http://plugins.elliotcondon.com/advanced-custom-fields/"><?php _e("View the plugins website",'acf'); ?></a></p>
+			<a href="http://www.advancedcustomfields.com/"><?php _e("View the ACF website",'acf'); ?></a></p>
 
 		</div>
 		<div class="footer">

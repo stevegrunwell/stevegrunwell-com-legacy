@@ -67,6 +67,10 @@
 	resize: none;
 }
 
+.acf_postbox .field  select{
+	padding: 2px;
+}
+
 /*---------------------------------------------------------------------------------------------
 	Field: WYSIWYG
 ---------------------------------------------------------------------------------------------*/
@@ -332,8 +336,8 @@ ul.checkbox_list {
 	font-family: sans-serif;
 	color: #999;
 	position: absolute;
-	margin-top: 4px;
-	margin-left: 7px;
+	margin-top: 5px;
+	margin-left: 10px;
 }
 
 .acf_relationship .widefat {
@@ -350,8 +354,9 @@ ul.checkbox_list {
 	margin: 0;
 	font-size: 12px;
 	line-height: 13px;
-	padding: 5px;
-	border-radius: 13px
+	border-radius: 13px;
+	font-family: sans-serif;
+	padding: 5px 9px !important;
 }
 
 .acf_relationship .relationship_list {

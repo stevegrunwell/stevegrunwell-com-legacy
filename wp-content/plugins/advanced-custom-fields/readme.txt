@@ -6,7 +6,7 @@ Requires at least: 3.0
 Tested up to: 3.3
 Stable tag: 3.3
 
-Completely Customise your edit pages with an assortment of field types: Wysiwyg, Repeater, text, image, select, checkbox, page link, post object and more! Hide unwanted metaboxes and assign to any edit page!
+Fully customise WordPress edit screens with powerful fields. Boasting a professional interface and a powerfull API, it’s a must have for any web developer working with WordPress.Field types include: Wysiwyg, text, textarea, image, file, select, checkbox, page link, post object, date picker, color picker and more!
 
 == Description ==
 
@@ -43,20 +43,17 @@ Advanced Custom Fields is the perfect solution for any wordpress website which n
 * PC Firefox	:)
 * PC ie7	:S
 
-= Demonstration =
-http://plugins.elliotcondon.com/advanced-custom-fields/demonstration/
+= Website =
+http://www.advancedcustomfields.com/
 
 = Documentation =
-http://plugins.elliotcondon.com/advanced-custom-fields/documentation/
+http://www.advancedcustomfields.com/docs/getting-started/
 
 = Field Type Info =
-http://plugins.elliotcondon.com/advanced-custom-fields/field-types/
-
-= Website =
-http://plugins.elliotcondon.com/advanced-custom-fields/
+http://www.advancedcustomfields.com/docs/field-types/
 
 = Bug Submission and Forum Support =
-http://support.plugins.elliotcondon.com/categories/advanced-custom-fields/
+http://www.advancedcustomfields.com/support/
 
 = Please Vote and Enjoy =
 Your votes really make a difference! Thanks.
@@ -67,19 +64,16 @@ Your votes really make a difference! Thanks.
 1. Upload 'advanced-custom-fields' to the '/wp-content/plugins/' directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. You may be prompted for a Database Upgrade. This is necessary for ACF to function. Please backup your database and click the Upgrade button
-3. Click on Settings -> Adv Custom Fields and create your first Custom Field Group!
+3. Click on Adv Custom Fields and create your first Custom Field Group!
 4. Your ACF field group will now appear on the page / post / template you specified in the field group's location rules!
 5. Read the documentation to display your data: 
 
 
 == Frequently Asked Questions ==
 
-= Q. I can't see the "Select Image" button for my image field! =
-A. For Image uploads to work, your post type must support "editor"
-
 = Q. I have a question =
 A. Chances are, someone else has asked it. Check out the support forum at: 
-http://support.plugins.elliotcondon.com/categories/advanced-custom-fields/
+http://www.advancedcustomfields.com/support/
 
 
 == Screenshots ==
@@ -89,10 +83,18 @@ http://support.plugins.elliotcondon.com/categories/advanced-custom-fields/
 
 3. The Page edit screen after creating the Advanced Custom Fields
 
-4. Simple and intuitive API. Read the documentation at: http://plugins.elliotcondon.com/advanced-custom-fields/documentation/
+4. Simple and intuitive API. Read the documentation at: http://www.advancedcustomfields.com/docs/functions/
 
 
 == Changelog ==
+
+= 3.0.7 =
+* Added export / register support via PHP
+* Moved menu position under Settings
+* Improve speed / php memory by introducing cached data
+* Temp bug fix: sets content editor to "visual mode" to stop wysiwyg breaking
+* Visual: Removed "Screen Options" tab from the admin acf edit page. Added filter to always show 99 acf's
+* Minor JS improvements
 
 = 3.0.6 =
 * Bug Fix: Location meta box now shows all pages / posts
@@ -103,7 +105,7 @@ http://support.plugins.elliotcondon.com/categories/advanced-custom-fields/
 * Update: gave acf a css update + new menu structure
 * Bug fix: fixed a few issues with wysiwyg js/css in wp3.3
 * Bug fix:  fixed page_name conflicting with normal pages / posts by adding a "acf_" to the page_name on save / update
-* Performance: location metabox - limited taxonomies to hierarchial only.
+* Performance: location metabox - limited taxonomies to hierarchial only. Posts and Pages have now been limited to 25
 
 = 3.0.4 =
 * Bug fix: WYSIWYG is now compatible with WP 3.3 (May have incidentally added support for gravity forms media button! But not 100% sure...)

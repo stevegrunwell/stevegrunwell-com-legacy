@@ -148,15 +148,6 @@
 			var tbody = $(this).closest('tbody');
 			var type = $(this).val();
 			
-			// does it have repeater?
-			/*if(!$(this).find('option[value="repeater"]').exists() && !$(this).find('option[value="null"]').exists())
-			{
-				if($(this).closest('.repeater').length == 0)
-				{
-					$(this).append('<option value="null" disabled="true">Repeater (Unlock field with activation code)</option>');
-				}
-			}*/
-			
 			tbody.children('tr.field_option').hide();
 			tbody.children('tr.field_option').find('[name]').attr('disabled', 'true');
 			
@@ -257,7 +248,7 @@
 		});
 		
 		
-		// update field text when typing
+		// update field meta
 		$('#acf_fields .field_form tr.field_label input.label').live('keyup', function()
 		{
 			var val = $(this).val();
@@ -268,10 +259,17 @@
 			var val = $(this).val();
 			var name = $(this).closest('.field').find('td.field_name').first().html(val);
 		});
-		$('.field_form tr.field_type select.type').live('change', function()
+		$('.field_form tr.field_type select').live('change', function()
 		{
 			var val = $(this).val();
-			var name = $(this).closest('.field').find('td.field_type').first().html(val);
+			var label = $(this).find('option[value="' + val + '"]').html();
+			
+			// update field type (if not a clone field)
+			if($(this).closest('.field_clone').length == 0)
+			{
+				$(this).closest('.field').find('td.field_type').html(label);
+			}
+			
 		});
 		
 		

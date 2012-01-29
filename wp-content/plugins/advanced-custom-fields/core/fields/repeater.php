@@ -103,7 +103,7 @@ class acf_Repeater extends acf_Field
 						update_order_numbers(div);
 					},
 					handle: 'td.order',
-					helper: fixHelper,
+					helper: fixHelper
 				});
 			};
 			
@@ -121,7 +121,7 @@ class acf_Repeater extends acf_Field
 					
 					// sortable
 					if(row_limit > 1){
-						make_sortable(div)
+						make_sortable(div);
 					}
 					
 				});

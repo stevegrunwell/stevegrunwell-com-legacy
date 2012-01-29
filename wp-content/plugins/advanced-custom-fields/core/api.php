@@ -259,6 +259,42 @@ function acf_register_field($array)
 add_filter('acf_register_field', 'acf_register_field');
 
 
+/*--------------------------------------------------------------------------------------
+*
+*	register_field_group
+*
+*	@author Elliot Condon
+*	@since 3.0.6
+* 
+*-------------------------------------------------------------------------------------*/
+
+$GLOBALS['acf_register_field_group'] = array();
+
+function register_field_group($array)
+{
+	// add id
+	$array['id'] = uniqid();
+	$GLOBALS['acf_register_field_group'][] = $array;
+}
+
+function acf_register_field_group($array)
+{
+	$array = array_merge($array, $GLOBALS['acf_register_field_group']);
+	
+	// order field groups based on menu_order
+	// Obtain a list of columns
+	foreach ($array as $key => $row) {
+	    $menu_order[$key] = $row['menu_order'];
+	}
+	
+	// Sort the array with menu_order ascending
+	// Add $array as the last parameter, to sort by the common key
+	array_multisort($menu_order, SORT_ASC, $array);
+	
+	return $array;
+}
+add_filter('acf_register_field_group', 'acf_register_field_group');
+
 
 /*--------------------------------------------------------------------------------------
 *

@@ -32,7 +32,8 @@
 
 .wp-box {
     background: none repeat scroll 0 0 #FFFFFF;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+    border: 1px solid #E1E1E1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     position: relative;
 }
 .wp-box .inner {
@@ -63,7 +64,8 @@
 }
 
 .wp-box h2 {
-	margin: 0 0 .5em;
+	margin: .25em 0 .75em;
+	padding: 0;
 }
 
 .wp-box h3 {
