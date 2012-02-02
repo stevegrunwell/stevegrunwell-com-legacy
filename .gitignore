@@ -1,0 +1,8 @@
+# Exclude these files from the git repo
+wp-content/themes/grunwell2012/simple-twitter-timeline/
+wp-content/uploads/
+wp-content/upgrade/
+*.DS_Store
+readme.html
+wp-config.php
+wp-config-sample.php
