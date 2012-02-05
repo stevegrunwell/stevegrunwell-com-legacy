@@ -8,6 +8,13 @@
 
 require_once dirname(__FILE__) . '/simple-twitter-timeline/twitter.class.php';
 
+/** Register scripts and styles */
+function grunwell_register_scripts_styles(){
+  wp_enqueue_script('jquery-placeholder', get_bloginfo('template_url') . '/js/jquery.placeholder.min.js', array('jquery'), '1.8.7', true);
+  wp_enqueue_script('site-scripts', get_bloginfo('template_url') . '/js/main.js', array('jquery', 'jquery-placeholder'), '', true);
+}
+add_action('init', 'grunwell_register_scripts_styles');
+
 /**
 * Creates the "Portfolio" custom post type
 * @return void
