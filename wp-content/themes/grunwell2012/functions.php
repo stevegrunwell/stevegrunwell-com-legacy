@@ -6,22 +6,40 @@
  * @author Steve Grunwell <steve@stevegrunwell.com>
  */
 
+require_once dirname(__FILE__) . '/simple-twitter-timeline/twitter.class.php';
+
 /**
 * Creates the "Portfolio" custom post type
 * @return void
 */
 function grunwell_create_portfolio_post_type() {
   $args = array(
+    'can_export' => true,
+    'has_archive' => true,
+    'hierarchical' => false,
     'labels' => array(
       'name' => 'Portfolio',
-      'singular_name' => 'Portfolio piece'
+      'singular_name' => 'Portfolio piece',
+      'add_new' => 'Add new',
+      'all_items' => 'All entries',
+      'add_new_item' => 'New entry',
+      'edit_item' => 'Edit entry',
+      'new_item' => 'New entry',
+      'view_item' => 'View entry',
+      'search_items' => 'Search portfolio',
+      'not_found' => 'No portfolio entries found',
+      'not_found_in_trash' => 'No portfolio entries found in trash',
+      'parent_item_colon' => 'Portfolio',
+      'menu_name' => 'Portfolio'
     ),
+    'menu_icon' => null,
     'public' => true,
-    'has_archive' => true,
     'rewrite' => array(
       'slug' => 'portfolio',
       'with_front' => false
-    )
+    ),
+    'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'comments', 'page-attributes'),
+    'taxonomies' => array('post_tag')
   );
   register_post_type('grunwell_portfolio', $args);
   return;
@@ -155,6 +173,25 @@ function grunwell_get_custom_field($key, $id=false, $default=''){
 function grunwell_custom_field($key, $id=false, $default=''){
   echo grunwell_get_custom_field($key, $id, $default);
   return;
+}
+
+/**
+ * Get Tweets using the SimpleTwitterTimeline class
+ * @return array
+ * @uses SimpleTwitterTimeline::get_timeline()
+ */
+function grunwell_get_tweets(){
+  if( class_exists('SimpleTwitterTimeline') ){
+    $args = array(
+      'exclude_replies' => true,
+      'limit' => 3,
+      'parse_links' => true,
+      'use_cache' => true
+    );
+    $twitter = new SimpleTwitterTimeline('stevegrunwell', $args);
+    return $twitter->get_timeline();
+  }
+  return array();
 }
 
 ?>
