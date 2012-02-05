@@ -186,7 +186,8 @@ function grunwell_get_tweets(){
       'exclude_replies' => true,
       'limit' => 3,
       'parse_links' => true,
-      'use_cache' => true
+      'use_cache' => true,
+      'cache_path' => dirname(__FILE__)
     );
     $twitter = new SimpleTwitterTimeline('stevegrunwell', $args);
     return $twitter->get_timeline();
