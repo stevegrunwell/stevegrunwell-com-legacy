@@ -302,7 +302,7 @@ if(empty($location['rules']))
 					</tbody>
 					
 				</table>
-				<p>match <?php $this->create_field(array(
+				<p><?php _e("match",'acf'); ?> <?php $this->create_field(array(
 									'type'	=>	'select',
 									'name'	=>	'location[allorany]',
 									'value'	=>	$location['allorany'],
@@ -310,7 +310,7 @@ if(empty($location['rules']))
 										'all'	=>	'all',
 										'any'	=>	'any',							
 									),
-								)); ?> of the above</p>
+								)); ?> <?php _e("of the above",'acf'); ?></p>
 			</div>
 			
 			

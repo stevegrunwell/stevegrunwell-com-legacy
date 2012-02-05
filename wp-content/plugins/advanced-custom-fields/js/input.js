@@ -117,14 +117,7 @@
 		});*/
 		
 		
-		// on save, delete all unused metaboxes
-		$('input#publish').click(function(){
-			
-			// do validation?
-			$('#post-body .acf_postbox:hidden').remove();
-			
-			return true;
-		});
+		
 		
 		/*--------------------------------------------------------------------------------------
 		*
@@ -193,6 +186,16 @@
 		
 	});
 	
+	
+	// on save, delete all unused metaboxes
+	$('input#save-post, input#publish').live("click", function(){
+		
+		// do validation?
+		$('#post-body .acf_postbox:hidden').remove();
+		
+		
+		return true;
+	});
 	
 	
 })(jQuery);

@@ -738,10 +738,17 @@ class acf_Flexible_content extends acf_Field
 				*---------------------------------------------------------------------*/
 				
 				$('#acf_fields .acf_fc_label input[type="text"]').live('blur', function(){
-					var input = $(this).parents('td').siblings('td.acf_fc_name').find('input[type="text"]');
-					if(input.val() == ''){
-						input.val($(this).val());
-					};
+					
+					var label = $(this);
+					var name = $(this).parents('td').siblings('td.acf_fc_name').find('input[type="text"]');
+		
+					if(name.val() == '')
+					{
+						var val = label.val().toLowerCase().split(' ').join('_').split('\'').join('');
+						name.val(val);
+						name.trigger('keyup');
+					}
+		
 				});
 				
 				})(jQuery);

@@ -68,7 +68,7 @@ if($action == ""):
 				</td>
 			</tr>
 			<!-- Flexible Field -->
-			<?php /*<tr>
+			<tr>
 				<td><?php _e("Flexible Content Field",'acf'); ?></td>
 				<td><?php echo $this->is_field_unlocked('flexible_content') ? __("Active",'acf') : __("Inactive",'acf'); ?></td>
 				<td>
@@ -86,7 +86,7 @@ if($action == ""):
 						} ?>
 					</form>
 				</td>
-			</tr>*/ ?>
+			</tr>
 			<!-- Options Page -->
 			<tr>
 				<td><?php _e("Options Page",'acf'); ?></td>
@@ -251,29 +251,7 @@ if($action == ""):
 	</div>
 	</form>
 	<!-- / Export / Import PHP -->
-	
-	<?php /* 
-	<br />
-	<br />
-	<br />
-	
-	<!-- Settings -->
-	<div class="wp-box">
-		<div class="inner">
-			<h2>Settings</h2>
-		</div>
-		<div class="footer">
-			<ul class="hl left">
-				<li></li>
-			</ul>
-			<ul class="hl right">
-				<li><input type="submit" value="Update" class="button-primary" /></li>
-			</ul>
-		</div>
-	</div>
-	<!-- Settings -->
-	*/ ?>
-	
+		
 </form>
 
 <?php
@@ -286,10 +264,10 @@ elseif($action == "export_php"):
 
 ?>
 
-<p><a href="">&laquo; Back to settings</a></p>
+<p><a href="">&laquo; <?php _e("Back to settings",'acf'); ?></a></p>
 <div class="wp-box">
 	<div class="inner">
-		<h2>Register Field Groups with PHP</h2>
+		<h2><?php _e("Register Field Groups with PHP",'acf'); ?></h2>
 		<ol>
 			<li><?php _e("Copy the PHP code generated",'acf'); ?></li>
 			<li><?php _e("Paste into your functions.php file",'acf'); ?></li>
@@ -314,24 +292,25 @@ elseif($action == "export_php"):
 		if($acfs)
 		{
 			?>
-/**
+<?php _e("/**
  * Activate Add-ons
  * Here you can enter your activation codes to unlock Add-ons to use in your theme. 
  * Since all activation codes are multi-site licenses, you are allowed to include your key in premium themes. 
  * Use the commented out code to update the database with your activation code. 
  * You may place this code inside an IF statement that only runs on theme activation.
- */
+ */",'acf'); ?>
  
-// update_option('acf_repeater_ac', "xxxx-xxxx-xxxx-xxxx");
-// update_option('acf_options_ac', "xxxx-xxxx-xxxx-xxxx");
+// if(!get_option('acf_repeater_ac')) update_option('acf_repeater_ac', "xxxx-xxxx-xxxx-xxxx");
+// if(!get_option('acf_options_ac')) update_option('acf_options_ac', "xxxx-xxxx-xxxx-xxxx");
+// if(!get_option('acf_flexible_content_ac')) update_option('acf_flexible_content_ac', "xxxx-xxxx-xxxx-xxxx");
 
 
-/**
+<?php _e("/**
  * Register field groups
  * The register_field_group function accepts 1 array which holds the relevant data to register a field group
  * You may edit the array as you see fit. However, this may result in errors if the array is not compatible with ACF
  * This code must run every time the functions.php file is read
- */
+ */",'acf'); ?>
 
 if(function_exists("register_field_group"))
 {
@@ -353,7 +332,7 @@ if(function_exists("register_field_group"))
 		}
 		else
 		{
-			echo "No field groups were selected.";
+			_e("No field groups were selected",'acf');
 		}
 		?></pre>
 	</div>

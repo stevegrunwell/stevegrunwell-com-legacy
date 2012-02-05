@@ -88,6 +88,11 @@ http://www.advancedcustomfields.com/support/
 
 == Changelog ==
 
+= 3.1.0 =
+* New Field: Flexible Content Field (license required)
+* Bug Fix: ACF data now saves for draft posts (please do a hard refresh on an edit screen to remove cached js)
+* Bug fix: Fixed multiple content editors
+ 
 = 3.0.7 =
 * Added export / register support via PHP
 * Moved menu position under Settings

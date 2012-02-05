@@ -43,7 +43,7 @@ class acf_Wysiwyg extends acf_Field
     	return 'tinymce'; // html or tinymce
     }
     
-    
+	
    	/*--------------------------------------------------------------------------------------
 	*
 	*	add_tiny_mce
@@ -141,18 +141,16 @@ class acf_Wysiwyg extends acf_Field
 			$.fn.acf_activate_wysiwyg = function(){
 				
 				// tinymce must exist
-				if(!typeof(tinyMCE) == "object")
+				if(typeof(tinyMCE) != "object")
 				{
 					return false;
 				}
-	
-				
-				
+
 					
 				// add tinymce to all wysiwyg fields
 				$(this).find('.acf_wysiwyg textarea').each(function(){
 					
-					if(tinyMCE.settings != undefined)
+					if(tinyMCE != undefined && tinyMCE.settings != undefined)
 					{
 						// reset buttons
 						tinyMCE.settings.theme_advanced_buttons1 = $.acf_wysiwyg_buttons.theme_advanced_buttons1;
@@ -172,29 +170,30 @@ class acf_Wysiwyg extends acf_Field
 						}
 					}
 
-					//console.log( $(this).attr('id') + ': before: ' + tinyMCE.settings.theme_advanced_buttons1);
-					//tinyMCE.execCommand("mceRemoveControl", false, $(this).attr('id'));
 					tinyMCE.execCommand('mceAddControl', false, $(this).attr('id'));
 
-
 				});
-
 				
 			};
 			
 			
 			$(window).load(function(){
 				
-				// store variables
-				if(tinyMCE.settings != undefined)
-				{
-					$.acf_wysiwyg_buttons.theme_advanced_buttons1 = tinyMCE.settings.theme_advanced_buttons1;
-					$.acf_wysiwyg_buttons.theme_advanced_buttons2 = tinyMCE.settings.theme_advanced_buttons2;
+				// timout seems to fix duplicate editors
+				setTimeout(function(){
+				
+					// store variables
+					if(tinyMCE != undefined && tinyMCE.settings != undefined)
+					{
+						$.acf_wysiwyg_buttons.theme_advanced_buttons1 = tinyMCE.settings.theme_advanced_buttons1;
+						$.acf_wysiwyg_buttons.theme_advanced_buttons2 = tinyMCE.settings.theme_advanced_buttons2;
+						
+					}
+				
+					$('#poststuff').acf_activate_wysiwyg();
 					
-				}
+				}, 10);
 				
-				
-				$('#poststuff').acf_activate_wysiwyg();
 				
 			});
 			
@@ -227,23 +226,6 @@ class acf_Wysiwyg extends acf_Field
 			
 		})(jQuery);
 		</script>
-		<style type="text/css">
-			.acf_wysiwyg iframe{ 
-				min-height: 250px;
-			}
-			
-			#post-body .acf_wysiwyg .wp_themeSkin .mceStatusbar a.mceResize {
-				top: -2px !important;
-			}
-			
-			.acf_wysiwyg .editor-toolbar {
-				display: none;
-			}
-			
-			.acf_wysiwyg #editorcontainer {
-				background: #fff;
-			}
-		</style>
 		<?php
 	}
 	
@@ -351,7 +333,7 @@ class acf_Wysiwyg extends acf_Field
 				<?php endif; ?>
 			<?php endif; ?>
 			<div id="editorcontainer" class="wp-editor-container">
-				<textarea id="<?php echo $field['name']; ?>" name="<?php echo $field['name']; ?>" ><?php echo wp_richedit_pre($field['value']); ?></textarea>
+				<textarea id="<?php echo $id; ?>" name="<?php echo $field['name']; ?>" ><?php echo wp_richedit_pre($field['value']); ?></textarea>
 			</div>
 		</div>
 		<?php

@@ -289,7 +289,7 @@ table.widefat.acf td {
 
 .field_options .field_option table {
 	border: #CCCCCC solid 1px;
-	-moz-border-radius: 5px; -webkit-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; 
+	border-radius: 5px;
 }
 
 
@@ -319,18 +319,19 @@ table.acf_input tr td .acf tr td {
 	Field Form
 ---------------------------------------------------------------------------------------------*/
 .field_form {
-	border: #98b6cb solid 1px;
+	border: #7390a5 solid 1px;
 	border-top: 0 none;
-	background: #accde4;
+	background: #91bbd9;
 	padding: 10px;
 	clear: both;
 	vertical-align: top;
 }
 
 .field_form table.acf_input {
-	border: #98b6cb solid 1px;
+	border: #7390a5 solid 1px;
 	position: relative;
 	overflow: hidden;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 .field_form table.acf_input tr.field_label td {
