@@ -190,6 +190,7 @@ ul.radio_list.horizontal li {
 
 ul.checkbox_list {
 	background: transparent !important;
+	margin: 0;
 }
 
 ul.checkbox_list input[type="checkbox"] {

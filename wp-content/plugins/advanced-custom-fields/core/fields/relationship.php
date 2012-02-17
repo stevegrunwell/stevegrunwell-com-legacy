@@ -114,6 +114,9 @@ class acf_Relationship extends acf_Field
 				// update input value
 				div.update_input_val();
 				
+				// validation
+				div.closest('.field').removeClass('error');
+				
 				return false;
 				
 			});
@@ -138,7 +141,7 @@ class acf_Relationship extends acf_Field
 				
 				// update input value
 				div.update_input_val();
-				
+
 				return false;
 				
 			});

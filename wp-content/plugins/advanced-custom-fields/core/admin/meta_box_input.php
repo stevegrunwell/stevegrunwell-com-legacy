@@ -26,9 +26,24 @@ if($fields)
 		// set value
 		$field['value'] = $this->get_value($post_id, $field);
 		
-		echo '<div class="field">';
+		// required
+		if(!isset($field['required']))
+		{
+			$field['required'] == "0";
+		}
+		
+		$required_class = "";
+		$required_label = "";
+		
+		if($field['required'] == "1")
+		{
+			$required_class = ' required';
+			$required_label = ' <span class="required">*</span>';
+		}
+		
+		echo '<div class="field field-' . $field['type'] . $required_class . '">';
 						
-			echo '<label class="field_label" for="fields[' . $field['key'] . '][value]">' . $field['label'] . '</label>';
+			echo '<label class="field_label" for="fields[' . $field['key'] . ']">' . $field['label'] . $required_label . '</label>';
 			if($field['instructions']) echo '<p class="instructions">' . $field['instructions'] . '</p>';
 			
 			$field['name'] = 'fields[' . $field['key'] . ']';

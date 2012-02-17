@@ -85,7 +85,7 @@ class acf_Flexible_content extends acf_Field
 						<?php if($layout['display'] == 'table'): ?></td><?php endif; ?>	
 					<?php endforeach; ?>
 					<?php if($layout['display'] == 'row'): ?></td><?php endif; ?>
-					<td class="remove"><a class="remove_field" href="javascript:;"></a></td>
+					<td class="remove"><a class="remove_row" id="fc_remove_row" href="javascript:;"></a></td>
 				</tr>
 			</tbody>
 			</table>
@@ -132,7 +132,7 @@ class acf_Flexible_content extends acf_Field
 									<?php if($layout['display'] == 'table'): ?></td><?php endif; ?>
 								<?php endforeach; ?>
 								<?php if($layout['display'] == 'row'): ?></td><?php endif; ?>
-								<td class="remove"><a class="remove_field" href="javascript:;"></a></td>
+								<td class="remove"><a class="remove_row" id="fc_remove_row" href="javascript:;"></a></td>
 							</tr>
 						</tbody>
 						</table>
@@ -152,7 +152,7 @@ class acf_Flexible_content extends acf_Field
 					</ul>
 					<div class="bit"></div>
 				</div>
-				<a href="javascript:;" id="add_field" class="button-primary"><?php _e("+ Add Row",'acf'); ?></a>
+				<a href="javascript:;" id="fc_add_row" class="add_row button-primary"><?php _e("+ Add Row",'acf'); ?></a>
 				<div class="clear"></div>
 			</div>	
 
@@ -195,7 +195,7 @@ class acf_Flexible_content extends acf_Field
 		{
 			$fields_names[$f->name] = $f->title;
 		}
-		unset($fields_names['repeater']);
+		//unset($fields_names['repeater']);
 		unset($fields_names['flexible_content']);
 		
 		// loop through layouts and create the options for them
@@ -448,7 +448,7 @@ class acf_Flexible_content extends acf_Field
 			*
 			*---------------------------------------------------------------------*/
 			
-			$('#poststuff .acf_flexible_content #add_field').live('click', function(){
+			$('#poststuff .acf_flexible_content #fc_add_row').live('click', function(){
 				
 				if($(this).hasClass('active'))
 				{
@@ -469,7 +469,7 @@ class acf_Flexible_content extends acf_Field
 			*
 			*---------------------------------------------------------------------*/
 			
-			$('#poststuff .acf_flexible_content a.remove_field').live('click', function(){
+			$('#poststuff .acf_flexible_content #fc_remove_row').live('click', function(){
 				
 				var div = $(this).closest('.acf_flexible_content');
 				var table = $(this).closest('table');
@@ -536,13 +536,15 @@ class acf_Flexible_content extends acf_Field
 				update_order_numbers(div);
 				
 				// hide acf popup
-				$(this).closest('.table_footer').find('#add_field').removeClass('active');
+				$(this).closest('.table_footer').find('#fc_add_row').removeClass('active');
 				$(this).closest('.acf_popup').hide();
-					
+				
+				// validation
+				div.closest('.field').removeClass('error');
+				
 				return false;
 				
 			});
-			
 			
 			
 			$(document).ready(function(){
@@ -551,6 +553,23 @@ class acf_Flexible_content extends acf_Field
 
 					// sortable
 					make_sortable($(this));
+				});
+				
+			});
+			
+			
+			// validation
+			$('form#post').live("submit", function(){
+		
+				// flexible content
+				$('#post-body .acf_postbox:visible .field.required .acf_flexible_content').each(function(){
+				
+					if(!$(this).find('.values table').exists())
+					{
+						acf.valdation = false;
+						$(this).closest('.field').addClass('error');
+					}
+
 				});
 				
 			});

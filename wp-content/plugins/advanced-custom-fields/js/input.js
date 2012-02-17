@@ -1,12 +1,13 @@
-(function($){
-	
-	/*----------------------------------------------------------------------
-	*
-	*	vars
-	*
-	*---------------------------------------------------------------------*/
-	var shift_is_down = false;
-	var data = {
+/*----------------------------------------------------------------------
+*
+*	vars
+*
+*---------------------------------------------------------------------*/
+
+var acf = {
+	validation : false,
+	validation_message : "Validation error", // this is overriden by a script tag generated in admin_head for translation
+	data : {
 		action 			:	'get_input_metabox_ids',
 		post_id			:	false,
 		page_template	:	false,
@@ -16,9 +17,13 @@
 		post			:	false,
 		post_category	:	false,
 		post_format		:	false
-	};
+	}
+};
+
+
+(function($){
 	
-	
+		
 	/*----------------------------------------------------------------------
 	*
 	*	Exists
@@ -43,7 +48,7 @@
 		var post_id = $('input#post_ID').val();
 	
 		// show metaboxes for this post
-		data = {
+		acf.data = {
 			action 			:	'get_input_metabox_ids',
 			post_id			:	post_id,
 			page_template	:	false,
@@ -61,7 +66,7 @@
 		{		
 			$.ajax({
 				url: ajaxurl,
-				data: data,
+				data: acf.data,
 				type: 'post',
 				dataType: 'json',
 				success: function(result){
@@ -127,7 +132,7 @@
 	
 		$('#page_template').change(function(){
 			
-			data.page_template = $(this).val();
+			acf.data.page_template = $(this).val();
 			update_fields();
 		    
 		});
@@ -138,11 +143,11 @@
 			
 			if($(this).val() != "")
 			{
-				data.page_type = 'child';
+				acf.data.page_type = 'child';
 			}
 			else
 			{
-				data.page_type = 'parent';
+				acf.data.page_type = 'parent';
 			}
 			
 			update_fields();
@@ -151,10 +156,10 @@
 		
 		$('#categorychecklist input[type="checkbox"]').change(function(){
 			
-			data.post_category = ['0'];
+			acf.data.post_category = ['0'];
 			
 			$('#categorychecklist :checked').each(function(){
-				data.post_category.push($(this).val())
+				acf.data.post_category.push($(this).val())
 			});
 			
 			//console.log(data.post_category);
@@ -166,7 +171,7 @@
 		
 		$('#post-formats-select input[type="radio"]').change(function(){
 			
-			data.post_format = $(this).val();
+			acf.data.post_format = $(this).val();
 			update_fields();
 			
 		});	
@@ -174,10 +179,10 @@
 		// taxonomy
 		$('div[id*="taxonomy-"] input[type="checkbox"]').change(function(){
 			
-			data.taxonomy = ['0'];
+			acf.data.taxonomy = ['0'];
 			
 			$(this).closest('ul').find('input[type="checkbox"]:checked').each(function(){
-				data.taxonomy.push($(this).val())
+				acf.data.taxonomy.push($(this).val())
 			});
 
 			update_fields();
@@ -187,15 +192,135 @@
 	});
 	
 	
+	/*----------------------------------------------------------------------
+	*
+	*	Save
+	*
+	*---------------------------------------------------------------------*/
+	
 	// on save, delete all unused metaboxes
-	$('input#save-post, input#publish').live("click", function(){
+	$('form#post').live("submit", function(){
 		
-		// do validation?
+		// do validation
+		do_validation()
+		
+		if(acf.valdation == false)
+		{
+			// reset validation for next time
+			acf.valdation = true;
+			
+			// show message
+			$('#post').siblings('#message').remove();
+			$('#post').before('<div id="message" class="error"><p>' + acf.validation_message + '</p></div>');
+			
+			
+			// hide ajax stuff on submit button
+			$('#publish').removeClass('button-primary-disabled');
+			$('#ajax-loading').attr('style','');
+			
+			return false;
+		}
+		
 		$('#post-body .acf_postbox:hidden').remove();
 		
 		
 		return true;
 	});
+	
+	
+	/*----------------------------------------------------------------------
+	*
+	*	Validation
+	*
+	*---------------------------------------------------------------------*/
+	
+	function do_validation(){
+		
+		$('#post-body .acf_postbox:visible .field.required').each(function(){
+			
+			var validation = true;
+
+			// text / textarea
+			if($(this).find('input[type="text"], input[type="hidden"], textarea').val() == "")
+			{
+				validation = false;
+			}
+			
+			// select
+			if($(this).find('select').exists())
+			{
+				if($(this).find('select').val() == "null" || !$(this).find('select').val())
+				{
+					validation = false;
+				}
+			}
+			
+			// checkbox
+			if($(this).find('input[type="checkbox"]:checked').exists())
+			{
+				validation = true;
+			}
+			
+			// checkbox
+			if($(this).find('.acf_relationship').exists() && $(this).find('input[type="hidden"]').val() != "")
+			{
+				validation = true;
+			}
+			
+			// repeater
+			if($(this).find('.repeater').exists())
+			{
+				if($(this).find('.repeater tr.row').exists())
+				{
+					validation = true;
+				}
+				else
+				{
+					validation = false;
+				}
+				
+			}
+			
+			
+			
+			
+			// set validation
+			if(!validation)
+			{
+				acf.valdation = false;
+				$(this).closest('.field').addClass('error');
+			}
+			
+		});
+		
+		
+	}
+	
+	
+	/*----------------------------------------------------------------------
+	*
+	*	Add simple events to remove error class on field
+	*
+	*---------------------------------------------------------------------*/
+	
+	// inputs / textareas
+	$('#post-body .acf_postbox .field.required input, #post-body .acf_postbox .field.required textarea, .acf_postbox .field.required select').live('focus', function(){
+		$(this).closest('.field').removeClass('error');
+	});
+	
+	// checkbox
+	$('#post-body .acf_postbox .field.required input:checkbox').live('click', function(){
+		$(this).closest('.field').removeClass('error');
+	});
+	
+	// wysiwyg
+	$('#post-body .acf_postbox .field.required .acf_wysiwyg').live('mousedown', function(){
+		$(this).closest('.field').removeClass('error');
+	});
+
+	
+
+	
 	
 	
 })(jQuery);

@@ -166,22 +166,19 @@ class Options_page
 			return false;	
 		}
 		
-		
-		// create tyn mce instance for wysiwyg
-		//add_action('admin_head', 'wp_tiny_mce');
-		
-		// add css + javascript
-		echo '<link rel="stylesheet" type="text/css" href="'.$this->parent->dir.'/css/global.css" />';
-		echo '<link rel="stylesheet" type="text/css" href="'.$this->parent->dir.'/css/input.css" />';
-		//echo '<script type="text/javascript" src="'.$this->parent->dir.'/js/input.js" ></script>';
-		
 		// fields admin_head
 		foreach($this->parent->fields as $field)
 		{
 			$this->parent->fields[$field->name]->admin_head();
 		}
 		
+		// add css + javascript
+		echo '<link rel="stylesheet" type="text/css" href="'.$this->parent->dir.'/css/global.css" />';
+		echo '<link rel="stylesheet" type="text/css" href="'.$this->parent->dir.'/css/input.css" />';
+		echo '<script type="text/javascript" src="'.$this->parent->dir.'/js/input.js" ></script>';
+		echo '<script type="text/javascript">acf.validation_message = "' . __("Validation Failed. One or more fields below are required.",'acf') . '";</script>';
 		
+
 		// get acf's
 		$acfs = $this->parent->get_field_groups();
 		if($acfs)

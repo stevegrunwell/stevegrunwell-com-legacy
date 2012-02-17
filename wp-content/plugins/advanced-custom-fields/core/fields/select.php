@@ -286,6 +286,27 @@ class acf_Select extends acf_Field
 	}
 	
 	
+	/*--------------------------------------------------------------------------------------
+	*
+	*	get_value_for_api
+	*
+	*	@author Elliot Condon
+	*	@since 3.1.2
+	* 
+	*-------------------------------------------------------------------------------------*/
+	
+	function get_value_for_api($post_id, $field)
+	{
+		$value = parent::get_value($post_id, $field);
+		
+		if($value == 'null')
+		{
+			$value = false;
+		}
+		
+		return $value;
+	}
+	
 }
 
 ?>

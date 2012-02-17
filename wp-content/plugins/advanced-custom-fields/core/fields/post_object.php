@@ -118,7 +118,10 @@ class acf_Post_object extends acf_Field
 			// if posts, make a group for them
 			if($posts)
 			{
-				echo '<optgroup label="'.$post_type.'">';
+				$post_type_object = get_post_type_object($post_type);
+				$post_type_name = $post_type_object->labels->name;
+
+				echo '<optgroup label="'.$post_type_name.'">';
 				
 				foreach($posts as $post)
 				{

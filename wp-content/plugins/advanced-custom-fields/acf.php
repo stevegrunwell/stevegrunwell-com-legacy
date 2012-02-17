@@ -3,7 +3,7 @@
 Plugin Name: Advanced Custom Fields
 Plugin URI: http://www.advancedcustomfields.com/
 Description: Fully customise WordPress edit screens with powerful fields. Boasting a professional interface and a powerfull API, it’s a must have for any web developer working with WordPress.Field types include: Wysiwyg, text, textarea, image, file, select, checkbox, page link, post object, date picker, color picker and more!
-Version: 3.1.0
+Version: 3.1.3
 Author: Elliot Condon
 Author URI: http://www.elliotcondon.com/
 License: GPL
@@ -45,7 +45,7 @@ class Acf
 		$this->dir = plugins_url('',__FILE__);
 		$this->siteurl = get_bloginfo('url');
 		$this->wpadminurl = admin_url();
-		$this->version = '3.1.0';
+		$this->version = '3.1.3';
 		$this->upgrade_version = '3.0.0'; // this is the latest version which requires an upgrade
 		
 		
@@ -203,7 +203,7 @@ class Acf
 	function admin_menu() {
 	
 		// add acf page to options menu
-		add_menu_page(__("Custom Fields",'acf'), __("Custom Fields",'acf'), 'manage_options', 'edit.php?post_type=acf', false, false, 81);
+		add_utility_page(__("Custom Fields",'acf'), __("Custom Fields",'acf'), 'manage_options', 'edit.php?post_type=acf');
 		add_submenu_page('edit.php?post_type=acf', __('Settings','wp3i'), __('Settings','wp3i'), 'manage_options','acf-settings',array($this,'admin_page_settings'));
 		add_submenu_page('edit.php?post_type=acf', __('Upgrade','wp3i'), __('Upgrade','wp3i'), 'manage_options','acf-upgrade',array($this,'admin_page_upgrade'));
 		
@@ -376,12 +376,6 @@ class Acf
 				// find post type and add wysiwyg support
 				$post_type = get_post_type($post);
 		
-				// add css + javascript
-				echo '<link rel="stylesheet" type="text/css" href="'.$this->dir.'/css/global.css" />';
-				echo '<link rel="stylesheet" type="text/css" href="'.$this->dir.'/css/input.css" />';
-				echo '<script type="text/javascript" src="'.$this->dir.'/js/input.js" ></script>';
-				echo '<style type="text/css">.acf_postbox, .postbox[id*="acf_"] { display: none; }</style>';
-
 				// get style for page
 				$metabox_ids = $this->get_input_metabox_ids(array('post_id' => $post->ID), false);
 				$style = isset($metabox_ids[0]) ? $this->get_input_style($metabox_ids[0]) : '';
@@ -392,6 +386,13 @@ class Acf
 				{
 					$this->fields[$field->name]->admin_head();
 				}
+				
+				// add css + javascript
+				echo '<link rel="stylesheet" type="text/css" href="'.$this->dir.'/css/global.css" />';
+				echo '<link rel="stylesheet" type="text/css" href="'.$this->dir.'/css/input.css" />';
+				echo '<script type="text/javascript" src="'.$this->dir.'/js/input.js" ></script>';
+				echo '<style type="text/css">.acf_postbox, .postbox[id*="acf_"] { display: none; }</style>';
+				echo '<script type="text/javascript">acf.validation_message = "' . __("Validation Failed. One or more fields below are required.",'acf') . '";</script>';
 				
 				// get acf's
 				$acfs = $this->get_field_groups();

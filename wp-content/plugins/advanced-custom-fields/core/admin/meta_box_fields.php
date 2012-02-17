@@ -131,6 +131,23 @@ foreach($this->fields as $field)
 								?>
 							</td>
 						</tr>
+						<tr class="required">
+							<td class="label"><label><?php _e("Required?",'acf'); ?></label></td>
+							<td>
+								<?php 
+								$this->create_field(array(
+									'type'	=>	'radio',
+									'name'	=>	'fields['.$key.'][required]',
+									'value'	=>	$field['required'],
+									'choices'	=>	array(
+										'1'	=>	'Yes',
+										'0'	=>	'No',
+									),
+									'layout'	=>	'horizontal',
+								));
+								?>
+							</td>
+						</tr>
 						<?php 
 						foreach($fields_names as $field_name => $field_title){
 							$this->fields[$field_name]->create_options($key, $field);

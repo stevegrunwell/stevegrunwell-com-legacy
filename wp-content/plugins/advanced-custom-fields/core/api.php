@@ -354,4 +354,38 @@ function get_row_layout()
 }
 
 
+/*--------------------------------------------------------------------------------------
+*
+*	shorcode support
+*
+*	@author Elliot Condon
+*	@since 1.1.1
+* 
+*-------------------------------------------------------------------------------------*/
+
+function acf_shortcode( $atts )
+{
+	// extract attributs
+	extract( shortcode_atts( array(
+		'field' => ""
+	), $atts ) );
+	
+	// $field is requird
+	if(!$field || $field == "")
+	{
+		return "";
+	}
+	
+	// get value and return it
+	$value = get_field($field);
+	
+	if(is_array($value))
+	{
+		$value = @implode(', ',$value);
+	}
+	
+	return $value;
+}
+add_shortcode( 'acf', 'acf_shortcode' );
+
 ?>

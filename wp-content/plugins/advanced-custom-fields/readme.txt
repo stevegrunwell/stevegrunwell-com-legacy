@@ -1,6 +1,5 @@
 === Advanced Custom Fields ===
 Contributors: Elliot Condon
-Donate link: https://www.paypal.com/au/cgi-bin/webscr?cmd=_flow&SESSION=-B2MHZ-ioHQb-z1o22AMmhjSI08rxFqQdljyfqVa1R-4QrbQWPNcfL37jYi&dispatch=5885d80a13c0db1f8e263663d3faee8d5fa8ff279e37c3d9d4e38bdbee0ede69
 Tags: custom, field, custom field, advanced, simple fields, magic fields, more fields, repeater, matrix, post, type, text, textarea, file, image, edit, admin
 Requires at least: 3.0
 Tested up to: 3.3
@@ -87,6 +86,21 @@ http://www.advancedcustomfields.com/support/
 
 
 == Changelog ==
+
+= 3.1.2 =
+* Bug Fix: Options page fields were rendered invisible in v3.1.2 (now fixed)
+* Updated POT file with new texts
+
+= 3.1.2 =
+* New Feature: Required field validation. Note: Repeater / Flexible content fields can be required but their sub fields can not.
+* Field update: Select field: API now returns false when "null" is selected
+* Field update: Radio button: When editing a post / page, the radio button will select the first choice if there is no saved value for the field
+* Bug fix: You can now use a repeater field inside a flexible field! Please note that the_repeater_field will not work as expected. Please use get_sub_field to get the sub repeater field, then use php to loop through it.
+
+= 3.1.1 =
+* New Feature: Added shortcode support. usage: [acf field="field_name"]
+* Bug Fix: Fixed menu disappearing by changing the function "add_menu" to "add_utility_page"
+* Visual: Changed post object / page link fields to display post type label instead of post type name for the select optgroup label. Thanks to kevwaddell for the code
 
 = 3.1.0 =
 * New Field: Flexible Content Field (license required)

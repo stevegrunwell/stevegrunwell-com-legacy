@@ -129,7 +129,7 @@ class acf_Repeater extends acf_Field
 			});
 			
 			// add field
-			$('#poststuff .repeater #add_field').live('click', function(){
+			$('#poststuff .repeater #r_add_row').live('click', function(){
 				
 				var div = $(this).closest('.repeater');
 				var row_limit = parseInt(div.attr('data-row_limit'));			
@@ -139,7 +139,7 @@ class acf_Repeater extends acf_Field
 				if(row_count >= row_limit)
 				{
 					// reached row limit!
-					div.find('#add_field').attr('disabled','true');
+					div.find('#r_add_row').attr('disabled','true');
 					return false;
 				}
 				
@@ -174,8 +174,11 @@ class acf_Repeater extends acf_Field
 				// disable the add field button if row limit is reached
 				if((row_count+1) >= row_limit)
 				{
-					div.find('#add_field').attr('disabled','true');
+					div.find('#r_add_row').attr('disabled','true');
 				}
+				
+				// validation
+				div.closest('.field').removeClass('error');
 				
 				return false;
 				
@@ -183,7 +186,7 @@ class acf_Repeater extends acf_Field
 			
 			
 			// remove field
-			$('#poststuff .repeater a.remove_field').live('click', function(){
+			$('#poststuff .repeater a#r_remove_row').live('click', function(){
 				
 				var div = $(this).closest('.repeater');
 				var tr = $(this).closest('tr');
@@ -193,7 +196,7 @@ class acf_Repeater extends acf_Field
 					update_order_numbers(div);
 				});
 				
-				div.find('#add_field').removeAttr('disabled');
+				div.find('#r_add_row').removeAttr('disabled');
 				
 				return false;
 				
@@ -300,7 +303,7 @@ class acf_Repeater extends acf_Field
 					<?php if($layout == 'row'): ?></td><?php endif; ?>
 					
 					<?php if($row_limit > 1): ?>
-						<td class="remove"><a class="remove_field" href="javascript:;"></a></td>
+						<td class="remove"><a class="remove_row" id="r_remove_row" href="javascript:;"></a></td>
 					<?php endif; ?>
 				</tr>
 				<?php endforeach; ?>
@@ -309,7 +312,7 @@ class acf_Repeater extends acf_Field
 			<?php if($row_limit > 1): ?>
 			<div class="table_footer">
 				<div class="order_message"></div>
-				<a href="javascript:;" id="add_field" class="button-primary"><?php _e("+ Add Row",'acf'); ?></a>
+				<a href="javascript:;" id="r_add_row" class="add_row button-primary"><?php _e("+ Add Row",'acf'); ?></a>
 			</div>	
 			<?php endif; ?>	
 		</div>
@@ -351,6 +354,7 @@ class acf_Repeater extends acf_Field
 			$fields_names[$f->name] = $f->title;
 		}
 		unset($fields_names['repeater']);
+		unset($fields_names['flexible_content']);
 		
 		?>
 <tr class="field_option field_option_<?php echo $this->name; ?>">

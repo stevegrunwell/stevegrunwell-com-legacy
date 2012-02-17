@@ -281,6 +281,9 @@ class acf_File extends acf_Field
 			 	self.parent.acf_div.find('span.file_url').text('<?php echo $file_src; ?>');
 			 	self.parent.acf_div.addClass('active');
 			 	
+			 	// validation
+			 	self.parent.acf_div.closest('.field').removeClass('error');
+			 	
 			 	// reset acf_div and return false
 			 	self.parent.acf_div = null;
 			 	self.parent.tb_remove();
