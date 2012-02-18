@@ -23,7 +23,7 @@
   <div id="wrapper">
     <header>
       <?php echo get_search_form(); ?>
-      <?php echo grunwell_sitelogo('<a href="' . home_url('/') . '" rel="home">' . get_bloginfo('name') . '</a>'); ?>
+      <?php echo grunwell_sitelogo(); ?>
 
       <?php
         $args = array(
