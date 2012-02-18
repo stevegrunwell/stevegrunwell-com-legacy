@@ -6,7 +6,7 @@
  * @author Steve Grunwell <steve@stevegrunwell.com>
  */
 
-require_once dirname(__FILE__) . '/simple-twitter-timeline/twitter.class.php';
+include_once dirname(__FILE__) . '/simple-twitter-timeline/twitter.class.php';
 
 /** Register scripts and styles */
 function grunwell_register_scripts_styles(){
@@ -22,7 +22,7 @@ add_action('init', 'grunwell_register_scripts_styles');
 function grunwell_create_portfolio_post_type() {
   $args = array(
     'can_export' => true,
-    'has_archive' => true,
+    'has_archive' => false,
     'hierarchical' => false,
     'labels' => array(
       'name' => 'Portfolio',
@@ -53,6 +53,14 @@ function grunwell_create_portfolio_post_type() {
 }
 add_action('init', 'grunwell_create_portfolio_post_type');
 
+function grunwell_portfolio_set_parent_id($id){
+  if( isset($_POST['post_type']) && $_POST['post_type'] == 'grunwell_portfolio' ){
+    update_post_meta($id, 'parent_id', 30);
+  }
+  return;
+}
+add_action('save_post', 'grunwell_portfolio_set_parent_id');
+
 function grunwell_custom_menus(){
   register_nav_menus(
     array('primary-nav' => 'Primary Navigation')
@@ -80,10 +88,9 @@ function grunwell_page_title($sep='|'){
  * @param mixed $content Text, image, or other content to wrap in the tag. If $content is false, simply return the tag
  * @return str
  */
-function grunwell_sitelogo($content=false){
+function grunwell_sitelogo(){
   $tag = ( is_front_page() ? 'h1' : 'div' );
-  $content = preg_replace('/\s+(\S+)$/', sprintf('<span class="last">%s</span>', '${1}'), trim($content));
-  return ( $content ? sprintf('<%s id="site-logo">%s</%s>', $tag, $content, $tag) : $tag );
+  return sprintf('<%s id="site-logo"><a href="%s"><img src="%s/img/site-logo.png" alt="%s" /></a></%s>', $tag, home_url('/'), get_bloginfo('template_url'), esc_attr(get_bloginfo('template_url')), $tag);
 }
 
 /**
