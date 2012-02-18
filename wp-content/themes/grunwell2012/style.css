@@ -63,9 +63,7 @@ input[type="text"], input[type="email"], input[type="tel"], input[type="password
 
 /* Header */
 #site-logo{clear:none; display:block; min-width:128px; max-width:640px; margin:0 0 6px; padding:0; overflow:hidden; font-family:Gotham,'Helvetica Neue',sans-serif; font-size:46px; line-height:46px; text-transform:uppercase; font-weight:bold;}
-#site-logo a:link, #site-logo a:visited{color:#333;}
-#site-logo a:hover, #site-logo a:active{text-decoration:none;}
-#site-logo .last{display:inline; font-weight:normal;}
+#site-logo img{width:auto; max-width:100%; height:auto;}
 
 header .search{position:relative; float:right; width:230px; z-index:1;}
 header .search-btn{display:none; background:#333;}
