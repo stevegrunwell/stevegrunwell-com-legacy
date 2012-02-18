@@ -17,4 +17,3 @@
   </article><!--// #post-<?php the_ID(); ?>-->
 
 <?php endwhile; ?>
-

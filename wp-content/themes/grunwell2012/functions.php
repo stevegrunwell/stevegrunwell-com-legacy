@@ -85,7 +85,6 @@ function grunwell_page_title($sep='|'){
 /**
  * Get the tag for #site-logo
  * Will use a <h1> on the front page and <div> on the others
- * @param mixed $content Text, image, or other content to wrap in the tag. If $content is false, simply return the tag
  * @return str
  */
 function grunwell_sitelogo(){
