@@ -77,8 +77,14 @@ header .search button{position:absolute; right:0; top:0; display:block; width:40
 #primary-nav a:hover, #primary-nav a:active, #primary-nav .current-menu-item a, #primary-nav .current_page_parent a{text-decoration:none; color:#333;}
 
 /* Post styles */
+.primary .post{margin-bottom:21px;}
+
 .post .post-title{margin-bottom:.3em;}
-.entry-meta{margin-bottom:2em; font-size:.9em; color:#999;}
+.entry-meta{margin-bottom:.2em; font-size:.9em; color:#999;}
+article.primary .entry-meta{margin-bottom:2em;}
+
+/* Syntax Highlighter */
+#content .syntaxhighlighter{margin:0 0 1.5em!important;}
 
 /* Comments */
 #comments{clear:both; margin-top:3em; padding-top:2em; border-top:2px solid #dadada;}

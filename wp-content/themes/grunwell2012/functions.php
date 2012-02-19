@@ -10,17 +10,10 @@ include_once dirname(__FILE__) . '/simple-twitter-timeline/twitter.class.php';
 
 /** Register scripts and styles */
 function grunwell_register_scripts_styles(){
-  wp_enqueue_script('site-scripts', get_bloginfo('template_url') . '/js/main.js', array('jquery', 'jquery-placeholder', 'syntax-highlighter'), '', true);
-  wp_localize_script('site-scripts', 'themeSettings', array('templatePath' => get_bloginfo('template_url')));
+  wp_enqueue_script('site-scripts', get_bloginfo('template_url') . '/js/main.js', array('jquery', 'jquery-placeholder'), '', true);
 
   // jQuery Placeholder - https://github.com/mathiasbynens/jquery-placeholder
   wp_enqueue_script('jquery-placeholder', get_bloginfo('template_url') . '/js/jquery.placeholder.min.js', array('jquery'), '1.8.7', true);
-
-  // Syntax Highlighter - http://alexgorbatchev.com/SyntaxHighlighter/
-  wp_enqueue_style('syntax-highlighter', get_bloginfo('template_url') . '/css/syntax-highlighter/shCore.css', null, '3.0.83', 'screen');
-  wp_enqueue_style('syntax-highlighter-default', get_bloginfo('template_url') . '/css/syntax-highlighter/shThemeDefault.css', array('syntax-highlighter'), '3.0.83', 'screen');
-  wp_enqueue_script('syntax-highlighter', get_bloginfo('template_url') . '/js/syntax-highlighter/shCore.js', null, '3.0.83', true);
-  wp_enqueue_script('syntax-highlighter-autoloader', get_bloginfo('template_url') . '/js/syntax-highlighter/shAutoloader.js', null, '3.0.83', true);
 }
 add_action('init', 'grunwell_register_scripts_styles');
 
