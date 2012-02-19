@@ -12,10 +12,10 @@ include_once dirname(__FILE__) . '/simple-twitter-timeline/twitter.class.php';
 function grunwell_register_scripts_styles(){
   wp_enqueue_script('site-scripts', get_bloginfo('template_url') . '/js/main.js', array('jquery', 'jquery-placeholder', 'syntax-highlighter'), '', true);
   wp_localize_script('site-scripts', 'themeSettings', array('templatePath' => get_bloginfo('template_url')));
-  
+
   // jQuery Placeholder - https://github.com/mathiasbynens/jquery-placeholder
   wp_enqueue_script('jquery-placeholder', get_bloginfo('template_url') . '/js/jquery.placeholder.min.js', array('jquery'), '1.8.7', true);
-  
+
   // Syntax Highlighter - http://alexgorbatchev.com/SyntaxHighlighter/
   wp_enqueue_style('syntax-highlighter', get_bloginfo('template_url') . '/css/syntax-highlighter/shCore.css', null, '3.0.83', 'screen');
   wp_enqueue_style('syntax-highlighter-default', get_bloginfo('template_url') . '/css/syntax-highlighter/shThemeDefault.css', array('syntax-highlighter'), '3.0.83', 'screen');
@@ -102,49 +102,6 @@ function grunwell_sitelogo(){
 }
 
 /**
- * Get the formatted date string for the post and output it wrapped in the HTML5 <time> element
- * When used within the loop the $date parameter is unnecessary
- * @global $post
- * @param str $date The date to format
- * @param bool $inc_time Include the post time? (default: true)
- * @param str $class CSS classes to apply to the <time> element
- * @return str
- */
-function grunwell_get_the_date($date='', $inc_time=true, $class=''){
-  global $post;
-  $gmt = false;
-  $format = 'F jS, Y' . ( $inc_time ? ' \a\\t g:ia' : '' );
-
-  if( strtolower($date) <= 0 ){
-    if( isset($post->post_date, $post->post_date_gmt) && strtotime($post->post_date) > 0 ){ // Use global $post object
-      $date = $post->post_date;
-      $gmt = strtotime($post->post_date_gmt);
-    } else { // Use current time
-      $date = date('Y-m-d H:i:s');
-    }
-  }
-  $date = strtotime($date);
-
-  if( !$gmt ){
-    $offset = floatval(get_bloginfo('gmt_offset'));
-    $gmt = $date + ($offset*60*60);
-  }
-
-  if( $class != '' ){
-    $class = sprintf(' class="%s"', $class);
-  }
-
-  $return = sprintf('<time datetime="%s"%s>%s</time>', date('c', $gmt), $class, date($format, $date));
-  return apply_filters('grunwell_get_the_date', $return);
-}
-
-/** Shortcut for echo grunwell_the_date() */
-function grunwell_the_date($date='', $inc_time=true, $class=''){
-  echo grunwell_get_the_date($date, $inc_time, $class);
-  return;
-}
-
-/**
  * Wrap "st" and "th" in <sup> (useful for dates)
  * @param $str The string to search/filter
  * @return str
@@ -158,7 +115,7 @@ function grunwell_superscript_dates($str){
   }
   return $str;
 }
-add_filter('grunwell_get_the_date', 'grunwell_superscript_dates');
+add_filter('get_the_date', 'grunwell_superscript_dates');
 
 /**
  * Get a custom field stored in the Advanced Custom Fields plugin

@@ -12,7 +12,7 @@
   <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
     <h1 class="post-title"><?php the_title(); ?></h1>
     <div class="entry-meta">
-      Posted <?php grunwell_the_date(); ?>
+      Posted <?php the_date(); ?>
     </div>
 
     <?php the_excerpt(); ?>
