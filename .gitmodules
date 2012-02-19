@@ -1,3 +1,6 @@
 [submodule "wp-content/themes/grunwell2012/simple-twitter-timeline"]
 	path = wp-content/themes/grunwell2012/simple-twitter-timeline
 	url = git://github.com/stevegrunwell/simple-twitter-timeline.git
+[submodule "wp-content/themes/grunwell2012/js/syntax-highlighter"]
+	path = wp-content/themes/grunwell2012/js/syntax-highlighter
+	url = git://github.com/alexgorbatchev/SyntaxHighlighter.git

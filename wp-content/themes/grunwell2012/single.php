@@ -6,13 +6,24 @@
  * @author Steve Grunwell <steve@stevegrunwell.com>
  */
 
+wp_enqueue_style('syntax-highlighter-default');
+the_post();
 get_header(); ?>
 
-<div class="primary" role="main">
+<article id="post-<?php the_ID(); ?>" <?php post_class('primary'); ?> role="main">
 
-  <?php get_template_part('loop', 'post'); ?>
+  <h1 class="post-title"><?php the_title(); ?></h1>
+  <div class="entry-meta">
+    Posted <?php grunwell_the_date(); ?>
+  </div>
 
-</div><!-- // #primary -->
+  <?php the_content(); ?>
+
+  <div class="entry-utility">
+    <?php comments_template('', true); ?>
+  </div>
+
+</article><!--// #post-<?php the_ID(); ?>-->
 
 <?php get_sidebar(); ?>
 <?php get_footer(); ?>
