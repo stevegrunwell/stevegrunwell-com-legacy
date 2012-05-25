@@ -71,7 +71,17 @@ header .search label{display:none;}
 header .search input[type="text"]{width:172px; padding-right:48px;}
 header .search button{position:absolute; right:0; top:0; display:block; width:40px; height:100%; font-size:0; line-height:0; text-indent:-9999px; background:url('img/magnifying-glass.png') center center no-repeat transparent; border:none; cursor:pointer;}
 
-#primary-nav{clear:both; display:block; margin-bottom:44px;}
+header .social{clear:right; float:right;}
+header .social li{display:inline; margin-left:8px;}
+header .social a{display:inline-block; width:24px; height:24px; overflow:hidden; font-size:0; line-height:0;}
+header .social a.facebook{background:url('img/ico/facebook.png');}
+header .social a.twitter{background:url('img/ico/twitter-2.png');}
+header .social a.googleplus{background:url('img/ico/google-plus.png');}
+header .social a.github{background:url('img/ico/github.png');}
+header .social a.flickr{background:url('img/ico/flickr.png');}
+header .social a.linkedin{background:url('img/ico/linkedin.png');}
+
+#primary-nav{clear:left; display:block; margin-bottom:44px;}
 #primary-nav li{display:inline; margin-right:24px;}
 #primary-nav a{font-size:20px; text-transform:lowercase; font-weight:300; color:#aaa;}
 #primary-nav a:hover, #primary-nav a:active, #primary-nav .current-menu-item a, #primary-nav .current_page_parent a{text-decoration:none; color:#333;}
@@ -108,5 +118,5 @@ article.primary .entry-meta{margin-bottom:2em;}
   /* Header */
   header .search{position:absolute; right:0; top:-3em;}
   header .search-btn{display:block;}
-  header .search fieldset{display:none;}
+  header .search fieldset, header .social{display:none;}
 }
