@@ -10,7 +10,7 @@
 <div class="secondary" role="complementary">
 
   <div id="twitter-module" class="module">
-    <h3>Latest Tweets</h3>
+    <h2>Latest Tweets</h2>
     <p>Follow me: <a href="https://twitter.com/#!/stevegrunwell" title="Follow @SteveGrunwell on Twitter" rel="external">@stevegrunwell</a></p>
 
     <ul class="tweets">
@@ -23,6 +23,6 @@
 
     <?php endforeach; ?>
     </ul>
-  </div><!-- // twitter module -->
+  </div><!-- #twitter-module -->
 
-</div><!-- // .secondary -->
+</div><!-- .secondary -->

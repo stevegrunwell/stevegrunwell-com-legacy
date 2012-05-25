@@ -9,11 +9,10 @@
 <html <?php language_attributes(); ?>>
 <head>
 <meta charset="<?php bloginfo('charset'); ?>" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title><?php echo grunwell_page_title('|'); ?></title>
-<link rel="profile" href="http://gmpg.org/xfn/11" />
-<link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo('stylesheet_url'); ?>" />
 <?php
+  wp_enqueue_style('site-styles');
   wp_enqueue_script('site-scripts');
   wp_head();
 ?>
@@ -22,7 +21,16 @@
 <body <?php body_class(); ?>>
   <div id="wrapper">
     <header>
+      <a href="#content" class="screen-reader-text">Skip to main content</a>
       <?php echo get_search_form(); ?>
+      <ul class="social">
+        <li><a href="#" class="twitter" title="Twitter">Twitter</a></li>
+        <li><a href="#" class="github" title="Github">Github</a></li>
+        <li><a href="#" class="facebook" title="Facebook">Facebook</a></li>
+        <li><a href="#" class="googleplus" title="Google+">Google<abbr title="plus">+</abbr></a></li>
+        <li><a href="#" class="flickr" title="Flickr">Flickr</a></li>
+        <li><a href="#" class="linkedin" title="LinkedIn">LinkedIn</a></li>
+      </ul>
       <?php echo grunwell_sitelogo(); ?>
 
       <?php

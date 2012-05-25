@@ -10,7 +10,11 @@ include_once dirname(__FILE__) . '/simple-twitter-timeline/twitter.class.php';
 
 /** Register scripts and styles */
 function grunwell_register_scripts_styles(){
-  wp_enqueue_script('site-scripts', get_bloginfo('template_url') . '/js/main.js', array('jquery', 'jquery-placeholder'), '', true);
+  # Styles
+  wp_register_style('site-styles', get_bloginfo('template_url') . '/css/base.css', null, null, 'all');
+  
+  # Scripts
+  wp_register_script('site-scripts', get_bloginfo('template_url') . '/js/main.js', array('jquery', 'jquery-placeholder'), '', true);
 
   // jQuery Placeholder - https://github.com/mathiasbynens/jquery-placeholder
   wp_enqueue_script('jquery-placeholder', get_bloginfo('template_url') . '/js/jquery.placeholder.min.js', array('jquery'), '1.8.7', true);
@@ -155,7 +159,7 @@ function grunwell_custom_field($key, $id=false, $default=''){
 function grunwell_get_tweets(){
   if( class_exists('SimpleTwitterTimeline') ){
     $args = array(
-      'exclude_replies' => true,
+      'exclude_replies' => false,
       'limit' => 3,
       'parse_links' => true,
       'use_cache' => true,
