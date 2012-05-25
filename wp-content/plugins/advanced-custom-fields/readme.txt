@@ -13,11 +13,10 @@ Advanced Custom Fields is the perfect solution for any wordpress website which n
 
 * Visually create your Fields
 * Select from multiple input types (text, textarea, wysiwyg, image, file, page link, post object, relationship, select, checkbox, radio buttons, repeater, more to come)
-* Assign your fields to multiple edit pages (specific ID's, post types, post slugs, parent ID's, template names)
-* Add, Edit and reorder infinite rows to your fields
+* Assign your fields to multiple edit pages (via custom location rules)
 * Easily load data through a simple and friendly API
 * Uses the native WordPress custom post type for ease of use and fast processing
-* Now uses custom Database tables to improve speed, reliability and future development
+* Uses the native WordPress metadata for ease of use and fast processing
 
 = Field Types =
 * Text (type text, api returns text)
@@ -62,9 +61,8 @@ Your votes really make a difference! Thanks.
 
 1. Upload 'advanced-custom-fields' to the '/wp-content/plugins/' directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. You may be prompted for a Database Upgrade. This is necessary for ACF to function. Please backup your database and click the Upgrade button
-3. Click on Adv Custom Fields and create your first Custom Field Group!
-4. Your ACF field group will now appear on the page / post / template you specified in the field group's location rules!
+3. Click on the new menu itme "Custom Fields" and create your first Custom Field Group!
+4. Your custom field group will now appear on the page / post / template you specified in the field group's location rules!
 5. Read the documentation to display your data: 
 
 
@@ -87,7 +85,93 @@ http://www.advancedcustomfields.com/support/
 
 == Changelog ==
 
-= 3.1.2 =
+= 3.2.3 =
+* [Fixed] Include Wysiwyg scripts / styles through the editor class
+* [Fixed] Wysiwyg in repeater not working
+* [Fixed] Remove Swedish translation until string / js bugs are fixed
+* [Fixed] Checkbox  array value issue: http://wordpress.org/support/topic/plugin-advanced-custom-fields-php-warning-in-corefieldscheckboxphp?replies=6
+* [Added] Add inherit to relationship posts query - http://www.advancedcustomfields.com/support/discussion/comment/3826#Comment_3826
+* [Fixed] Relationship shows deleted posts - http://www.advancedcustomfields.com/support/discussion/2080/strange-behavior-of-relationship-field-trash-posts
+* [Fixed] Wysiwyg editor not working on taxonomy edit page 
+
+= 3.2.2 =
+* [Fixed] Fix layout bug: Nested repeaters of different layouts
+* [Fixed] Fix strip slashes bug
+* [Fixed] Fix nested repeater bug - http://www.advancedcustomfields.com/support/discussion/2068/latest-update-broken-editing-environment-
+* [Fixed] Test / Fix add multiple images to repeater
+
+= 3.2.1 =
+* Field groups can now be added to options page with layout "side"
+* Fixed debug error when saving a taxonomy:
+* Fixed unnecessary code: Remove Strip Slashes on save functions
+* Added new add row buttons to the repeater field and upgraded the css / js
+* Fixed debug error caused by the WYSIWYG field: wp_tiny_mce is deprecated since version 3.3! Use wp_editor() instead.
+* Fixed duplicate field error where all sub fields became repeater fields.
+* Add Swedish translation: http://advancedcustomfields.com/support/discussion/1993/swedish-translation
+* CSS improvements
+* Fixed IE9 Bug not returning an image preview on upload / select
+* Fixed Multi export php syntax bug.
+
+= 3.2.0 =
+* Fixed Browser bug with Flexible Field: Add Row button works again
+* Added Brazilian Translation. Thanks to Marcelo Paoli Graciano - www.paolidesign.com.br
+* Reverted input CSS to separate field label / instructions onto new lines.
+
+= 3.1.9 =
+* Updated Images / JS - Please hard refresh your browser to clear your cache
+* Remove caching from acf_field_groups, replace with temp cache
+* Add "Duplicate Field" on field group edit page
+* Fix link to documentation on field group edit page
+* add "update_value" to API
+* Include new Polish translation
+* Create a nicer style for flexible content
+* Create a nicer style for repeater fields with row layout
+* Create a nicer style for "no metabox" fields
+* Add Spanish translation. Thanks to @hectorgarrofe
+* Fix css for options page no metabox
+* Added custom post_updated_messages
+* Changed "Drag and drop to reorder" from an image to a string for translation
+
+= 3.1.8 =
+* Options page fields now save their data in the wp_options table. This will require a "Database Upgrade" when you update ACF. This upgrade will move your Options page data from the postmeta table to the options table.
+* Added _e() and __() functions to more text throughout plugin
+* Added new French translation. Thanks to Martin Vauchel @littlbr http://littleboyrunning.com
+* Fixed duplicate WYSIWYG in chrome bug
+* New Location rules: add fields to a user / taxonomy / attachment
+* Bug Fix: Color picker now shows color on page load. Thanks to Kev http://www.popcreative.co.uk
+* CSS tweaks File clearfix, new style for selects with optgroups
+* Simplified get_value to return default value if value == ""
+* API now allows for "option" and "options" for the $post_id value in API functions
+
+= 3.1.7 =
+* Bug fix: Image field returns correct url after selecting one or more images
+* Translation: Added Polish translation. Thank you Bartosz Arendt - Digital Factory - www.digitalfactory.pl
+* Update : Added id attribute to all div.field (id="acf-$field_name")
+
+= 3.1.6 =
+* New style for buttons
+* Bug Fix: Repeater maximum row setting was disabling the "add row" button 1 row early.
+* Performance: Field options are now loaded in via ajax. This results in much less HTML on the edit field group page
+* Performance: Field inputs are now loaded in via ajax. Again, less HTML on edit screens improves load times / memory usage
+* Bug Fix: Field groups registered by code were not showing on ajax change (category / page type / page template / etc). To fix this, your field group needs a unique ID. When you export a field group, you will now be given a unique ID to fix this issue. Field groups without a fixed id will still show on page load.
+* New Option: Repeater field can now have a custom button label
+* New Option: Flexible content field can now have a custom button label
+* Improvement: Updated the HTML / CSS for file fields with icon
+* Bug Fix: Fixed multi upload / select image in repeater. 
+* Performance: Added caching to the get_field function. Templates will now render quicker.
+* Bug Fix: Fixed Post formats location rule - it now works.
+* Nested repeaters are now possible!
+
+= 3.1.5 =
+* Improvement: Redesigned the experience for uploading and selecting images / files in fields and sub fields. Image / File fields within a repeater can now add multiple images / files
+
+= 3.1.4 =
+* New Feature: Front end form (Please read documentation on website for usage)
+* Performance: compiled all field script / style into 1 .js file
+* Bug Fix: Editor now remembers mode (Visual / HTML) without causing errors when loading in HTML mode
+* Improvement: Added draft / private labels to post objects in relationship, post object and page link fields
+
+= 3.1.3 =
 * Bug Fix: Options page fields were rendered invisible in v3.1.2 (now fixed)
 * Updated POT file with new texts
 

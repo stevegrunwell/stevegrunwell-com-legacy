@@ -10,7 +10,7 @@ if(empty($location['rules']))
 {
 	$location['rules'] = array(
 		array(
-			'param'		=>	'',
+			'param'		=>	'post_type',
 			'operator'	=>	'',
 			'value'		=>	'',
 		)
@@ -31,268 +31,73 @@ if(empty($location['rules']))
 					<tbody>
 						<?php foreach($location['rules'] as $k => $rule): ?>
 						<tr>
-						<td class="param">
-							<?php 
+						<td class="param"><?php 
+							
+							$choices = array(
+								__("Basic",'acf') => array(
+									'post_type'		=>	__("Post Type",'acf'),
+									'user_type'		=>	__("Logged in User Type",'acf'),
+								),
+								__("Page Specific",'acf') => array(
+									'page'			=>	__("Page",'acf'),
+									'page_type'		=>	__("Page Type",'acf'),
+									'page_parent'	=>	__("Page Parent",'acf'),
+									'page_template'	=>	__("Page Template",'acf'),
+								),
+								__("Post Specific",'acf') => array(
+									'post'			=>	__("Post",'acf'),
+									'post_category'	=>	__("Post Category",'acf'),
+									'post_format'	=>	__("Post Format",'acf'),
+									'taxonomy'		=>	__("Post Taxonomy",'acf'),
+								),
+								__("Other",'acf') => array(
+									'ef_taxonomy'	=>	__("Taxonomy (Add / Edit)",'acf'),
+									'ef_user'		=>	__("User (Add / Edit)",'acf'),
+									'ef_media'		=>	__("Media (Edit)",'acf')
+								)
+							);
+							
+
+							// validate
+							if($this->is_field_unlocked('options_page'))
+							{
+								$choices[__("Options Page",'acf')]['options_page'] = __("Options Page",'acf');
+							}
+							
+							
 							$args = array(
 								'type'	=>	'select',
 								'name'	=>	'location[rules]['.$k.'][param]',
 								'value'	=>	$rule['param'],
-								'choices' => array(
-									'post_type'		=>	'Post Type',
-									'page'			=>	'Page',
-									'page_type'		=>	'Page Type',
-									'page_parent'	=>	'Page Parent',
-									'page_template'	=>	'Page Template',
-									'post'			=>	'Post',
-									'post_category'	=>	'Post Category',
-									'post_format'	=>	'Post Format',
-									'user_type'		=>	'User Type',
-									'taxonomy'		=>	'Taxonomy'
-								)
+								'choices' => $choices,
+								'optgroup' => true,
 							);
 							
-							// validate
-							if($this->is_field_unlocked('options_page'))
-							{
-								$args['choices']['options_page'] = "Options Page";
-							}
-							
 							$this->create_field($args);							
-							?>
-						</td>
-						<td class="operator">
-							<?php 	
+							
+						?></td>
+						<td class="operator"><?php 	
+							
 							$this->create_field(array(
 								'type'	=>	'select',
 								'name'	=>	'location[rules]['.$k.'][operator]',
 								'value'	=>	$rule['operator'],
 								'choices' => array(
-									'=='	=>	'is equal to',
-									'!='	=>	'is not equal to',
+									'=='	=>	__("is equal to",'acf'),
+									'!='	=>	__("is not equal to",'acf'),
 								)
 							)); 	
-							?>
-						</td>
-						<td class="value">
-							<div rel="post_type">
-								<?php 
-								$choices = get_post_types(array('public' => true));
-								unset($choices['attachment']);
-
-								
-								$this->create_field(array(
-									'type'	=>	'select',
-									'name'	=>	'location[rules]['.$k.'][value]',
-									'value'	=>	$rule['value'],
-									'choices' => $choices,
-								));
-								?>
-							</div>
-							<div rel="page">
-								<?php 
-								$choices = array();
-								
-								foreach(get_pages('sort_column=menu_order&sort_order=desc') as $page)
-								{
-									$value = '';
-									$ancestors = get_ancestors($page->ID, 'page');
-									if($ancestors)
-									{
-										foreach($ancestors as $a)
-										{
-											$value .= '– ';
-										}
-									}
-									$value .= get_the_title($page->ID);
-									
-									$choices[$page->ID] = $value;
-									
-								}
-								
-								$this->create_field(array(
-									'type'	=>	'select',
-									'name'	=>	'location[rules]['.$k.'][value]',
-									'value'	=>	$rule['value'],
-									'choices' => $choices,
-								));
-																
-								?>
-							</div>
-							<div rel="page_type">
-								<?php 
-								$this->create_field(array(
-									'type'	=>	'select',
-									'name'	=>	'location[rules]['.$k.'][value]',
-									'value'	=>	$rule['value'],
-									'choices' => array(
-										'parent'	=>	'Parent Page',
-										'child'		=>	'Child Page'
-									),
-								));
-								?>
-							</div>
-							<div rel="page_parent">
-								<?php 
-								
-								$choices = array();
-								
-								foreach(get_pages('sort_column=menu_order&sort_order=desc') as $page)
-								{
-									$value = '';
-									$ancestors = get_ancestors($page->ID, 'page');
-									if($ancestors)
-									{
-										foreach($ancestors as $a)
-										{
-											$value .= '– ';
-										}
-									}
-									$value .= get_the_title($page->ID);
-									
-									$choices[$page->ID] = $value;
-									
-								}
-								
-								$this->create_field(array(
-									'type'	=>	'select',
-									'name'	=>	'location[rules]['.$k.'][value]',
-									'value'	=>	$rule['value'],
-									'choices' => $choices,
-								));
-																
-								?>
-							</div>
-							<div rel="page_template">
-								<?php 
-									
-								$choices = array(
-									'default'	=>	'Default Template',
-								);
-								foreach(get_page_templates() as $tk => $tv)
-								{
-									$choices[$tv] = $tk;
-								}
-								
-								$this->create_field(array(
-									'type'	=>	'select',
-									'name'	=>	'location[rules]['.$k.'][value]',
-									'value'	=>	$rule['value'],
-									'choices' => $choices,
-								));
-								
-								?>
-							</div>
-							<div rel="post">
-								<?php 
-								
-								$choices = array();
-								foreach(get_posts(array('numberposts'=>'-1')) as $v)
-								{
-									$choices[$v->ID] = $v->post_title;
-								}
-								
-								$this->create_field(array(
-									'type'	=>	'select',
-									'name'	=>	'location[rules]['.$k.'][value]',
-									'value'	=>	$rule['value'],
-									'choices' => $choices,
-								));
-								
-								?>
-							</div>
-							<div rel="post_category">
-								<?php 
-								
-								$choices = array();
-								$category_ids = get_all_category_ids();
-								
-								foreach($category_ids as $cat_id) 
-								{
-								  $cat_name = get_cat_name($cat_id);
-								  $choices[$cat_id] = $cat_name;
-								}
-								
-								$this->create_field(array(
-									'type'	=>	'select',
-									'name'	=>	'location[rules]['.$k.'][value]',
-									'value'	=>	$rule['value'],
-									'choices' => $choices,
-								));
-								
-								?>
-							</div>
-							<div rel="post_format">
-								<?php 
-								
-								$this->create_field(array(
-									'type'	=>	'select',
-									'name'	=>	'location[rules]['.$k.'][value]',
-									'value'	=>	$rule['value'],
-									'choices' => array(
-										'0'			=>	'Standard',
-										'aside'		=>	'Aside',
-										'link'		=>	'Link',
-										'gallery'	=>	'Gallery',
-										'status'	=>	'Status',
-										'quote'		=>	'Quote',
-										'image'		=>	'Image',
-									),
-								));
-								
-								?>
-							</div>
-							<div rel="user_type">
-								<?php 
-								global $wp_roles;
-								$this->create_field(array(
-									'type'	=>	'select',
-									'name'	=>	'location[rules]['.$k.'][value]',
-									'value'	=>	$rule['value'],
-									'choices' => $roles = $wp_roles->get_names()
-								));
-								
-								?>
-							</div>
-							<div rel="options_page">
-								<?php 
-								$choices = array(
-									'Options' => 'Options', 
-								);
-									
-								$custom = apply_filters('acf_register_options_page',array());
-								if(!empty($custom))
-								{	
-									$choices = array();
-									foreach($custom as $c)
-									{
-										$choices[$c['title']] = $c['title'];
-									}
-								}
-								
-								$this->create_field(array(
-									'type'	=>	'select',
-									'name'	=>	'location[rules]['.$k.'][value]',
-									'value'	=>	$rule['value'],
-									'choices' => $choices,
-								));
-								
-								?>
-							</div>
-							<div rel="taxonomy">
 							
-								<?php 
-
-								$this->create_field(array(
-									'type'	=>	'select',
-									'name'	=>	'location[rules]['.$k.'][value]',
-									'value'	=>	$rule['value'],
-									'choices' => $this->get_taxonomies_for_select(),
-									'optgroup' => true,
-								));
-
-								?>
-							</div>
-						</td>
+						?></td>
+						<td class="value"><?php 
+							
+							$this->ajax_acf_location(array(
+								'key' => $k,
+								'value' => $rule['value'],
+								'param' => $rule['param'],
+							)); 
+							
+						?></td>
 						<td class="buttons">
 							<a href="javascript:;" class="remove"></a>
 							<a href="javascript:;" class="add"></a>
@@ -302,15 +107,19 @@ if(empty($location['rules']))
 					</tbody>
 					
 				</table>
-				<p><?php _e("match",'acf'); ?> <?php $this->create_field(array(
+				<ul class="hl clearfix">
+					<li style="padding:4px 4px 0 0;"><?php _e("match",'acf'); ?></li>
+					<li><?php $this->create_field(array(
 									'type'	=>	'select',
 									'name'	=>	'location[allorany]',
 									'value'	=>	$location['allorany'],
 									'choices' => array(
-										'all'	=>	'all',
-										'any'	=>	'any',							
+										'all'	=>	__("all",'acf'),
+										'any'	=>	__("any",'acf'),							
 									),
-								)); ?> <?php _e("of the above",'acf'); ?></p>
+					)); ?></li>
+					<li style="padding:4px 0 0 4px;"><?php _e("of the above",'acf'); ?></li>
+				</ul>
 			</div>
 			
 			
@@ -320,3 +129,8 @@ if(empty($location['rules']))
 
 	</tbody>
 </table>
+<script type="text/html" id="acf_location_options_deactivated">
+	<optgroup label="<?php _e("Options",'acf'); ?>" disabled="true">
+		<option value="" disabled="true"><?php _e("Unlock options add-on with an activation code",'acf'); ?></option>
+	</optgroup>
+</script>

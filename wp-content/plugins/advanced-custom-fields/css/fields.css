@@ -2,7 +2,7 @@
 	Postbox
 ---------------------------------------------------------------------------------------------*/
 #icon-edit {
-	background: url(../images/acf-icon-32.png) 0 0 no-repeat !important;
+	background: url(../images/sprite.png) 0 0 no-repeat !important;
 }
 
 #toplevel_page_edit-post_type-acf .wp-menu-image { background: url("../../../../wp-admin/images/menu.png") no-repeat scroll 0 -1px transparent; }
@@ -147,7 +147,7 @@ table.widefat.acf td {
 }
 
 #acf_fields .field.form_open > .field_meta {
-	background: #6e6e6e url(../images/backgrounds.png) 0 0 repeat-x;
+	background: #6e6e6e url(../images/sprite.png) 0 -200px repeat-x;
 	color: #fff;
 	text-shadow: #000 0 1px 0;
 	border: #565656 solid 1px;
@@ -176,29 +176,41 @@ table.widefat.acf td {
 	float: left;
 	margin: 7px 0 0 7px;
 	text-indent: 0;
-	background: url(../images/backgrounds.png) 0 -100px no-repeat;
+	background: url(../images/sprite.png) 0 -350px no-repeat;
 }
 
 #acf_fields .fields .field:nth-child(2n) .field_meta .circle {
-	background-position: 0 -150px;
+	background-position: 0 -400px;
 
 }
 
 #acf_fields .field.form_open > .field_meta .circle {
-	background-position: 0 -50px !important;
+	background-position: 0 -300px !important;
 }
 
 
 .fields {
 	position: relative;
-	overflow: hidden;
-	background: #F5F5F5;
+	background: #FCFCFC;
+	box-shadow: inset 0 0 0 1px #DFDFDF;
 }
 
 .fields .field {
 	position: relative;
 	overflow: hidden;
-	background: #F5F5F5;
+	background: #F9F9F9;
+}
+
+#acf_fields .field.ui-sortable-helper {
+	
+}
+#acf_fields .field.ui-sortable-helper {
+	border-top: 1px solid #DFDFDF;
+	border-bottom: 1px solid #DFDFDF;
+}
+
+#acf_fields .field.ui-sortable-placeholder + .field {
+	border-top: 1px solid #DFDFDF;
 }
 
 .fields .field:nth-child(even) {
@@ -224,9 +236,10 @@ table.widefat.acf td {
 ---------------------------------------------------------------------------------------------*/
 .no_fields_message {
 	padding: 15px 10px;
-	text-shadow: #fff 0 1px 0;
 	border: #DFDFDF solid 1px;
-	border-top: #fff solid 1px;
+	
+	border: 1px solid #DFDFDF;
+	border-top: 0 none;
 }
 
 
@@ -243,19 +256,23 @@ table.widefat.acf td {
 }
 
 #acf_fields .table_footer .order_message {
-	background: url(../images/drag_and_drop_to_reorder.png);
+	background: url(../images/sprite.png) -50px -300px no-repeat;
+	color: #7a9bbe;
+	font-size: 11px;
+	line-height: 1em;
+	padding: 7px 0 0 22px;
 	width: 161px;
-	height: 23px;
+	height: 13px;
 	float: left;
-	margin-left: 5px;
+	margin-left: 13px;
+	text-shadow: #fff 0 1px 0;
+	font-family: Comic Sans MS, sans-serif;
 }
 
 #acf_fields .table_footer a#add_field{
 	display: block;
     float: right;
     margin: 0;
-    text-align: center;
-    width: 70px;
 }
 
 .inline_metabox {
@@ -351,11 +368,6 @@ table.acf_input tr td .acf tr td {
 	overflow: hidden;
 	clear: both;
 }
-
-.field_form .field_option {
-	display: none;
-}
-
 
 /*---------------------------------------------------------------------------------------------
 	Location
@@ -453,18 +465,17 @@ table#location_rules a.add:hover {
 	background-position: 0 100%;
 }
 
-.location_rules p select {
-	width: 50px;
-}
-
-table#location_rules tr td.value div {
-	display: none;
+table#location_rules .acf-loading {
+	margin: 0 auto;
+	margin-top: -2px;
 }
 
 
 /*---------------------------------------------------------------------------------------------
-	Options
----------------------------------------------------------------------------------------------*/
+*
+*	Options
+*	
+*---------------------------------------------------------------------------------------------*/
 
 .postbox#acf_options .inside {
 	margin: 0;
@@ -494,3 +505,115 @@ ul.checkbox_list li input {
 	vertical-align: top;
 } 
 
+
+/*---------------------------------------------------------------------------------------------
+*
+*	Flexible Content
+*	
+*---------------------------------------------------------------------------------------------*/
+table.acf_input table.acf_cf_meta {
+	width: 100%;
+	border: 0 none;
+}
+
+table.acf_input table.acf_cf_meta td {
+	border: 0 none;
+	width: 33%;
+}
+
+table.acf_input table.acf_cf_meta label {
+	width: 20%;
+	color: #333333;
+	font-weight: bold;
+}
+
+table.acf_input table.acf_cf_meta input {
+	width: 80%;
+}
+
+table.acf_input table.acf_cf_meta select {
+	width: 75%;
+}
+
+.acf_fc_reorder {
+	cursor: move;
+}
+
+.ui-state-highlight {
+	height: 40px;
+}
+
+.field_form table.acf_input .field_option_flexible_content > td {
+	background: #f9f9f9;
+}
+
+
+/*---------------------------------------------------------------------------------------------
+*
+*	Publish Metabox
+*	
+*---------------------------------------------------------------------------------------------*/
+
+.postbox {
+	min-width: 200px;
+}
+
+.inner-sidebar #side-sortables, 
+.columns-2 .inner-sidebar #side-sortables {
+	width: 200px;
+}
+
+.has-right-sidebar #side-info-column {
+	width: 200px;
+}
+
+.has-right-sidebar #post-body-content {
+    margin-right: 220px;
+}
+
+#submitdiv .acf-button {
+	width: 100%;
+}
+
+#submitdiv a.acf-button {
+	width: auto;
+	margin: 0 0 10px;
+}
+
+#submitdiv #delete-action {
+	float: none;
+}
+#submitdiv #publishing-action {
+	float: none;
+}
+#submitdiv #publishing-action img {
+	display: none;
+}
+
+
+/*---------------------------------------------------------------------------------------------
+*
+*	Select with Optgroup
+*	
+*---------------------------------------------------------------------------------------------*/
+#acf_fields select optgroup,
+#acf_location select optgroup {
+	padding: 5px;
+	background: #F9F9F9;
+	border-bottom: #DFDFDF solid 1px;
+}
+
+#acf_fields select option,
+#acf_location select option {
+	padding: 3px;
+}
+
+#acf_fields select optgroup option,
+#acf_location select optgroup option {
+	padding-left: 6px;
+}
+
+#acf_fields select optgroup:nth-child(2n),
+#acf_location select optgroup:nth-child(2n) {
+    background: #FCFCFC;
+}

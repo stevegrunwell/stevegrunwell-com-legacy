@@ -111,8 +111,26 @@ class acf_Field
 	
 	function update_value($post_id, $field, $value)
 	{
-		update_post_meta($post_id, $field['name'], $value);
-		update_post_meta($post_id, '_' . $field['name'], $field['key']);
+		// strip slashes
+		$value = stripslashes_deep($value);
+		
+		
+		// if $post_id is a string, then it is used in the everything fields and can be found in the options table
+		if( is_numeric($post_id) )
+		{
+			update_post_meta($post_id, $field['name'], $value);
+			update_post_meta($post_id, '_' . $field['name'], $field['key']);
+		}
+		else
+		{
+			update_option( $post_id . '_' . $field['name'], $value );
+			update_option( '_' . $post_id . '_' . $field['name'], $field['key'] );
+		}
+		
+		
+		//clear the cache for this field
+		wp_cache_delete('acf_get_field_' . $post_id . '_' . $field['name']);
+		
 	}
 	
 	
@@ -143,13 +161,31 @@ class acf_Field
 	
 	function get_value($post_id, $field)
 	{
-		// If this is a new acf, there will be no custom keys!
-	 	if(!get_post_custom_keys($post_id) && isset($field['default_value']))
-	 	{
-	 		return $field['default_value'];
-	 	}
-	 	
-		return get_post_meta($post_id, $field['name'], true);
+		$value = "";
+		
+		// if $post_id is a string, then it is used in the everything fields and can be found in the options table
+		if( is_numeric($post_id) )
+		{
+			$value = get_post_meta( $post_id, $field['name'], true );
+			
+			// return default if possible
+		 	if($value == "" && isset($field['default_value']))
+		 	{
+		 		$value = $field['default_value'];
+		 	}
+		}
+		else
+		{
+			$value = get_option( $post_id . '_' . $field['name'], "" );
+			
+			// return default if possible
+			if( $value == "" && isset($field['default_value']) )
+			{
+				$value = $field['default_value'];
+			}
+		}
+		
+		return $value;
 	}
 	
 	

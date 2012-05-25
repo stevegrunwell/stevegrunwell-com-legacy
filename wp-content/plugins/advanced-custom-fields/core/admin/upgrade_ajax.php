@@ -7,6 +7,7 @@ $acf_fields = $wpdb->prefix.'acf_fields';
 $acf_values = $wpdb->prefix.'acf_values';
 $acf_rules = $wpdb->prefix.'acf_rules';
 $wp_postmeta = $wpdb->prefix.'postmeta';
+$wp_options = $wpdb->prefix.'options';
 
 // vars
 $return = array(
@@ -378,6 +379,68 @@ switch($_POST['version'])
 		
 	break;
 	*/
+	
+	/*---------------------
+	*
+	*	3.1.8
+	* 
+	*--------------------*/
+	
+	case '3.1.8':
+		
+		// vars
+		$message = __("Migrating options values from the $wp_postmeta table to the $wp_options table",'acf') . '...';
+		
+		// update normal values
+		$rows = $wpdb->get_results( $wpdb->prepare("SELECT meta_key FROM $wp_postmeta WHERE post_id = %d", 999999999) , ARRAY_A);
+		
+		if($rows)
+		{
+			foreach($rows as $row)
+			{
+				// origional name
+				$field_name = $row['meta_key'];
+				
+				
+				//  name
+				$new_name = "";
+				if( substr($field_name, 0, 1) == "_" )
+				{
+					 $new_name = '_options' . $field_name;
+				}
+				else
+				{
+					$new_name = 'options_' . $field_name;
+				}
+				
+				
+				// value
+				$value = get_post_meta( 999999999, $field_name, true );
+				
+				
+				// update option
+				update_option( $new_name, $value );
+				
+				
+				// deleet old postmeta
+				delete_post_meta( 999999999, $field_name );
+
+			}
+			// foreach($values as $value)
+		}
+		// if($values)
+		
+		
+		// update version
+		update_option('acf_version','3.1.8');
+		 	
+	    $return = array(
+	    	'status'	=>	true,
+			'message'	=>	$message,
+			'next'		=>	false,
+	    );
+	    
+	break;
 }
 
 // return json

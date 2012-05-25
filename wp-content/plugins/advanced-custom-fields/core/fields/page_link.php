@@ -68,7 +68,7 @@ class acf_Page_link extends acf_Field
 		// null
 		if($field['allow_null'] == '1')
 		{
-			echo '<option value="null"> - Select - </option>';
+			echo '<option value="null"> - ' . __("Select",'acf') . ' - </option>';
 		}
 		
 		foreach($field['post_type'] as $post_type)
@@ -84,6 +84,7 @@ class acf_Page_link extends acf_Field
 					'post_type' => $post_type,
 					'sort_column' => 'menu_order',
 					'order' => 'ASC',
+					'post_status' => array('publish', 'private', 'draft'),
 					//'meta_key' => $field['meta_key'],
 					//'meta_value' => $field['meta_value'],
 				));
@@ -96,6 +97,7 @@ class acf_Page_link extends acf_Field
 					'post_type' => $post_type,
 					'orderby' => 'title',
 					'order' => 'ASC',
+					'post_status' => array('publish', 'private', 'draft'),
 					//'meta_key' => $field['meta_key'],
 					//'meta_value' => $field['meta_value'],
 				));
@@ -124,6 +126,13 @@ class acf_Page_link extends acf_Field
 						}
 					}
 					$value .= get_the_title($post->ID);
+					
+					// status
+					if($post->post_status == "private" || $post->post_status == "draft")
+					{
+						$value .= " ($post->post_status)";
+					}
+					
 					$selected = '';
 					
 					
@@ -188,7 +197,7 @@ class acf_Page_link extends acf_Field
 			</td>
 			<td>
 				<?php 
-				$post_types = array('' => '-All-');
+				$post_types = array('' => __("All",'acf'));
 				
 				foreach (get_post_types() as $post_type ) {
 				  $post_types[$post_type] = $post_type;
@@ -220,8 +229,8 @@ class acf_Page_link extends acf_Field
 					'name'	=>	'fields['.$key.'][allow_null]',
 					'value'	=>	$field['allow_null'],
 					'choices'	=>	array(
-						'1'	=>	'Yes',
-						'0'	=>	'No',
+						'1'	=>	__("Yes",'acf'),
+						'0'	=>	__("No",'acf'),
 					),
 					'layout'	=>	'horizontal',
 				));
@@ -239,8 +248,8 @@ class acf_Page_link extends acf_Field
 					'name'	=>	'fields['.$key.'][multiple]',
 					'value'	=>	$field['multiple'],
 					'choices'	=>	array(
-						'1'	=>	'Yes',
-						'0'	=>	'No',
+						'1'	=>	__("Yes",'acf'),
+						'0'	=>	__("No",'acf'),
 					),
 					'layout'	=>	'horizontal',
 				));

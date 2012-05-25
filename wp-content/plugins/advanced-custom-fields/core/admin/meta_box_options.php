@@ -37,8 +37,8 @@ $options = $this->get_acf_options($post->ID);
 				'name'	=>	'options[position]',
 				'value'	=>	$options['position'],
 				'choices' => array(
-					'normal'	=>	'Normal',
-					'side'		=>	'Side',
+					'normal'	=>	__("Normal",'acf'),
+					'side'		=>	__("Side",'acf'),
 				)
 			));
 
@@ -57,8 +57,8 @@ $options = $this->get_acf_options($post->ID);
 				'name'	=>	'options[layout]',
 				'value'	=>	$options['layout'],
 				'choices' => array(
-					'default'	=>	'Standard Metabox',
-					'no_box'	=>	'No Metabox',
+					'default'	=>	__("Standard Metabox",'acf'),
+					'no_box'	=>	__("No Metabox",'acf'),
 				)
 			));
 			
@@ -79,12 +79,12 @@ $options = $this->get_acf_options($post->ID);
 				'name'	=>	'options[show_on_page]',
 				'value'	=>	$options['show_on_page'],
 				'choices' => array(
-					'the_content'	=>	'Content Editor',
-					'custom_fields'	=>	'Custom Fields',
-					'discussion'	=>	'Discussion',
-					'comments'		=>	'Comments',
-					'slug'			=>	'Slug',
-					'author'		=>	'Author'
+					'the_content'	=>	__("Content Editor",'acf'),
+					'custom_fields'	=>	__("Custom Fields",'acf'),
+					'discussion'	=>	__("Discussion",'acf'),
+					'comments'		=>	__("Comments",'acf'),
+					'slug'			=>	__("Slug",'acf'),
+					'author'		=>	__("Author",'acf')
 				)
 			));
 			

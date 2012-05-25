@@ -37,44 +37,6 @@ class acf_Date_picker extends acf_Field
 		// add datepicker
 		echo '<link rel="stylesheet" type="text/css" href="'.$this->parent->dir.'/core/fields/date_picker/style.date_picker.css" />';
 		echo '<script type="text/javascript" src="'.$this->parent->dir.'/core/fields/date_picker/jquery.ui.datepicker.js" ></script>';
-		?>
-		<script type="text/javascript">
-		(function($){
-
-				
-			$('#poststuff input.acf_datepicker').live('focus', function(){
-
-				var input = $(this);
-				
-				if(!input.hasClass('active'))
-				{
-					
-					// vars
-					var format = input.attr('data-date_format') ? input.attr('data-date_format') : 'dd/mm/yy';
-					
-					// add date picker and refocus
-					input.addClass('active').datepicker({ 
-						dateFormat: format 
-					})
-					
-					// set a timeout to re focus the input (after it has the datepicker!)
-					setTimeout(function(){
-						input.trigger('blur').trigger('focus');
-					}, 1);
-					
-					// wrap the datepicker (only if it hasn't already been wrapped)
-					if($('body > #ui-datepicker-div').length > 0)
-					{
-						$('#ui-datepicker-div').wrap('<div class="ui-acf" />');
-					}
-					
-				}
-				
-			});
-			
-		})(jQuery);
-		</script>
-		<?php
 	}
 	
 	

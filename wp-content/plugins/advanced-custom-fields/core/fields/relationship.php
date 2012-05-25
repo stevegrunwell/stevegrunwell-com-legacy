@@ -35,9 +35,7 @@ class acf_Relationship extends acf_Field
 	function admin_print_scripts()
 	{
 		wp_enqueue_script(array(
-
 			'jquery-ui-sortable',
-			
 		));
 	}
 	
@@ -46,208 +44,6 @@ class acf_Relationship extends acf_Field
   
 	}
    		
-	
-	/*--------------------------------------------------------------------------------------
-	*
-	*	admin_head
-	*
-	*	@author Elliot Condon
-	*	@since 2.0.6
-	* 
-	*-------------------------------------------------------------------------------------*/
-	
-	function admin_head()
-	{
-		?>
-		<script type="text/javascript">
-		
-		(function($){
-			
-			/*----------------------------------------------------------------------
-			*
-			*	update_input_val
-			*
-			*---------------------------------------------------------------------*/
-			
-			$.fn.update_input_val = function()
-			{
-				// vars
-				var div = $(this);
-				var right = div.find('.relationship_right .relationship_list');
-				var value = new Array();
-				
-				// add id's to array
-				right.find('a:not(.hide)').each(function(){
-					value.push($(this).attr('data-post_id'));
-				});
-				
-				// set value
-				div.children('input').val(value.join(','));
-			};
-			
-			
-			/*----------------------------------------------------------------------
-			*
-			*	Add
-			*
-			*---------------------------------------------------------------------*/
-			
-			$('#poststuff .acf_relationship .relationship_left .relationship_list a').live('click', function(){
-				
-				// vars
-				var id = $(this).attr('data-post_id');
-				var div = $(this).closest('.acf_relationship');
-				var max = parseInt(div.attr('data-max')); if(max == -1){ max = 9999; }
-				var right = div.find('.relationship_right .relationship_list');
-				
-				// max posts
-				if(right.find('a:not(.hide)').length >= max)
-				{
-					alert('Maximum values reached ( ' + max + ' values )');
-					return false;
-				}
-
-				// hide / show
-				$(this).addClass('hide');
-				right.find('a[data-post_id="' + id + '"]').removeClass('hide').appendTo(right);
-				
-				// update input value
-				div.update_input_val();
-				
-				// validation
-				div.closest('.field').removeClass('error');
-				
-				return false;
-				
-			});
-			
-			
-			/*----------------------------------------------------------------------
-			*
-			*	Remove
-			*
-			*---------------------------------------------------------------------*/
-			
-			$('#poststuff .acf_relationship .relationship_right .relationship_list a').live('click', function(){
-				
-				// vars
-				var id = $(this).attr('data-post_id');
-				var div = $(this).closest('.acf_relationship');
-				var left = div.find('.relationship_left .relationship_list');
-				
-				// hide / show
-				$(this).addClass('hide');
-				left.find('a[data-post_id="' + id + '"]').removeClass('hide');
-				
-				// update input value
-				div.update_input_val();
-
-				return false;
-				
-			});
-			
-			
-			/*----------------------------------------------------------------------
-			*
-			*	Search Left List
-			*
-			*---------------------------------------------------------------------*/
-			
-			$.expr[':'].Contains = function(a,i,m){
-		    	return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
-			};
-			
-			$('#poststuff .acf_relationship input.relationship_search').live('change', function()
-			{	
-				// vars
-				var filter = $(this).val();
-				var div = $(this).closest('.acf_relationship');
-				var left = div.find('.relationship_left .relationship_list');
-				
-			    if(filter)
-			    {
-					left.find("a:not(:Contains(" + filter + "))").addClass('filter_hide');
-			        left.find("a:Contains(" + filter + "):not(.hide)").removeClass('filter_hide');
-			    }
-			    else
-			    {
-			    	left.find("a:not(.hide)").removeClass('filter_hide');
-			    }
-		
-			    return false;
-			    
-			})
-			.live('keyup', function(){
-			    $(this).change();
-			})
-			.live('focus', function(){
-				$(this).siblings('label').hide();
-			})
-			.live('blur', function(){
-				if($(this).val() == "")
-				{
-					$(this).siblings('label').show();
-				}
-			});
-			
-			
-			/*----------------------------------------------------------------------
-			*
-			*	setup_acf_relationship
-			*
-			*---------------------------------------------------------------------*/
-			
-			$.fn.setup_acf_relationship = function(){
-				
-				$(this).find('.acf_relationship').each(function(){
-				
-					// vars
-					var div = $(this);
-					
-					// reset search value
-					div.find('input.relationship_search').val('');
-					
-					// make right sortable
-					div.find('.relationship_right .relationship_list').sortable({
-						axis: "y", // limit the dragging to up/down only
-					    start: function(event, ui)
-					    {
-							ui.item.addClass('sortable_active');
-					    },
-					    stop: function(event, ui)
-					    {
-					    	ui.item.removeClass('sortable_active');
-					    	div.update_input_val();
-					    }
-					});
-				
-				});
-				
-			};
-			
-			$(document).ready(function(){
-				
-				$('#poststuff').setup_acf_relationship();
-				
-				// create wysiwyg when you add a repeater row
-				$('.repeater #add_field').live('click', function(){
-
-					var repeater = $(this).closest('.repeater');
-					
-					// run after the repeater has added the row
-					setTimeout(function(){
-						repeater.children('table').children('tbody').children('tr:last-child').setup_acf_relationship();
-					}, 1);
-					
-				});
-				
-			});
-			
-		})(jQuery);
-		</script>
-		<?php
-	}
-	
 	
 	/*--------------------------------------------------------------------------------------
 	*
@@ -284,6 +80,7 @@ class acf_Relationship extends acf_Field
 			'post_type'		=>	$field['post_type'],
 			'orderby'		=>	'title',
 			'order'			=>	'ASC',
+			'post_status' => array('publish', 'private', 'draft', 'inherit'),
 			//'meta_key'		=>	$field['meta_key'],
 			//'meta_value'	=>	$field['meta_value'],
 		));
@@ -334,7 +131,7 @@ class acf_Relationship extends acf_Field
 					<thead>
 						<tr>
 							<th>
-								<label class="relationship_label" for="relationship_<?php echo $field['name']; ?>">Search...</label>
+								<label class="relationship_label" for="relationship_<?php echo $field['name']; ?>"><?php _e("Search",'acf'); ?>...</label>
 								<input class="relationship_search" type="text" id="relationship_<?php echo $field['name']; ?>" />
 								<div class="clear_relationship_search"></div>
 							</th>
@@ -350,7 +147,15 @@ class acf_Relationship extends acf_Field
 						if(!get_the_title($post->ID)) continue;
 						
 						$class = in_array($post->ID, $values_array) ? 'hide' : '';
-						echo '<a href="javascript:;" class="' . $class . '" data-post_id="' . $post->ID . '">' . get_the_title($post->ID) . '<span class="add"></span></a>';
+						
+						$title = get_the_title($post->ID);
+						// status
+						if($post->post_status == "private" || $post->post_status == "draft")
+						{
+							$title .= " ($post->post_status)";
+						}
+						
+						echo '<a href="javascript:;" class="' . $class . '" data-post_id="' . $post->ID . '">' . $title . '<span class="add"></span></a>';
 					}
 				}
 				?>
@@ -374,13 +179,34 @@ class acf_Relationship extends acf_Field
 				{
 					foreach($values_array as $value)
 					{
-						echo '<a href="javascript:;" class="" data-post_id="' . $temp_posts[$value]->ID . '">' . get_the_title($temp_posts[$value]->ID) . '<span class="remove"></span></a>';
+						if(!isset($temp_posts[$value]))
+						{
+							continue;
+						}
+						
+						$post = $temp_posts[$value];
+						
+						$title = get_the_title($post->ID);
+						// status
+						if($post->post_status == "private" || $post->post_status == "draft")
+						{
+							$title .= " ($post->post_status)";
+						}
+						
+						echo '<a href="javascript:;" class="" data-post_id="' . $temp_posts[$value]->ID . '">' . $title . '<span class="remove"></span></a>';
 						unset($temp_posts[$value]);
 					}
 					
 					foreach($temp_posts as $id => $post)
 					{
-						echo '<a href="javascript:;" class="hide" data-post_id="' . $post->ID . '">' . get_the_title($post->ID) . '<span class="remove"></span></a>';
+						$title = get_the_title($post->ID);
+						// status
+						if($post->post_status == "private" || $post->post_status == "draft")
+						{
+							$title .= " ($post->post_status)";
+						}
+						
+						echo '<a href="javascript:;" class="hide" data-post_id="' . $post->ID . '">' . $title . '<span class="remove"></span></a>';
 					}
 				}
 					
@@ -421,7 +247,7 @@ class acf_Relationship extends acf_Field
 			</td>
 			<td>
 				<?php 
-				$post_types = array('' => '- All -');
+				$post_types = array('' => __("All",'acf'));
 				
 				foreach (get_post_types(array('public' => true)) as $post_type ) {
 				  $post_types[$post_type] = $post_type;
@@ -472,7 +298,7 @@ class acf_Relationship extends acf_Field
 				<?php 
 				$choices = array(
 					'' => array(
-						'all' => '- All -'
+						'all' => __("All",'acf')
 					)
 				);
 				$choices = array_merge($choices, $this->parent->get_taxonomies_for_select());
@@ -490,7 +316,7 @@ class acf_Relationship extends acf_Field
 		<tr class="field_option field_option_<?php echo $this->name; ?>">
 			<td class="label">
 				<label><?php _e("Maximum posts",'acf'); ?></label>
-				<p class="description"><?php _e("Set to -1 for inifinit",'acf'); ?></p>
+				<p class="description"><?php _e("Set to -1 for infinite",'acf'); ?></p>
 			</td>
 			<td>
 				<?php 
@@ -536,7 +362,12 @@ class acf_Relationship extends acf_Field
 			$return = array();
 			foreach($value as $v)
 			{
-				$return[] = get_post($v);
+				$p = get_post($v);
+				
+				if( $p && in_array( $p->post_status, array('publish', 'private', 'draft', 'inherit')) )
+				{
+					$return[] = $p;
+				}
 			}
 		}
 		else

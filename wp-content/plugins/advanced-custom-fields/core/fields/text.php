@@ -82,8 +82,8 @@ class acf_Text extends acf_Field
 					'name'	=>	'fields['.$key.'][formatting]',
 					'value'	=>	$field['formatting'],
 					'choices' => array(
-						'none'	=>	'None',
-						'html'	=>	'HTML'
+						'none'	=>	__("None",'acf'),
+						'html'	=>	__("HTML",'acf')
 					)
 				));
 				?>

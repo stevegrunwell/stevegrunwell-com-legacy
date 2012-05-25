@@ -19,6 +19,7 @@ $fields[999] = array(
 	'type'		=>	'text',
 	'order_no'	=>	'1',
 	'instructions'	=>	'',
+	'required' => '0',
 );
 
 // get name of all fields for use in field type drop down
@@ -29,7 +30,19 @@ foreach($this->fields as $field)
 
 // hidden field for saving
 ?>
-<input type="hidden" name="save_fields" value="true" />
+
+<!-- Hidden Fields -->
+<div style="display:none;">
+	<script type="text/javascript">
+	acf_messages = {
+		move_to_trash : "<?php _e("Move to trash. Are you sure?",'acf'); ?>"
+	};
+	</script>
+	<input type="hidden" name="save_fields" value="true" />
+</div>
+
+
+
 <div class="fields_header">
 	<table class="acf widefat">
 		<thead>
@@ -47,7 +60,7 @@ foreach($this->fields as $field)
 		<?php _e("No fields. Click the <strong>+ Add Field</strong> button to create your first field.",'acf'); ?>
 	</div>
 	<?php foreach($fields as $key => $field): ?>
-	<div class="<?php echo ($key == 999) ? "field_clone" : "field"; ?>">
+	<div class="<?php echo ($key == 999) ? "field_clone" : "field"; ?>" data-id="<?php echo $key; ?>">
 		<?php if(isset($field['key'])): ?><input type="hidden" name="fields[<?php echo $key; ?>][key]" value="<?php echo $field['key']; ?>" /><?php endif; ?>
 		<div class="field_meta">
 			<table class="acf widefat">
@@ -55,12 +68,13 @@ foreach($this->fields as $field)
 					<td class="field_order"><span class="circle"><?php echo (int)$field['order_no'] + 1; ?></span></td>
 					<td class="field_label">
 						<strong>
-							<a class="acf_edit_field row-title" title="Edit this Field" href="javascript:;"><?php echo $field['label']; ?></a>
+							<a class="acf_edit_field row-title" title="<?php _e("Edit this Field",'acf'); ?>" href="javascript:;"><?php echo $field['label']; ?></a>
 						</strong>
 						<div class="row_options">
-							<span><a class="acf_edit_field" title="Edit this Field" href="javascript:;"><?php _e("Edit",'acf'); ?></a> | </span>
-							<span><a title="Read documentation for this field" href="http://plugins.elliotcondon.com/advanced-custom-fields/documentation/" target="_blank"><?php _e("Docs",'acf'); ?></a> | </span>
-							<span><a class="acf_delete_field" title="Delete this Field" href="javascript:;"><?php _e("Delete",'acf'); ?></a>
+							<span><a class="acf_edit_field" title="<?php _e("Edit this Field",'acf'); ?>" href="javascript:;"><?php _e("Edit",'acf'); ?></a> | </span>
+							<span><a title="<?php _e("Read documentation for this field",'acf'); ?>" href="http://www.advancedcustomfields.com/docs/field-types/" target="_blank"><?php _e("Docs",'acf'); ?></a> | </span>
+							<span><a class="acf_duplicate_field" title="<?php _e("Duplicate this Field",'acf'); ?>" href="javascript:;"><?php _e("Duplicate",'acf'); ?></a> | </span>
+							<span><a class="acf_delete_field" title="<?php _e("Delete this Field",'acf'); ?>" href="javascript:;"><?php _e("Delete",'acf'); ?></a></span>
 						</div>
 					</td>
 					<td class="field_name"><?php echo $field['name']; ?></td>
@@ -149,16 +163,20 @@ foreach($this->fields as $field)
 							</td>
 						</tr>
 						<?php 
-						foreach($fields_names as $field_name => $field_title){
-							$this->fields[$field_name]->create_options($key, $field);
-						} 
+						
+						$this->fields[$field['type']]->create_options($key, $field);
+						
 						?>
 						<tr class="field_save">
 							<td class="label">
-								<label><?php _e("Save Field",'acf'); ?></label>
+								<!-- <label><?php _e("Save Field",'acf'); ?></label> -->
 							</td>
-							<td><input type="submit" value="Save Field" class="button-primary" name="save" />
-								<?php _e("or",'acf'); ?> <a class="acf_edit_field" title="<?php _e("Hide this edit screen",'acf'); ?>" href="javascript:;"><?php _e("continue editing ACF",'acf'); ?></a>
+							<td>
+								<ul class="hl clearfix">
+									<li>
+										<a class="acf_edit_field acf-button grey" title="<?php _e("Close Field",'acf'); ?>" href="javascript:;"><?php _e("Close Field",'acf'); ?></a>
+									</li>
+								</ul>
 							</td>
 						</tr>
 					</tbody>
@@ -169,6 +187,6 @@ foreach($this->fields as $field)
 	<?php endforeach; ?>
 </div>
 <div class="table_footer">
-	<div class="order_message"></div>
-	<a href="javascript:;" id="add_field" class="button-primary"><?php _e('+ Add Field','acf'); ?></a>
+	<div class="order_message"><?php _e('Drag and drop to reorder','acf'); ?></div>
+	<a href="javascript:;" id="add_field" class="acf-button"><?php _e('+ Add Field','acf'); ?></a>
 </div>

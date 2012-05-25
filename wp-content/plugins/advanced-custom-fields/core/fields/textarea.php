@@ -83,9 +83,9 @@ class acf_Textarea extends acf_Field
 					'name'	=>	'fields['.$key.'][formatting]',
 					'value'	=>	$field['formatting'],
 					'choices' => array(
-						'none'	=>	'None',
-						'br'	=>	'auto &lt;br /&gt;',
-						'html'	=>	'HTML',
+						'none'	=>	__("None",'acf'),
+						'br'	=>	__("auto &lt;br /&gt;",'acf'),
+						'html'	=>	__("HTML",'acf'),
 					)
 				));
 				?>

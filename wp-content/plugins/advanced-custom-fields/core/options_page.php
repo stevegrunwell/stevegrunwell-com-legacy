@@ -129,14 +129,14 @@ class Options_page
 	
 	function admin_head()
 	{	
+	
 		// save
 		if(isset($_POST['update_options']))
 		{
-			// post_id = 0 for options page
-			$post_id = 999999999;
-							
-			// strip slashes
-			$_POST = array_map('stripslashes_deep', $_POST);
+			
+			// options name to save against
+			$option_name = 'options';
+			
 			
 			// save fields
 			$fields = isset($_POST['fields']) ? $_POST['fields'] : false;
@@ -147,18 +147,19 @@ class Options_page
 				{
 					// get field
 					$field = $this->parent->get_acf_field($key);
+				
+					$this->parent->update_value( $option_name , $field, $value );
 					
-					$this->parent->update_value($post_id, $field, $value);
 				}
 			}
 			
-			$this->data['admin_message'] = 'Options Updated';
+			
+			$this->data['admin_message'] = __("Options Updated",'acf');
 			
 		}
 		
-		$metabox_ids = $this->parent->get_input_metabox_ids(array('post_id' => 999999999), false);
-		$style = isset($metabox_ids[0]) ? $this->parent->get_input_style($metabox_ids[0]) : '';
-		echo '<style type="text/css" id="acf_style" >' .$style . '</style>';
+		$metabox_ids = $this->parent->get_input_metabox_ids(false, false);
+
 		
 		if(empty($metabox_ids))
 		{
@@ -166,17 +167,23 @@ class Options_page
 			return false;	
 		}
 		
-		// fields admin_head
-		foreach($this->parent->fields as $field)
-		{
-			$this->parent->fields[$field->name]->admin_head();
-		}
+		// Style
+		echo '<link rel="stylesheet" type="text/css" href="'.$this->parent->dir.'/css/global.css?ver=' . $this->parent->version . '" />';
+		echo '<link rel="stylesheet" type="text/css" href="'.$this->parent->dir.'/css/input.css?ver=' . $this->parent->version . '" />';
+
+
+		// Javascript
+		echo '<script type="text/javascript" src="'.$this->parent->dir.'/js/input-actions.js?ver=' . $this->parent->version . '" ></script>';
+		echo '<script type="text/javascript">
+			acf.validation_message = "' . __("Validation Failed. One or more fields below are required.",'acf') . '";
+			acf.post_id = 0;
+			acf.editor_mode = "tinymce";
+			acf.admin_url = "' . admin_url() . '";
+		</script>';
 		
-		// add css + javascript
-		echo '<link rel="stylesheet" type="text/css" href="'.$this->parent->dir.'/css/global.css" />';
-		echo '<link rel="stylesheet" type="text/css" href="'.$this->parent->dir.'/css/input.css" />';
-		echo '<script type="text/javascript" src="'.$this->parent->dir.'/js/input.js" ></script>';
-		echo '<script type="text/javascript">acf.validation_message = "' . __("Validation Failed. One or more fields below are required.",'acf') . '";</script>';
+		
+		// add user js + css
+		do_action('acf_head-input');
 		
 
 		// get acf's
@@ -197,7 +204,7 @@ class Options_page
 						'acf_options_page', 
 						$acf['options']['position'], 
 						'high', 
-						array( 'fields' => $acf['fields'], 'options' => $acf['options'], 'show' => $show )
+						array( 'fields' => $acf['fields'], 'options' => $acf['options'], 'show' => $show, 'post_id' => "options" )
 					);
 				}
 			}
@@ -229,19 +236,13 @@ class Options_page
 	 ---------------------------------------------------------------------------------------------*/
 	function admin_print_scripts() {
 
-  		foreach($this->parent->fields as $field)
-		{
-			$this->parent->fields[$field->name]->admin_print_scripts();
-		}
+  		do_action('acf_print_scripts-input');
 
 	}
 	
 	function admin_print_styles() {
 		
-		foreach($this->parent->fields as $field)
-		{
-			$this->parent->fields[$field->name]->admin_print_styles();
-		}
+		do_action('acf_print_styles-input');
 		
 	}
 	
@@ -267,7 +268,7 @@ class Options_page
 			<?php endif; ?>
 			
 			<?php if(isset($this->data['no_fields'])): ?>
-			<div id="message" class="updated"><p>No Custom Field Group found for the options page. <a href="<?php echo admin_url(); ?>post-new.php?post_type=acf">Create a Custom Field Group</a></p></div>
+			<div id="message" class="updated"><p><?php _e("No Custom Field Group found for the options page",'acf'); ?>. <a href="<?php echo admin_url(); ?>post-new.php?post_type=acf"><?php _e("Create a Custom Field Group",'acf'); ?></a></p></div>
 			<?php else: ?>
 			
 			<form id="post" method="post" name="post">
@@ -278,12 +279,14 @@ class Options_page
 					
 					<!-- Update -->
 					<div class="postbox">
-						<h3 class="hndle"><span><?php _e("Save",'acf'); ?></span></h3>
+						<h3 class="hndle"><span><?php _e("Publish",'acf'); ?></span></h3>
 						<div class="inside">
 							<input type="hidden" name="HTTP_REFERER" value="<?php echo $_SERVER['HTTP_REFERER'] ?>" />
-							<input type="submit" class="button-primary" value="Save Options" name="update_options" />
+							<input type="submit" class="acf-button" value="Save Options" name="update_options" />
 						</div>
 					</div>
+					
+					<?php $meta_boxes = do_meta_boxes('acf_options_page', 'side', null); ?>
 					
 				</div>
 					

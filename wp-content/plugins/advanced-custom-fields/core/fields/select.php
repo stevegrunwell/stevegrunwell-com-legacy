@@ -162,15 +162,14 @@ class acf_Select extends acf_Field
 		<tr class="field_option field_option_<?php echo $this->name; ?>">
 			<td class="label">
 				<label for=""><?php _e("Choices",'acf'); ?></label>
-				<p class="description"><?php _e("Enter your choices one per line<br />
+				<p class="description"><?php _e("Enter your choices one per line",'acf'); ?><br />
 				<br />
-				Red<br />
-				Blue<br />
+				<?php _e("Red",'acf'); ?><br />
+				<?php _e("Blue",'acf'); ?><br />
 				<br />
-				or<br />
-				<br />
-				red : Red<br />
-				blue : Blue",'acf'); ?></p>
+				<?php _e("red : Red",'acf'); ?><br />
+				<?php _e("blue : Blue",'acf'); ?><br />
+				</p>
 			</td>
 			<td>
 				<textarea rows="5" name="fields[<?php echo $key; ?>][choices]" id=""><?php echo $field['choices']; ?></textarea>
@@ -201,8 +200,8 @@ class acf_Select extends acf_Field
 					'name'	=>	'fields['.$key.'][allow_null]',
 					'value'	=>	$field['allow_null'],
 					'choices'	=>	array(
-						'1'	=>	'Yes',
-						'0'	=>	'No',
+						'1'	=>	__("Yes",'acf'),
+						'0'	=>	__("No",'acf'),
 					),
 					'layout'	=>	'horizontal',
 				));
@@ -220,8 +219,8 @@ class acf_Select extends acf_Field
 					'name'	=>	'fields['.$key.'][multiple]',
 					'value'	=>	$field['multiple'],
 					'choices'	=>	array(
-						'1'	=>	'Yes',
-						'0'	=>	'No',
+						'1'	=>	__("Yes",'acf'),
+						'0'	=>	__("No",'acf'),
 					),
 					'layout'	=>	'horizontal',
 				));

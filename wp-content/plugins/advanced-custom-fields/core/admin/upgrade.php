@@ -17,6 +17,10 @@ if(version_compare($version,'3.0.0') < 0)
 {
 	$next = '3.0.0';
 }
+elseif(version_compare($version,'3.1.8') < 0)
+{
+	$next = '3.1.8';
+}
 ?>
 	
 <script type="text/javascript">

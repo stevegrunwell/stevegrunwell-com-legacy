@@ -21,8 +21,57 @@ class acf_Image extends acf_Field
 		$this->title = __('Image','acf');
 		
 		add_action('admin_head-media-upload-popup', array($this, 'popup_head'));
-		add_filter('media_send_to_editor', array($this, 'media_send_to_editor'), 15, 2 );
 		add_filter('get_media_item_args', array($this, 'allow_img_insertion'));
+		add_action('wp_ajax_acf_get_preview_image', array($this, 'acf_get_preview_image'));
+   	}
+   	
+   	
+   	/*--------------------------------------------------------------------------------------
+	*
+	*	acf_get_preview_image
+	*
+	*	@description 		Returns a json array of preview sized urls
+	*	@author 			Elliot Condon
+	*	@since 				3.1.7
+	* 
+	*-------------------------------------------------------------------------------------*/
+	
+   	function acf_get_preview_image()
+   	{
+   		
+   		// vars
+   		$id_string = isset($_GET['id']) ? $_GET['id'] : false;
+   		$preview_size = isset($_GET['preview_size']) ? $_GET['preview_size'] : 'thumbnail';
+		$return = array();
+		
+		
+		// attachment ID is required
+   		if($id_string)
+   		{
+   		
+   			// convert id_string into an array
+   			$id_array = explode(',' , $id_string);
+   			if(!is_array($id_array))
+   			{
+   				$id_array = array( $id_string );
+   			}
+   			
+   			
+   			// find image preview url for each image
+   			foreach($id_array as $id)
+   			{
+   				$file_src = wp_get_attachment_image_src($id, $preview_size);
+				$return[] = array(
+					'id' => $id,
+					'url' => $file_src[0],
+				);
+   			}
+   		}
+
+
+		// return json
+		echo json_encode( $return );
+		die();
    	}
    	
    	
@@ -73,56 +122,6 @@ class acf_Image extends acf_Field
 	
 	/*--------------------------------------------------------------------------------------
 	*
-	*	admin_head
-	*
-	*	@author Elliot Condon
-	*	@since 2.0.6
-	* 
-	*-------------------------------------------------------------------------------------*/
-	
-	function admin_head()
-	{
-		?>
-		<script type="text/javascript">
-		
-		(function($){
-		
-			$('#poststuff .acf_image_uploader .button').live('click', function(){
-				
-				// vars
-				var div = $(this).closest('.acf_image_uploader');
-				var post_id = $('input#post_ID').val();
-				var preview_size = div.attr('data-preview_size');
-				
-				// set global var
-				window.acf_div = div;
-					
-				// show the thickbox
-				tb_show('Add Image to field', 'media-upload.php?post_id=' + post_id + '&type=image&acf_type=image&acf_preview_size=' + preview_size + 'TB_iframe=1');
-			
-				return false;
-			});
-				
-			$('#poststuff .acf_image_uploader .remove_image').live('click', function(){
-				
-				// vars
-				var div = $(this).closest('.acf_image_uploader');
-				
-				div.find('input.value').val('');
-				div.removeClass('active');
-				
-				return false;
-				
-			});
-				
-		})(jQuery);
-		</script>
-		<?php
-	}
-	
-	
-	/*--------------------------------------------------------------------------------------
-	*
 	*	create_field
 	*
 	*	@author Elliot Condon
@@ -136,7 +135,7 @@ class acf_Image extends acf_Field
 		// vars
 		$class = "";
 		$file_src = "";
-		$preview_size = isset($field['preview_size']) ? $field['preview_size'] : 'medium';
+		$preview_size = isset($field['preview_size']) ? $field['preview_size'] : 'thumbnail';
 		
 		// get image url
 		if($field['value'] != '' && is_numeric($field['value']))
@@ -186,8 +185,8 @@ class acf_Image extends acf_Field
 					'value'	=>	$field['save_format'],
 					'layout'	=>	'horizontal',
 					'choices' => array(
-						'url'	=>	'Image URL',
-						'id'	=>	'Attachment ID'
+						'url'	=>	__("Image URL",'acf'),
+						'id'	=>	__("Attachment ID",'acf')
 					)
 				));
 				?>
@@ -205,16 +204,15 @@ class acf_Image extends acf_Field
 					'value'	=>	$field['preview_size'],
 					'layout'	=>	'horizontal',
 					'choices' => array(
-						'thumbnail'	=>	'Thumbnail',
-						'medium'	=>	'Medium',
-						'large'		=>	'Large',
-						'full'		=>	'Full'
+						'thumbnail'	=>	__("Thumbnail",'acf'),
+						'medium'	=>	__("Medium",'acf'),
+						'large'		=>	__("Large",'acf'),
+						'full'		=>	__("Full",'acf')
 					)
 				));
 				?>
 			</td>
 		</tr>
-
 		<?php
 	}
 
@@ -228,105 +226,315 @@ class acf_Image extends acf_Field
 	 * 
 	 ---------------------------------------------------------------------------------------------*/
 	function popup_head()
-	{
+	{	
 		if(isset($_GET["acf_type"]) && $_GET['acf_type'] == 'image')
 		{
-			$preview_size = isset($arr_postinfo['preview_size']) ? $arr_postinfo['preview_size'] : 'medium';
+			$tab = isset($_GET['tab']) ? $_GET['tab'] : "type"; // "type" is the upload tab
+			$preview_size = isset($_GET['acf_preview_size']) ? $_GET['acf_preview_size'] : 'thumbnail';
 			
-			?>
-			<style type="text/css">
-				#media-upload-header #sidemenu li#tab-type_url,
-				#media-upload-header #sidemenu li#tab-gallery {
-					display: none;
-				}
-				
-				#media-items tr.url,
-				#media-items tr.align,
-				#media-items tr.image_alt,
-				#media-items tr.image-size,
-				#media-items tr.post_excerpt,
-				#media-items tr.post_content,
-				#media-items tr.image_alt p,
-				#media-items table thead input.button,
-				#media-items table thead img.imgedit-wait-spin,
-				#media-items tr.submit a.wp-post-thumbnail {
-					display: none;
-				} 
-
-				.media-item table thead img {
-					border: #DFDFDF solid 1px; 
-					margin-right: 10px;
-				}
-
-			</style>
-			<script type="text/javascript">
-			(function($){
-			
-				$(document).ready(function(){
-				
-					$('#media-items').bind('DOMNodeInserted',function(){
-						$('input[value="Insert into Post"]').each(function(){
-							$(this).attr('value','<?php _e("Select Image",'acf'); ?>');
-						});
-					}).trigger('DOMNodeInserted');
-					
-					$('form#filter').each(function(){
-						
-						$(this).append('<input type="hidden" name="acf_preview_size" value="<?php echo $preview_size; ?>" />');
-						$(this).append('<input type="hidden" name="acf_type" value="image" />');
-						
-					});
-				});
-							
-			})(jQuery);
-			</script>
-			<?php
-		}
+?><style type="text/css">
+	#media-upload-header #sidemenu li#tab-type_url,
+	#media-upload-header #sidemenu li#tab-gallery, 
+	#media-items .media-item table.slidetoggle,
+	#media-items .media-item a.toggle {
+		display: none !important;
 	}
 	
+	#media-items .media-item {
+		min-height: 68px;
+	}
 	
-	/*---------------------------------------------------------------------------------------------
-	 * media_send_to_editor - SEND IMAGE TO ACF DIV
-	 *
-	 * @author Elliot Condon
-	 * @since 1.1.4
-	 * 
-	 ---------------------------------------------------------------------------------------------*/
-	function media_send_to_editor($html, $id)
-	{
-		parse_str($_POST["_wp_http_referer"], $arr_postinfo);
+	#media-items .media-item .acf-checkbox {
+		float: left;
+		margin: 28px 10px 0;
+	}
+	
+	#media-items .media-item .pinkynail {
+		max-width: 64px;
+		max-height: 64px;
+		display: block !important;
+	}
+	
+	#media-items .media-item .filename.new {
+		min-height: 0;
+		padding: 25px 10px 10px;
+		line-height: 14px;
 		
-		if(isset($arr_postinfo["acf_type"]) && $arr_postinfo["acf_type"] == "image")
-		{
-			
-			$preview_size = isset($arr_postinfo['acf_preview_size']) ? $arr_postinfo['acf_preview_size'] : 'medium';
-			
-			$file_src = wp_get_attachment_image_src($id, $preview_size);
-			$file_src = $file_src[0];
-		
-			?>
-			<script type="text/javascript">
-				
-				self.parent.acf_div.find('input.value').val('<?php echo $id; ?>');
-			 	self.parent.acf_div.find('img').attr('src','<?php echo $file_src; ?>');
-			 	self.parent.acf_div.addClass('active');
-			 	
-			 	// validation
-			 	self.parent.acf_div.closest('.field').removeClass('error');
-			 	
-			 	// reset acf_div and return false
-			 	self.parent.acf_div = null;
-			 	self.parent.tb_remove();
-				
-			</script>
-			<?php
-			exit;
-		} 
-		else 
-		{
-			return $html;
-		}
+	}
+	
+	#media-items .media-item .title {
+		line-height: 14px;
+	}
+	
+	#media-items .media-item .button {
+		float: right;
+		margin: -2px 0 0 10px;
+	}
+	
+	#media-upload .ml-submit {
+		display: none !important;
+	}
 
+	#media-upload .acf-submit {
+		margin: 1em 0;
+		padding: 1em 0;
+		position: relative;
+		overflow: hidden;
+		display: none; /* default is hidden */
+	}
+	
+	#media-upload .acf-submit a {
+		float: left;
+		margin: 0 10px 0 0;
+	}
+
+</style>
+<script type="text/javascript">
+(function($){
+	
+	/*
+	*  Vars
+	*/
+	
+	// generate the preview size (150x150)
+	var preview_size = "<?php echo get_option($preview_size . '_size_w'); ?>x<?php echo get_option($preview_size . '_size_h'); ?>";
+		
+	
+	
+	/*
+	*  get_preview_image
+	*
+	*  @created : 6/04/2012
+	
+	function get_preview_image(options, callback)
+	{
+		// defaults
+		var defaults = {
+			id : [],
+			preview_size : "thumbnail",
+		};
+		
+		
+		// override deafault with options
+		$.extend(defaults, options);
+		
+		
+		// run ajax to get id urls
+		$.ajax({
+			url : ajaxurl
+			data : options,
+			dataType : "json",
+			type : "POST",
+			
+			
+		});
+		
+		
+	}
+	*/
+		
+	/*
+	*  Select Image
+	*
+	*  @created : 28/03/2012
+	*/
+	
+	$('#media-items .media-item .filename a.acf-select').live('click', function(){
+		
+		var id = $(this).attr('href');
+		
+		var data = {
+			action: 'acf_get_preview_image',
+			id: id,
+			preview_size : "<?php echo $preview_size; ?>"
+		};
+	
+		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
+		$.ajax({
+			url: ajaxurl,
+			data : data,
+			cache: false,
+			dataType: "json",
+			success: function( json ) {
+		    	
+
+				// validate
+				if(!json)
+				{
+					return false;
+				}
+				
+				
+				// get item
+				var item = json[0];
+				
+				
+				// update acf_div
+				self.parent.acf_div.find('input.value').val( item.id );
+	 			self.parent.acf_div.find('img').attr( 'src', item.url );
+	 			self.parent.acf_div.addClass('active');
+	 	
+	 	
+	 			// validation
+	 			self.parent.acf_div.closest('.field').removeClass('error');
+	 			
+	 			
+	 			// reset acf_div and return false
+	 			self.parent.acf_div = null;
+	 			self.parent.tb_remove();
+	 	
+	 	
+			}
+		});
+		
+		return false;
+		
+	});
+	
+	
+	$('#acf-add-selected').live('click', function(){ 
+		 
+		// check total 
+		var total = $('#media-items .media-item .acf-checkbox:checked').length;
+		if(total == 0) 
+		{ 
+			alert("<?php _e("No images selected",'acf'); ?>"); 
+			return false; 
+		} 
+		
+		
+		// generate id's
+		var attachment_ids = [];
+		$('#media-items .media-item .acf-checkbox:checked').each(function(){
+			attachment_ids.push( $(this).val() );
+		});
+		
+		
+		// creae json data
+		var data = {
+			action: 'acf_get_preview_image',
+			id: attachment_ids.join(','),
+			preview_size : "<?php echo $preview_size; ?>"
+		};
+		
+		
+		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
+		$.getJSON(ajaxurl, data, function( json ) {
+			
+			// validate
+			if(!json)
+			{
+				return false;
+			}
+			
+			$.each(json, function(i ,item){
+			
+				// update acf_div
+				self.parent.acf_div.find('input.value').val( item.id ); 
+	 			self.parent.acf_div.find('img').attr('src', item.url ); 
+	 			self.parent.acf_div.addClass('active'); 
+	 	 
+	 	 
+	 			// validation 
+	 			self.parent.acf_div.closest('.field').removeClass('error'); 
+	
+	 			 
+	 			if((i+1) < total) 
+	 			{ 
+	 				// add row 
+	 				self.parent.acf_div.closest('.repeater').find('.add-row-end').trigger('click'); 
+	 			 
+	 				// set acf_div to new row image 
+	 				self.parent.acf_div = self.parent.acf_div.closest('.repeater').find('> table > tbody > tr:last-child .acf_image_uploader'); 
+	 			} 
+	 			else 
+	 			{ 
+	 				// reset acf_div and return false 
+					self.parent.acf_div = null; 
+					self.parent.tb_remove(); 
+	 			} 
+				
+    		});
+
+			
+		
+		});
+		
+		return false;
+		 
+	}); 
+	
+	
+	// set a interval function to add buttons to media items
+	function acf_add_buttons()
+	{
+		// vars
+		var is_sub_field = (self.parent.acf_div && self.parent.acf_div.closest('.repeater').length > 0) ? true : false;
+		
+		
+		// add submit after media items (on for sub fields)
+		if($('.acf-submit').length == 0 && is_sub_field)
+		{
+			$('#media-items').after('<div class="acf-submit"><a id="acf-add-selected" class="button"><?php _e("Add selected Images",'acf'); ?></a></div>');
+		}
+		
+		
+		// add buttons to media items
+		$('#media-items .media-item:not(.acf-active)').each(function(){
+			
+			// show the add all button
+			$('.acf-submit').show();
+			
+			// needs attachment ID
+			if($(this).children('input[id*="type-of-"]').length == 0){ return false; }
+			
+			// only once!
+			$(this).addClass('acf-active');
+			
+			// find id
+			var id = $(this).children('input[id*="type-of-"]').attr('id').replace('type-of-', '');
+			
+			// if inside repeater, add checkbox
+			if(is_sub_field)
+			{
+				$(this).prepend('<input type="checkbox" class="acf-checkbox" value="' + id + '" <?php if($tab == "type"){echo 'checked="checked"';} ?> />');
+			}
+			
+			// change text of insert button, and add new button
+			$(this).find('.filename.new').append('<a href="' + id + '" class="button acf-select"><?php _e("Select Image",'acf'); ?></a>');
+			
+		});
+	}
+	<?php
+	
+	// run the acf_add_buttons ever 500ms when on the image upload tab
+	if($tab == 'type'): ?>
+	var acf_t = setInterval(function(){
+		acf_add_buttons();
+	}, 500);
+	<?php endif; ?>
+	
+	
+	// add acf input filters to allow for tab navigation
+	$(document).ready(function(){
+		
+		setTimeout(function(){
+			acf_add_buttons();
+		}, 1);
+		
+		
+		$('form#filter, form#image-form').each(function(){
+			
+			$(this).append('<input type="hidden" name="acf_preview_size" value="<?php echo $preview_size; ?>" />');
+			$(this).append('<input type="hidden" name="acf_type" value="image" />');
+			
+		});
+	});
+				
+})(jQuery);
+</script><?php
+
+		}
 	}
 	
 

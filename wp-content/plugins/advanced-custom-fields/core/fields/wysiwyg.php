@@ -20,9 +20,54 @@ class acf_Wysiwyg extends acf_Field
     	$this->name = 'wysiwyg';
 		$this->title = __("Wysiwyg Editor",'acf');
 		
-		add_action('admin_head', array($this, 'add_tiny_mce'));
-		add_filter( 'wp_default_editor', array($this, 'my_default_editor'));
-		
+		add_filter( 'acf_head-input', array( $this, 'acf_head') );
+		add_filter( 'wp_default_editor', array($this, 'my_default_editor') );
+
+   	}
+   	
+   	
+   	/*--------------------------------------------------------------------------------------
+	*
+	*	admin_print_scripts / admin_print_styles
+	*
+	*	@author Elliot Condon
+	*	@since 3.0.0
+	* 
+	*-------------------------------------------------------------------------------------*/
+	
+	function admin_print_styles()
+	{
+  		wp_enqueue_style(array(
+  			'editor-buttons',	
+		));
+	}
+	
+	
+   	/*--------------------------------------------------------------------------------------
+	*
+	*	admin_head
+	*	- Add the settings for a WYSIWYG editor (as used in wp_editor / wp_tiny_mce)
+	*
+	*	@author Elliot Condon
+	*	@since 3.2.3
+	* 
+	*-------------------------------------------------------------------------------------*/
+	
+   	function acf_head()
+   	{
+   		if ( ! class_exists('_WP_Editors' ) )
+	        require_once( ABSPATH . WPINC . '/class-wp-editor.php' );
+	
+	    $editor_id = 'acf_settings';
+	    $set = array(
+	        'teeny' => false,
+	        'tinymce' =>  true,
+	        'quicktags' => true
+	    );
+	
+	    $set = _WP_Editors::parse_settings($editor_id, $set);
+	    _WP_Editors::editor_settings($editor_id, $set);
+	    
    	}
    	
    	
@@ -42,193 +87,7 @@ class acf_Wysiwyg extends acf_Field
    	{
     	return 'tinymce'; // html or tinymce
     }
-    
-	
-   	/*--------------------------------------------------------------------------------------
-	*
-	*	add_tiny_mce
-	*
-	*	@author Elliot Condon
-	*	@since 3.0.3
-	*	@updated 3.0.3
-	* 
-	*-------------------------------------------------------------------------------------*/
-   	
-   	function add_tiny_mce()
-   	{
-   		global $post;
    		
-   		if($post && post_type_supports($post->post_type, 'editor'))
-   		{
-   			// do nothing, wysiwyg will render correctly!
-   		}
-   		else
-   		{
-   			wp_tiny_mce();
-   		}
-		
-	}
-   	
-   	
-   	/*--------------------------------------------------------------------------------------
-	*
-	*	admin_print_scripts / admin_print_styles
-	*
-	*	@author Elliot Condon
-	*	@since 3.0.0
-	* 
-	*-------------------------------------------------------------------------------------*/
-	
-	function admin_print_scripts()
-	{
-		wp_enqueue_script(array(
-		
-			'jquery',
-			'jquery-ui-core',
-			'jquery-ui-tabs',
-
-			// wysiwyg
-			'editor',
-			'thickbox',
-			'media-upload',
-			'word-count',
-			'post',
-			'editor-functions',
-			'tiny_mce',
-						
-		));
-	}
-	
-	function admin_print_styles()
-	{
-  		wp_enqueue_style(array(
-  			'editor-buttons',
-			'thickbox',		
-		));
-	}
-	
-	
-	/*--------------------------------------------------------------------------------------
-	*
-	*	admin_head
-	*
-	*	@author Elliot Condon
-	*	@since 2.0.6
-	* 
-	*-------------------------------------------------------------------------------------*/
-	
-	function admin_head()
-	{
-		?>
-		<script type="text/javascript">
-		(function($){
-			
-			// store wysiwyg buttons
-			$.acf_wysiwyg_buttons = {};
-			
-
-			$.fn.acf_deactivate_wysiwyg = function(){
-
-				$(this).find('.acf_wysiwyg textarea').each(function(){
-
-					tinyMCE.execCommand("mceRemoveControl", false, $(this).attr('id'));
-					
-				});
-				
-			};
-			
-			
-			$.fn.acf_activate_wysiwyg = function(){
-				
-				// tinymce must exist
-				if(typeof(tinyMCE) != "object")
-				{
-					return false;
-				}
-
-					
-				// add tinymce to all wysiwyg fields
-				$(this).find('.acf_wysiwyg textarea').each(function(){
-					
-					if(tinyMCE != undefined && tinyMCE.settings != undefined)
-					{
-						// reset buttons
-						tinyMCE.settings.theme_advanced_buttons1 = $.acf_wysiwyg_buttons.theme_advanced_buttons1;
-						tinyMCE.settings.theme_advanced_buttons2 = $.acf_wysiwyg_buttons.theme_advanced_buttons2;
-					
-						var toolbar = $(this).closest('.acf_wysiwyg').attr('data-toolbar');
-						
-						if(toolbar == 'basic')
-						{
-							tinyMCE.settings.theme_advanced_buttons1 = "bold,italic,formatselect,|,link,unlink,|,bullist,numlist,|,undo,redo";
-							tinyMCE.settings.theme_advanced_buttons2 = "";
-						}
-						else
-						{
-							// add images + code buttons
-							tinyMCE.settings.theme_advanced_buttons2 += ",code";
-						}
-					}
-
-					tinyMCE.execCommand('mceAddControl', false, $(this).attr('id'));
-
-				});
-				
-			};
-			
-			
-			$(window).load(function(){
-				
-				// timout seems to fix duplicate editors
-				setTimeout(function(){
-				
-					// store variables
-					if(tinyMCE != undefined && tinyMCE.settings != undefined)
-					{
-						$.acf_wysiwyg_buttons.theme_advanced_buttons1 = tinyMCE.settings.theme_advanced_buttons1;
-						$.acf_wysiwyg_buttons.theme_advanced_buttons2 = tinyMCE.settings.theme_advanced_buttons2;
-						
-					}
-				
-					$('#poststuff').acf_activate_wysiwyg();
-					
-				}, 10);
-				
-				
-			});
-			
-			// Sortable: Start
-			$('#poststuff .repeater > table > tbody, #poststuff .acf_flexible_content > .values').live( "sortstart", function(event, ui) {
-				
-				$(ui.item).find('.acf_wysiwyg textarea').each(function(){
-					tinyMCE.execCommand("mceRemoveControl", false, $(this).attr('id'));
-				});
-				
-			});
-			
-			// Sortable: End
-			$('#poststuff .repeater > table > tbody, #poststuff .acf_flexible_content > .values').live( "sortstop", function(event, ui) {
-				
-				$(ui.item).find('.acf_wysiwyg textarea').each(function(){
-					tinyMCE.execCommand("mceAddControl", false, $(this).attr('id'));
-				});
-				
-			});
-			
-			// Delete
-			$('#poststuff .repeater a.remove_field').live('click', function(event){
-				
-				var tr = $(event.target).closest('tr').find('.acf_wysiwyg textarea').each(function(){
-					tinyMCE.execCommand("mceRemoveControl", false, $(this).attr('id'));
-				});				
-			});
-			
-			
-		})(jQuery);
-		</script>
-		<?php
-	}
-	
 	
 	/*--------------------------------------------------------------------------------------
 	*
@@ -259,8 +118,8 @@ class acf_Wysiwyg extends acf_Field
 					'value'	=>	$field['toolbar'],
 					'layout'	=>	'horizontal',
 					'choices' => array(
-						'full'	=>	'Full',
-						'basic'	=>	'Basic'
+						'full'	=>	__("Full",'acf'),
+						'basic'	=>	__("Basic",'acf')
 					)
 				));
 				?>
@@ -278,8 +137,8 @@ class acf_Wysiwyg extends acf_Field
 					'value'	=>	$field['media_upload'],
 					'layout'	=>	'horizontal',
 					'choices' => array(
-						'yes'	=>	'Yes',
-						'no'	=>	'No',
+						'yes'	=>	__("Yes",'acf'),
+						'no'	=>	__("No",'acf'),
 					)
 				));
 				?>
@@ -305,37 +164,31 @@ class acf_Wysiwyg extends acf_Field
 		$field['toolbar'] = isset($field['toolbar']) ? $field['toolbar'] : 'full';
 		$field['media_upload'] = isset($field['media_upload']) ? $field['media_upload'] : 'yes';
 		
-		$id = 'wysiwyg_' . uniqid();
+		$id = 'wysiwyg-' . $field['name'];
 		
-		$version = get_bloginfo('version');
 		
 		?>
-		<?php if(version_compare($version,'3.2.1') > 0): ?>
-			
-		<?php else: ?>
-			
-		<?php endif; ?>
-		
-		<div class="acf_wysiwyg wp-editor-wrap" data-toolbar="<?php echo $field['toolbar']; ?>">
+		<div id="wp-<?php echo $id; ?>-wrap" class="acf_wysiwyg wp-editor-wrap" data-toolbar="<?php echo $field['toolbar']; ?>">
 			<?php if($field['media_upload'] == 'yes'): ?>
-				<?php if(version_compare($version,'3.2.1') > 0): ?>
-					<div id="wp-content-editor-tools" class="wp-editor-tools">
-						<div class="hide-if-no-js wp-media-buttons">
-							<?php do_action( 'media_buttons' ); ?>
-						</div>
-					</div>
-				<?php else: ?>
+				<?php if(get_bloginfo('version') < "3.3"): ?>
 					<div id="editor-toolbar">
 						<div id="media-buttons" class="hide-if-no-js">
 							<?php do_action( 'media_buttons' ); ?>
 						</div>
 					</div>
+				<?php else: ?>
+					<div id="wp-<?php echo $id; ?>-editor-tools" class="wp-editor-tools">
+						<div id="wp-<?php echo $id; ?>-media-buttons" class="hide-if-no-js wp-media-buttons">
+							<?php do_action( 'media_buttons' ); ?>
+						</div>
+					</div>
 				<?php endif; ?>
 			<?php endif; ?>
-			<div id="editorcontainer" class="wp-editor-container">
-				<textarea id="<?php echo $id; ?>" name="<?php echo $field['name']; ?>" ><?php echo wp_richedit_pre($field['value']); ?></textarea>
+			<div id="wp-<?php echo $id; ?>-editor-container" class="wp-editor-container">
+				<textarea id="<?php echo $id; ?>" class="wp-editor-area" name="<?php echo $field['name']; ?>" ><?php echo wp_richedit_pre($field['value']); ?></textarea>
 			</div>
 		</div>
+		
 		<?php
 
 	}
