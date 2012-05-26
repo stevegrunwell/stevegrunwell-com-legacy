@@ -8,11 +8,18 @@
 
 get_header(); ?>
 
-<div class="primary" role="main">
+<?php while( have_posts() ): the_post(); ?>
 
-  <?php get_template_part('loop', 'page'); ?>
+  <article id="post-<?php the_ID(); ?>" <?php post_class('primary'); ?> role="main">
+  <?php if( !is_front_page() ): ?>
+    <h1 class="post-title"><?php grunwell_custom_field('alternate_headline', $post->ID, get_the_title()); ?></h1>
+  <?php endif; ?>
 
-</div><!-- // .primary -->
+    <?php the_content(); ?>
+
+  </article><!--// #post-<?php the_ID(); ?>-->
+
+<?php endwhile; ?>
 
 <?php get_sidebar(); ?>
 <?php get_footer(); ?>
