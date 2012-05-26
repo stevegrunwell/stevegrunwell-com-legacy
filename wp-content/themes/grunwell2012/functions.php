@@ -73,7 +73,10 @@ add_action('save_post', 'grunwell_portfolio_set_parent_id');
  */
 function grunwell_custom_menus(){
   register_nav_menus(
-    array('primary-nav' => 'Primary Navigation')
+    array(
+      'primary-nav' => 'Primary Navigation',
+      'social-networks' => 'Social Networks'
+    )
   );
   return;
 }
@@ -104,7 +107,7 @@ add_action('admin_menu', 'grunwell_remove_menus');
  */
 function grunwell_sitelogo(){
   $tag = ( is_front_page() ? 'h1' : 'div' );
-  return sprintf('<%s id="site-logo"><a href="%s"><img src="%s/img/site-logo.png" alt="%s" /></a></%s>', $tag, home_url('/'), get_bloginfo('template_url'), esc_attr(get_bloginfo('template_url')), $tag);
+  return sprintf('<%s id="site-logo"><a href="%s" rel="home"><img src="%s/img/site-logo.png" alt="%s" /></a></%s>', $tag, home_url('/'), get_bloginfo('template_url'), esc_attr(get_bloginfo('template_url')), $tag);
 }
 
 /**

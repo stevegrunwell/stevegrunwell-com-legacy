@@ -20,27 +20,31 @@
 
 <body <?php body_class(); ?>>
   <div id="wrapper">
-    <header>
+    <header role="banner">
       <a href="#content" class="screen-reader-text">Skip to main content</a>
       <?php echo get_search_form(); ?>
-      <ul class="social">
-        <li><a href="#" class="twitter" title="Twitter">Twitter</a></li>
-        <li><a href="#" class="github" title="Github">Github</a></li>
-        <li><a href="#" class="facebook" title="Facebook">Facebook</a></li>
-        <li><a href="#" class="googleplus" title="Google+">Google<abbr title="plus">+</abbr></a></li>
-        <li><a href="#" class="flickr" title="Flickr">Flickr</a></li>
-        <li><a href="#" class="linkedin" title="LinkedIn">LinkedIn</a></li>
-      </ul>
-      <?php echo grunwell_sitelogo(); ?>
 
       <?php
         $args = array(
-          'container' => 'nav',
-          'container_id' => 'primary-nav',
-          'menu' => 'primary-nav'
+          'container' => false,
+          'depth' => 1,
+          'menu' => 'social-networks',
+          'menu_class' => 'social'
         );
         wp_nav_menu($args);
       ?>
+
+      <?php echo grunwell_sitelogo(); ?>
+
+      <nav id="primary-nav" role="navigation">
+        <?php
+          $args = array(
+            'container' => false,
+            'menu' => 'primary-nav'
+          );
+          wp_nav_menu($args);
+        ?>
+      </nav>
     </header>
 
     <div id="content">
