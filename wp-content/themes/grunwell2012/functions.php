@@ -67,6 +67,10 @@ function grunwell_portfolio_set_parent_id($id){
 }
 add_action('save_post', 'grunwell_portfolio_set_parent_id');
 
+/**
+ * Register custom WordPress menu positions
+ * @return void
+ */
 function grunwell_custom_menus(){
   register_nav_menus(
     array('primary-nav' => 'Primary Navigation')
@@ -74,6 +78,24 @@ function grunwell_custom_menus(){
   return;
 }
 add_action('init', 'grunwell_custom_menus');
+
+/**
+ * Remove admin menus we don't need (Links)
+ * @return void
+ */
+function grunwell_remove_menus(){
+  global $menu;
+  $restricted = array(__('Links'));
+  end($menu);
+  while( prev($menu) ){
+    $value = explode(' ',$menu[key($menu)][0]);
+    if( in_array($value['0'] != null ? $value[0] : '' , $restricted) ){
+      unset($menu[key($menu)]);
+    }
+  }
+  return;
+}
+add_action('admin_menu', 'grunwell_remove_menus');
 
 /**
  * Get the tag for #site-logo
