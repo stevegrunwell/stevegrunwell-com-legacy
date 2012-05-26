@@ -12,7 +12,7 @@ include_once dirname(__FILE__) . '/simple-twitter-timeline/twitter.class.php';
 function grunwell_register_scripts_styles(){
   # Styles
   wp_register_style('site-styles', get_bloginfo('template_url') . '/css/base.css', null, null, 'all');
-  
+
   # Scripts
   wp_register_script('site-scripts', get_bloginfo('template_url') . '/js/main.js', array('jquery', 'jquery-placeholder'), '', true);
 
@@ -74,19 +74,6 @@ function grunwell_custom_menus(){
   return;
 }
 add_action('init', 'grunwell_custom_menus');
-
-/**
- * Assemble the page's <title> attribute
- * @param str $sep The string separator to use
- * @return str
- */
-function grunwell_page_title($sep='|'){
-  if( is_front_page() ):
-    return get_bloginfo('name') . " $sep " . get_bloginfo('description', 'display');
-  else:
-    return wp_title($sep, false, 'right') . get_bloginfo('name');
-  endif;
-}
 
 /**
  * Get the tag for #site-logo
