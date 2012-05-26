@@ -17,9 +17,9 @@ del{text-decoration:line-through;}
 table{border-collapse:collapse; border-spacing:0;}
 a img{border:none;}
 
-/* Site structure */
-html, body{padding:1%; font-family:'Helvetica Neue',sans-serif; font-size:13px; line-height:1.5em; color:#333; background:#333;}
-#wrapper{position:relative; min-width:200px; max-width:904px; margin:0 auto; padding:4%; background:url('../img/site-bg.png') left top repeat-x #fff; -moz-border-radius:10px; -webkit-border-radius:10px; -o-border-radius:10px; border-radius:10px;}
+/** Site structure */
+html, body{min-width:314px; padding:1%; background:#333;}
+#wrapper{position:relative; min-width:200px; max-width:904px; overflow:hidden; margin:0 auto; padding:4%; background:url('../img/site-bg.png') left top repeat-x #fff; -moz-border-radius:10px; -webkit-border-radius:10px; -o-border-radius:10px; border-radius:10px;}
 #content{position:relative;}
 
 .primary, .secondary{display:inline; float:left; margin:0; padding:0;}
@@ -39,7 +39,8 @@ footer{clear:both;}
   .secondary{position:static; width:100%; max-width:640px;}
 }
 
-/* Base typography */
+/** Typography */
+body{font-family:'Helvetica Neue',sans-serif; font-size:13px; line-height:1.4em; color:#333;}
 h1, h2, h3, h4{font-family:Gotham,'Helvetica Neue',sans-serif;}
 h1{font-size:1.9em; margin-bottom:1em;}
 h2{font-size:1.5em; margin-bottom:.8em;}
@@ -50,16 +51,15 @@ h6{font-size:.9em; margin-bottom:.5em;}
 p{margin-bottom:1.5em;}
 small{font-size:.85em; line-height:.8em;}
 sup{position:relative; top:-.3em;}
-
 p + h2, p + h3, p + h4, p + h5, p + h6{margin-top:2em;}
 
-a:link, a:visited{font-weight:bold; text-decoration:none; color:#812323;}
+a:link, a:visited{text-decoration:none; color:#812323;}
 a:hover, a:active{text-decoration:underline;}
 
-/* Form styles */
+/** Form styles */
 input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea, select{display:block; padding:6px 8px; border:1px solid #dadada; -moz-border-radius:4px; -webkit-border-radius:4px; -o-border-radius:4px; border-radius:4px;}
 
-/* Header */
+/** Header */
 #site-logo{clear:none; display:block; min-width:128px; max-width:640px; margin:0 0 6px; padding:0; overflow:hidden; font-family:Gotham,'Helvetica Neue',sans-serif; font-size:46px; line-height:46px; text-transform:uppercase; font-weight:bold;}
 #site-logo img{width:auto; max-width:100%; height:auto;}
 
@@ -69,7 +69,7 @@ header .search label{display:none;}
 header .search input[type="text"]{width:172px; padding-right:48px;}
 header .search button{position:absolute; right:0; top:0; display:block; width:40px; height:100%; font-size:0; line-height:0; text-indent:-9999px; background:url('../img/magnifying-glass.png') center center no-repeat transparent; border:none; cursor:pointer;}
 
-header .social{clear:right; float:right;}
+header .social{clear:right; float:right; display:none;}
 header .social li{display:inline; margin-left:8px;}
 header .social a{display:inline-block; width:24px; height:24px; overflow:hidden; font-size:0; line-height:0;}
 header .social a.facebook{background:url('../img/ico/facebook.png');}
@@ -84,7 +84,10 @@ header .social a.linkedin{background:url('../img/ico/linkedin.png');}
 #primary-nav a{font-size:20px; text-transform:lowercase; font-weight:300; color:#aaa;}
 #primary-nav a:hover, #primary-nav a:active, #primary-nav .current-menu-item a, #primary-nav .current_page_parent a{text-decoration:none; color:#333;}
 
-/* Post styles */
+/** Utility classes */
+.screen-reader-text{position:absolute; right:-9999px;}
+
+/** Content styles */
 .primary .post{margin-bottom:21px;}
 
 .post .post-title{margin-bottom:.3em;}
@@ -98,26 +101,12 @@ article.primary .entry-meta{margin-bottom:2em;}
 #comments{clear:both; margin-top:3em; padding-top:2em; border-top:2px solid #dadada;}
 #comments .comments{list-style:none;}
 
-/* Twitter module */
+/** Twitter module */
 #twitter-module h2{margin-bottom:0;}
 #twitter-module h2 + p{font-size:.9em;}
+#twitter-module p a{font-weight:bold;}
 .tweets{max-width:100%;}
 .tweet, .tweet time{display:block; line-height:1.5em;}
 .tweet{padding-bottom:.75em;}
 .tweet + .tweet{padding-top:.75em; border-top:1px dashed #dadada;}
 .tweet time{font-size:.85em; color:#999;}
-
-/* Header styles */
-#site-logo{}
-
-/* Utility classes */
-.screen-reader-text{position:absolute; right:-9999px;}
-
-/* Changes to non-structural elements based on screen width */
-@media screen and (max-width:770px){
-
-  /* Header */
-  header .search{position:absolute; right:0; top:-3em;}
-  header .search-btn{display:block;}
-  header .search fieldset, header .social{display:none;}
-}
