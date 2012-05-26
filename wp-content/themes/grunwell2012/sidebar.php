@@ -14,13 +14,10 @@
     <p>Follow me: <a href="https://twitter.com/#!/stevegrunwell" title="Follow @SteveGrunwell on Twitter" rel="external">@stevegrunwell</a></p>
 
     <ul class="tweets">
-    <?php foreach( grunwell_get_tweets() as $tweet ): ?>
-
+    <?php foreach( grunwell_get_tweets() as $tweet ): $time = strtotime($tweet['created_at']); ?>
       <li class="tweet">
-        <?php echo $tweet['text']; ?>
-        <time><?php echo date('M jS @ g:ia', strtotime($tweet['created_at'])); ?></time>
+        <?php printf("%s\n<time title=\"%s\">%s ago</time>", $tweet['text'], date('M jS, Y @ g:ia', $time), human_time_diff($time, time())); ?>
       </li>
-
     <?php endforeach; ?>
     </ul>
   </div><!-- #twitter-module -->
