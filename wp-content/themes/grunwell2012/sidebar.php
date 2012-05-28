@@ -16,7 +16,7 @@
     <ul class="tweets">
     <?php foreach( grunwell_get_tweets() as $tweet ): $time = strtotime($tweet['created_at']); ?>
       <li class="tweet">
-        <?php printf("%s\n<time title=\"%s\">%s ago</time>", $tweet['text'], date('M jS, Y @ g:ia', $time), human_time_diff($time, time())); ?>
+        <?php printf("%s\n<time datetime=\"%s\" title=\"%s\">%s ago</time>", $tweet['text'], date('Y-m-d H:i:s', $time), date('M jS, Y @ g:ia', $time), human_time_diff($time, time())); ?>
       </li>
     <?php endforeach; ?>
     </ul>
