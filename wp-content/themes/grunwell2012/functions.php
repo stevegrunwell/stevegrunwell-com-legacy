@@ -8,6 +8,9 @@
 
 include_once dirname(__FILE__) . '/simple-twitter-timeline/twitter.class.php';
 
+/** Set the page ID for 'portfolio', which all posts of type grunwell_portfolio will be treated as children of */
+define('GRUNWELL_PORTFOLIO_PARENT', 30);
+
 /** Register scripts and styles */
 function grunwell_register_scripts_styles(){
   # Styles
@@ -51,7 +54,7 @@ function grunwell_create_portfolio_post_type() {
       'slug' => 'portfolio',
       'with_front' => false
     ),
-    'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'comments', 'page-attributes'),
+    'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'page-attributes'),
     'taxonomies' => array('post_tag')
   );
   register_post_type('grunwell_portfolio', $args);
@@ -59,9 +62,18 @@ function grunwell_create_portfolio_post_type() {
 }
 add_action('init', 'grunwell_create_portfolio_post_type');
 
+/**
+ * Force the post parent ID for posts of type grunwell_portfolio
+ * @global $wpdb
+ * @global GRUNWELL_PORTFOLIO_PARENT
+ * @param int $id The ID of the post being saved
+ * @return void
+ * @uses wpdb::update()
+ */
 function grunwell_portfolio_set_parent_id($id){
+  global $wpdb;
   if( isset($_POST['post_type']) && $_POST['post_type'] == 'grunwell_portfolio' ){
-    update_post_meta($id, 'parent_id', 30);
+    $wpdb->update($wpdb->posts, array('post_parent' => GRUNWELL_PORTFOLIO_PARENT), array('ID' => $id), array('%d'), array('%d'));
   }
   return;
 }
