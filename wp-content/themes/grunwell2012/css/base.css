@@ -50,6 +50,11 @@ h4{font-size:1.1em; margin-bottom:.5em;}
 h5{font-size:1em; margin-bottom:.5em;}
 h6{font-size:.9em; margin-bottom:.5em;}
 p, ul, ol, dl{margin-bottom:1.5em;}
+ul, ol{margin-left:1.5em;}
+ul{list-style-type:disc;}
+ul.menu{margin-left:0;}
+li{margin-bottom:.4em;}
+dt{margin-bottom:1em; font-weight:bold;}
 small{font-size:.85em; line-height:.8em;}
 sup{position:relative; top:-.3em;}
 
@@ -119,7 +124,7 @@ article.primary .entry-meta{margin-bottom:2em;}
 #twitter-module h2{margin-bottom:0;}
 #twitter-module h2 + p{font-size:.9em;}
 #twitter-module p a{font-weight:bold;}
-.tweets{max-width:100%;}
+.tweets{max-width:100%; margin-left:0;}
 .tweet, .tweet time{display:block; line-height:1.5em;}
 .tweet{padding-bottom:.75em;}
 .tweet + .tweet{padding-top:.75em; border-top:1px dashed #dadada;}
