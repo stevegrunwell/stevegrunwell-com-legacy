@@ -42,16 +42,16 @@ footer{clear:both;}
 /** Typography */
 body{font-family:'Helvetica Neue',sans-serif; font-size:13px; line-height:1.4em; color:#333;}
 h1, h2, h3, h4{font-family:Gotham,'Helvetica Neue',sans-serif;}
+h2, h3, h4, h5, h6{margin-top:2em;}
 h1{font-size:1.9em; margin-bottom:1em;}
 h2{font-size:1.5em; margin-bottom:.8em;}
 h3{font-size:1.2em; margin-bottom:.6em;}
 h4{font-size:1.1em; margin-bottom:.5em;}
 h5{font-size:1em; margin-bottom:.5em;}
 h6{font-size:.9em; margin-bottom:.5em;}
-p{margin-bottom:1.5em;}
+p, ul, ol, dl{margin-bottom:1.5em;}
 small{font-size:.85em; line-height:.8em;}
 sup{position:relative; top:-.3em;}
-p + h2, p + h3, p + h4, p + h5, p + h6{margin-top:2em;}
 
 a:link, a:visited{text-decoration:none; color:#812323;}
 a:hover, a:active{text-decoration:underline;}
@@ -111,6 +111,9 @@ article.primary .entry-meta{margin-bottom:2em;}
 /* Comments */
 #comments{clear:both; margin-top:3em; padding-top:2em; border-top:2px solid #dadada;}
 #comments .comments{list-style:none;}
+
+/** Sidebar styles */
+.secondary h2{margin-top:0;}
 
 /** Twitter module */
 #twitter-module h2{margin-bottom:0;}
