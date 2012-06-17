@@ -13,6 +13,7 @@
 <title><?php wp_title( '' ); ?></title>
 <?php
   wp_enqueue_style( 'site-styles' );
+  wp_enqueue_script( 'modernizr' );
   wp_enqueue_script( 'site-scripts' );
   wp_head();
 ?>

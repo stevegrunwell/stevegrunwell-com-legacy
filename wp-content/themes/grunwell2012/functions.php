@@ -20,6 +20,9 @@ function grunwell_register_scripts_styles() {
   # Scripts
   wp_register_script( 'site-scripts', get_bloginfo( 'template_url' ) . '/js/main.js', array('jquery', 'jquery-placeholder'), '', true );
 
+  // Modernizr
+  wp_register_script( 'modernizr', get_bloginfo( 'template_url' ) . '/js/modernizr.min.js', null, '2.5.3', false );
+
   // jQuery Placeholder - https://github.com/mathiasbynens/jquery-placeholder
   wp_register_script( 'jquery-placeholder', get_bloginfo( 'template_url' ) . '/js/jquery.placeholder.min.js', array('jquery'), '1.8.7', true );
 }
@@ -143,7 +146,7 @@ add_action( 'admin_menu', 'grunwell_remove_menus' );
  */
 function grunwell_sitelogo() {
   $tag = ( is_front_page() ? 'h1' : 'div' );
-  return sprintf( '<%s id="site-logo" role="banner"><a href="%s" rel="home"><img src="%s/img/site-logo.png" alt="%s" /></a></%s>', $tag, home_url( '/' ), get_bloginfo( 'template_url' ), esc_attr( get_bloginfo( 'template_url' ) ), $tag );
+  return sprintf( '<%s id="site-logo" role="banner"><a href="%s" rel="home"><img src="%s/img/site-logo.svg" alt="%s" /></a></%s>', $tag, home_url( '/' ), get_bloginfo( 'template_url' ), esc_attr( get_bloginfo( 'template_url' ) ), $tag );
 }
 
 /**
