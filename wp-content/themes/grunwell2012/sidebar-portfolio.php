@@ -9,6 +9,6 @@
 
 <div class="secondary" role="complementary">
 
-  <?php grunwell_custom_field('sidebar_content', null, '' ); ?>
+  <?php grunwell_custom_field( 'sidebar_content', null, '' ); ?>
 
 </div><!-- .secondary -->

@@ -10,7 +10,7 @@ get_header(); ?>
 
 <div class="primary" role="main">
 
-  <?php get_template_part('loop', 'search'); ?>
+  <?php get_template_part( 'loop', 'search' ); ?>
 
 </div><!-- // .primary -->
 

@@ -8,9 +8,9 @@
 
 get_header(); ?>
 
-<?php while( have_posts() ): the_post(); ?>
+<?php while ( have_posts() ) : the_post(); ?>
 
-  <article id="post-<?php the_ID(); ?>" <?php post_class('primary'); ?> role="main">
+  <article id="post-<?php the_ID(); ?>" <?php post_class( 'primary' ); ?> role="main">
     <h1 class="post-title"><?php the_title(); ?></h1>
 
     <?php the_content(); ?>
@@ -19,5 +19,5 @@ get_header(); ?>
 
 <?php endwhile; ?>
 
-<?php get_sidebar('portfolio'); ?>
+<?php get_sidebar( 'portfolio' ); ?>
 <?php get_footer(); ?>

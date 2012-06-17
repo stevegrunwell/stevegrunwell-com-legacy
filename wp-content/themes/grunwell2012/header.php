@@ -8,12 +8,12 @@
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
-<meta charset="<?php bloginfo('charset'); ?>" />
+<meta charset="<?php bloginfo( 'charset' ); ?>" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title><?php wp_title(''); ?></title>
+<title><?php wp_title( '' ); ?></title>
 <?php
-  wp_enqueue_style('site-styles');
-  wp_enqueue_script('site-scripts');
+  wp_enqueue_style( 'site-styles' );
+  wp_enqueue_script( 'site-scripts' );
   wp_head();
 ?>
 </head>
@@ -31,7 +31,7 @@
           'menu' => 'social-networks',
           'menu_class' => 'social'
         );
-        wp_nav_menu($args);
+        wp_nav_menu( $args );
       ?>
 
       <?php echo grunwell_sitelogo(); ?>
@@ -42,7 +42,7 @@
             'container' => false,
             'menu' => 'primary-nav'
           );
-          wp_nav_menu($args);
+          wp_nav_menu( $args );
         ?>
       </nav>
     </header>
