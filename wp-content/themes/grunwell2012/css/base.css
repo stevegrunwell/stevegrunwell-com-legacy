@@ -87,7 +87,7 @@ header .social a.linkedin{background:url('../img/ico/linkedin.png');}
 #primary-nav{clear:left; display:block; margin-bottom:44px;}
 #primary-nav li{display:inline; margin-right:24px;}
 #primary-nav a{font-size:20px; text-transform:lowercase; font-weight:300; color:#aaa;}
-#primary-nav a:hover, #primary-nav a:active, #primary-nav .current-menu-item a, #primary-nav .current_page_parent a{text-decoration:none; color:#333;}
+#primary-nav a:hover, #primary-nav a:active, #primary-nav .current-menu-item a, #primary-nav .current_page_parent a, #primary-nav .current_page_ancestor a{text-decoration:none; color:#333;}
 #primary-nav select{display:none;}
 
 @media screen and (max-width:770px){

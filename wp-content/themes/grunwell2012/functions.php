@@ -63,6 +63,39 @@ function grunwell_create_portfolio_post_type() {
 add_action('init', 'grunwell_create_portfolio_post_type');
 
 /**
+ * Array filter callback to remove 'current_page_parent' and 'current_page_ancestor' CSS classes from menu items
+ * @param str $class A single CSS class
+ * @return bool True if $class is not in $filter, false otherwise
+ */
+function grunwell_remove_active_nav_classes( $class ) {
+  $filter = array('current_page_item', 'current_page_parent', 'current_page_ancestor');
+  return ! in_array( $class, $filter );
+}
+
+/**
+ * Don't highlight "Blog" in the primary navigation when we're looking at grunwell_portfolio pages
+ * @global $post
+ * @param array $classes CSS classes to be applied to $item
+ * @param object $item The WordPress menu item
+ * @uses grunwell_remove_active_nav_classes()
+ * @uses get_post_type()
+ * @uses get_the_ID()
+ * @see http://modal.us/blog/2011/04/28/single-custom-posts-can-highlight-nav-and-sub-nav-links-really/
+ */
+function grunwell_repair_nav_classes( $classes, $item ) {
+  global $post;
+  if ( get_post_type() === 'grunwell_portfolio' ) {
+    if ( in_array( 'grunwell_portfolio', $classes ) ) {
+      $classes[] = ( $item->ID == get_the_ID() ? 'current_page_parent' : 'current_page_ancestor' );
+    } else { // Make sure nobody else has it
+      $classes = array_filter( $classes, 'grunwell_remove_active_nav_classes' );
+    }
+  }
+  return $classes;
+}
+add_action( 'nav_menu_css_class', 'grunwell_repair_nav_classes', 10, 2 );
+
+/**
  * Force the post parent ID for posts of type grunwell_portfolio
  * @global $wpdb
  * @global GRUNWELL_PORTFOLIO_PARENT
