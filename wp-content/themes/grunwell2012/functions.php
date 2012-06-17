@@ -6,24 +6,29 @@
  * @author Steve Grunwell <steve@stevegrunwell.com>
  */
 
-include_once dirname(__FILE__) . '/simple-twitter-timeline/twitter.class.php';
-
-/** Register scripts and styles */
-function grunwell_register_scripts_styles(){
-  # Styles
-  wp_register_style('site-styles', get_bloginfo('template_url') . '/css/base.css', null, null, 'all');
-
-  # Scripts
-  wp_register_script('site-scripts', get_bloginfo('template_url') . '/js/main.js', array('jquery', 'jquery-placeholder'), '', true);
-
-  // jQuery Placeholder - https://github.com/mathiasbynens/jquery-placeholder
-  wp_enqueue_script('jquery-placeholder', get_bloginfo('template_url') . '/js/jquery.placeholder.min.js', array('jquery'), '1.8.7', true);
-}
-add_action('init', 'grunwell_register_scripts_styles');
+include_once dirname( __FILE__ ) . '/simple-twitter-timeline/twitter.class.php';
 
 /**
-* Creates the "Portfolio" custom post type
+ * Register scripts and styles
+ * @uses wp_register_script()
+ * @uses wp_register_style()
+ */
+function grunwell_register_scripts_styles() {
+  # Styles
+  wp_register_style( 'site-styles', get_bloginfo( 'template_url' ) . '/css/base.css', null, null, 'all' );
+
+  # Scripts
+  wp_register_script( 'site-scripts', get_bloginfo( 'template_url' ) . '/js/main.js', array('jquery', 'jquery-placeholder'), '', true );
+
+  // jQuery Placeholder - https://github.com/mathiasbynens/jquery-placeholder
+  wp_register_script( 'jquery-placeholder', get_bloginfo( 'template_url' ) . '/js/jquery.placeholder.min.js', array('jquery'), '1.8.7', true );
+}
+add_action( 'init', 'grunwell_register_scripts_styles' );
+
+/**
+* Creates the "Portfolio" (grunwell_portfolio) custom post type
 * @return void
+* @uses register_post_type()
 */
 function grunwell_create_portfolio_post_type() {
   $args = array(
@@ -51,13 +56,13 @@ function grunwell_create_portfolio_post_type() {
       'slug' => 'portfolio',
       'with_front' => false
     ),
-    'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'page-attributes'),
+    'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
     'taxonomies' => array('post_tag')
   );
-  register_post_type('grunwell_portfolio', $args);
+  register_post_type( 'grunwell_portfolio', $args );
   return;
 }
-add_action('init', 'grunwell_create_portfolio_post_type');
+add_action( 'init', 'grunwell_create_portfolio_post_type' );
 
 /**
  * Array filter callback to remove 'current_page_parent' and 'current_page_ancestor' CSS classes from menu items
@@ -95,8 +100,9 @@ add_action( 'nav_menu_css_class', 'grunwell_repair_nav_classes', 10, 2 );
 /**
  * Register custom WordPress menu positions
  * @return void
+ * @uses register_nav_menus()
  */
-function grunwell_custom_menus(){
+function grunwell_custom_menus() {
   register_nav_menus(
     array(
       'primary-nav' => 'Primary Navigation',
@@ -105,34 +111,39 @@ function grunwell_custom_menus(){
   );
   return;
 }
-add_action('init', 'grunwell_custom_menus');
+add_action( 'init', 'grunwell_custom_menus' );
 
 /**
  * Remove admin menus we don't need (Links)
+ * @global $menu
  * @return void
  */
-function grunwell_remove_menus(){
+function grunwell_remove_menus() {
   global $menu;
   $restricted = array(__('Links'));
-  end($menu);
-  while( prev($menu) ){
-    $value = explode(' ',$menu[key($menu)][0]);
-    if( in_array($value['0'] != null ? $value[0] : '' , $restricted) ){
-      unset($menu[key($menu)]);
+  end( $menu );
+  while ( prev( $menu ) ){
+    $value = explode( ' ', $menu[key( $menu )]['0'] );
+    if ( in_array( ( $value['0'] != null ? $value['0'] : '' ) , $restricted ) ) {
+      unset( $menu[key( $menu )] );
     }
   }
   return;
 }
-add_action('admin_menu', 'grunwell_remove_menus');
+add_action( 'admin_menu', 'grunwell_remove_menus' );
 
 /**
  * Get the tag for #site-logo
  * Will use a <h1> on the front page and <div> on the others
  * @return str
+ * @uses esc_attr()
+ * @uses get_bloginfo()
+ * @uses home_url()
+ * @uses is_front_page()
  */
-function grunwell_sitelogo(){
+function grunwell_sitelogo() {
   $tag = ( is_front_page() ? 'h1' : 'div' );
-  return sprintf('<%s id="site-logo"><a href="%s" rel="home"><img src="%s/img/site-logo.png" alt="%s" /></a></%s>', $tag, home_url('/'), get_bloginfo('template_url'), esc_attr(get_bloginfo('template_url')), $tag);
+  return sprintf( '<%s id="site-logo" role="banner"><a href="%s" rel="home"><img src="%s/img/site-logo.png" alt="%s" /></a></%s>', $tag, home_url( '/' ), get_bloginfo( 'template_url' ), esc_attr( get_bloginfo( 'template_url' ) ), $tag );
 }
 
 /**
@@ -140,16 +151,16 @@ function grunwell_sitelogo(){
  * @param $str The string to search/filter
  * @return str
  */
-function grunwell_superscript_dates($str){
-  if( preg_match_all('/\d(st|nd|rd|th)/i', $str, $matches) ){
-    foreach( $matches['0'] as $k=>$v ){
-      $replacement = str_replace($matches['1'][$k], sprintf('<sup>%s</sup>', $matches['1'][$k]), $v);
-      $str = str_replace($v, $replacement, $str);
+function grunwell_superscript_dates( $str ) {
+  if ( preg_match_all( '/\d(st|nd|rd|th)/i', $str, $matches ) ) {
+    foreach ( $matches['0'] as $k=>$v ) {
+      $replacement = str_replace( $matches['1'][$k], sprintf( '<sup>%s</sup>', $matches['1'][$k] ), $v );
+      $str = str_replace( $v, $replacement, $str );
     }
   }
   return $str;
 }
-add_filter('get_the_date', 'grunwell_superscript_dates');
+add_filter( 'get_the_date', 'grunwell_superscript_dates' );
 
 /**
  * Get a custom field stored in the Advanced Custom Fields plugin
@@ -161,19 +172,19 @@ add_filter('get_the_date', 'grunwell_superscript_dates');
  * @return mixed (dependent upon $echo)
  * @uses get_field()
  */
-function grunwell_get_custom_field($key, $id=false, $default=''){
+function grunwell_get_custom_field( $key, $id=false, $default='' ) {
   global $post;
-  $key = trim(filter_var($key, FILTER_SANITIZE_STRING));
+  $key = trim( filter_var( $key, FILTER_SANITIZE_STRING ) );
   $result = '';
 
-  if( function_exists('get_field') ){
-    if( intval($id) > 0 ){
-      $result = get_field($key, intval($id));
-    } else if( isset($post->ID) ){
-      $result = get_field($key);
+  if ( function_exists( 'get_field' ) ) {
+    if ( intval( $id ) > 0 ){
+      $result = get_field( $key, intval( $id ) );
+    } elseif ( isset( $post->ID ) ) {
+      $result = get_field( $key );
     }
 
-    if( $result == '' ){
+    if ( $result == '' ) {
       $result = $default;
     }
   } else { // get_field() is undefined, most likely due to the plugin being inactive
@@ -183,8 +194,8 @@ function grunwell_get_custom_field($key, $id=false, $default=''){
 }
 
 /** Shortcut for echo grunwell_get_custom_field() */
-function grunwell_custom_field($key, $id=false, $default=''){
-  echo grunwell_get_custom_field($key, $id, $default);
+function grunwell_custom_field( $key, $id=false, $default='' ) {
+  echo grunwell_get_custom_field( $key, $id, $default );
   return;
 }
 
@@ -193,19 +204,20 @@ function grunwell_custom_field($key, $id=false, $default=''){
  * @return array
  * @uses SimpleTwitterTimeline::get_timeline()
  */
-function grunwell_get_tweets(){
-  if( class_exists('SimpleTwitterTimeline') ){
+function grunwell_get_tweets() {
+  $tweets = array();
+  if ( class_exists( 'SimpleTwitterTimeline' ) ) {
     $args = array(
       'exclude_replies' => false,
       'limit' => 3,
       'parse_links' => true,
       'use_cache' => true,
-      'cache_path' => dirname(__FILE__)
+      'cache_path' => dirname( __FILE__ )
     );
-    $twitter = new SimpleTwitterTimeline('stevegrunwell', $args);
-    return $twitter->get_timeline();
+    $twitter = new SimpleTwitterTimeline( 'stevegrunwell', $args );
+    $tweets = $twitter->get_timeline();
   }
-  return array();
+  return $tweets;
 }
 
 ?>
