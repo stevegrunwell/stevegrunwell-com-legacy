@@ -1,12 +1,22 @@
 <?php
 
-// vars
+/*
+*  Meta Box: Location
+*
+*  @description: 
+*  @created: 23/06/12
+*/
+
+// global
 global $post;
 		
-// get location data
-$location = $this->get_acf_location($post->ID);
+		
+// vars
+$location = $this->parent->get_acf_location($post->ID);
 
-if(empty($location['rules']))
+
+// at lease 1 location rule
+if( empty($location['rules']) )
 {
 	$location['rules'] = array(
 		array(
@@ -59,7 +69,7 @@ if(empty($location['rules']))
 							
 
 							// validate
-							if($this->is_field_unlocked('options_page'))
+							if($this->parent->is_field_unlocked('options_page'))
 							{
 								$choices[__("Options Page",'acf')]['options_page'] = __("Options Page",'acf');
 							}
@@ -73,12 +83,12 @@ if(empty($location['rules']))
 								'optgroup' => true,
 							);
 							
-							$this->create_field($args);							
+							$this->parent->create_field($args);							
 							
 						?></td>
 						<td class="operator"><?php 	
 							
-							$this->create_field(array(
+							$this->parent->create_field(array(
 								'type'	=>	'select',
 								'name'	=>	'location[rules]['.$k.'][operator]',
 								'value'	=>	$rule['operator'],
@@ -109,7 +119,7 @@ if(empty($location['rules']))
 				</table>
 				<ul class="hl clearfix">
 					<li style="padding:4px 4px 0 0;"><?php _e("match",'acf'); ?></li>
-					<li><?php $this->create_field(array(
+					<li><?php $this->parent->create_field(array(
 									'type'	=>	'select',
 									'name'	=>	'location[allorany]',
 									'value'	=>	$location['allorany'],

@@ -10,7 +10,7 @@
 *-------------------------------------------------------------------------*/
  
  
-class Everything_fields 
+class acf_everything_fields 
 {
 
 	var $parent;
@@ -54,6 +54,8 @@ class Everything_fields
 		
 		add_action('edit_user_profile_update', array($this, 'save_user'));
 		add_action('personal_options_update', array($this, 'save_user'));
+		add_action('user_register', array($this, 'save_user'));
+		
 		
 		add_filter("attachment_fields_to_save", array($this, 'save_attachment'), null , 2);
 
@@ -188,21 +190,11 @@ class Everything_fields
 		// Style
 		echo '<link rel="stylesheet" type="text/css" href="'.$this->parent->dir.'/css/global.css?ver=' . $this->parent->version . '" />';
 		echo '<link rel="stylesheet" type="text/css" href="'.$this->parent->dir.'/css/input.css?ver=' . $this->parent->version . '" />';
-
-
-		// find user editor setting
-		$user = wp_get_current_user();
-		$editor_mode = get_user_setting('editor', 'tinymce');
 		
 		
 		// Javascript
 		echo '<script type="text/javascript" src="'.$this->parent->dir.'/js/input-actions.js?ver=' . $this->parent->version . '" ></script>';
-		echo '<script type="text/javascript">
-			acf.validation_message = "' . __("Validation Failed. One or more fields below are required.",'acf') . '";
-			acf.post_id = 0;
-			acf.editor_mode = "' . $editor_mode . '";
-			acf.admin_url = "' . admin_url() . '";
-		</script>';
+		echo '<script type="text/javascript">acf.post_id = 0;</script>';
 		
 		
 		// add user js + css
@@ -326,6 +318,7 @@ class Everything_fields
 	
 	function save_user( $user_id )
 	{
+		
 		// validate
 		if( !isset( $_POST['fields'] ) )
 		{

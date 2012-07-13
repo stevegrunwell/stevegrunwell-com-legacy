@@ -1,28 +1,172 @@
-<?php
+<?php 
 
-/**
- * Admin Page: Settings
- *
- * This file creates the HTML for the ACF admin page (Settings)
- * On this page you can:
- * - Activate / deactivate keys
- * - Export acf objects
- * - Update ACF global settings
- */
+/*
+*  Settings
+*
+*  @description: All the functionality for ACF Settings
+*  @since 3.2.6
+*  @created: 23/06/12
+*/
 
-$action = isset($_POST['action']) ? $_POST['action'] : "";
+ 
+class acf_settings 
+{
+
+	var $parent;
+		
+	
+	/*
+	*  __construct
+	*
+	*  @description: 
+	*  @since 3.1.8
+	*  @created: 23/06/12
+	*/
+	
+	function __construct($parent)
+	{
+	
+		// vars
+		$this->parent = $parent;
+		
+		
+		// actions
+		add_action('admin_menu', array($this,'admin_menu'), 11);
+		
+	}
+	
+	
+	/*
+	*  admin_menu
+	*
+	*  @description: 
+	*  @since 3.1.8
+	*  @created: 23/06/12
+	*/
+	
+	function admin_menu()
+	{
+		$page = add_submenu_page('edit.php?post_type=acf', __('Settings','acf'), __('Settings','acf'), 'manage_options','acf-settings',array($this,'html'));
+		
+		add_action('admin_head-' . $page, array($this,'admin_head'));
+		
+	}
+	
+	
+	/*
+	*  admin_head
+	*
+	*  @description: 
+	*  @since 3.1.8
+	*  @created: 23/06/12
+	*/
+	
+	function admin_head()
+	{
+		
+		// Activate / Deactivate Add-ons
+		if( isset($_POST['acf_field_deactivate']) )
+		{
+			// vars
+			$message = "";
+			$field = $_POST['acf_field_deactivate'];
+			
+			// delete field
+			delete_option('acf_'.$field.'_ac');
+			
+			//set message
+			if($field == "repeater")
+			{
+				$message = '<p>' . __("Repeater field deactivated",'acf') . '</p>';
+			}
+			elseif($field == "options_page")
+			{
+				$message = '<p>' . __("Options page deactivated",'acf') . '</p>';
+			}
+			elseif($field == "flexible_content")
+			{
+				$message = '<p>' . __("Flexible Content field deactivated",'acf') . '</p>';
+			}
+			elseif($field == "gallery")
+			{
+				$message = '<p>' . __("Gallery field deactivated",'acf') . '</p>';
+			}
+			
+			// show message on page
+			$this->parent->admin_message($message);
+		}
+		
+		
+		if( isset($_POST['acf_field_activate']) && isset($_POST['key']) )
+		{
+			// vars
+			$message = "";
+			$field = $_POST['acf_field_activate'];
+			$key = trim($_POST['key']);
+		
+			// update option
+			update_option('acf_'.$field.'_ac', $key);
+			
+			// did it unlock?
+			if($this->parent->is_field_unlocked($field))
+			{
+				//set message
+				if($field == "repeater")
+				{
+					$message = '<p>' . __("Repeater field activated",'acf') . '</p>';
+				}
+				elseif($field == "options_page")
+				{
+					$message = '<p>' . __("Options page activated",'acf') . '</p>';
+				}
+				elseif($field == "flexible_content")
+				{
+					$message = '<p>' . __("Flexible Content field activated",'acf') . '</p>';
+				}
+				elseif($field == "gallery")
+				{
+					$message = '<p>' . __("Gallery field activated",'acf') . '</p>';
+				}
+			}
+			else
+			{
+				$message = '<p>' . __("License key unrecognised",'acf') . '</p>';
+			}
+			
+			$this->parent->admin_message($message);
+		}
+		
+
+		
+		// Style
+		?>
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->parent->dir ?>/css/global.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->parent->dir ?>/css/acf.css" />
+		<?php
+	}
+	
+	
+	/*
+	*  html
+	*
+	*  @description: 
+	*  @since 3.1.8
+	*  @created: 23/06/12
+	*/
+	
+	function html()
+	{
+	
+		// vars
+		$action = isset($_POST['action']) ? $_POST['action'] : "";
 
 ?>
-<link rel="stylesheet" type="text/css" href="<?php echo $this->dir ?>/css/global.css" />
-<link rel="stylesheet" type="text/css" href="<?php echo $this->dir ?>/css/acf.css" />
-
-<!-- Wrap -->
 <div class="wrap">
 
 	<div class="icon32" id="icon-acf"><br></div>
 	<h2 style="margin: 0 0 25px;"><?php _e("Advanced Custom Fields Settings",'acf'); ?></h2>
 	
-<?php
+	<?php
  
 if($action == ""): 
 
@@ -49,11 +193,11 @@ if($action == ""):
 		<tbody>
 			<tr>
 				<td><?php _e("Repeater Field",'acf'); ?></td>
-				<td><?php echo $this->is_field_unlocked('repeater') ? __("Active",'acf') : __("Inactive",'acf'); ?></td>
+				<td><?php echo $this->parent->is_field_unlocked('repeater') ? __("Active",'acf') : __("Inactive",'acf'); ?></td>
 				<td>
 					<form action="" method="post">
-						<?php if($this->is_field_unlocked('repeater')){
-							echo '<span class="activation_code">XXXX-XXXX-XXXX-'.substr($this->get_license_key('repeater'),-4) .'</span>';
+						<?php if($this->parent->is_field_unlocked('repeater')){
+							echo '<span class="activation_code">XXXX-XXXX-XXXX-'.substr($this->parent->get_license_key('repeater'),-4) .'</span>';
 							echo '<input type="hidden" name="acf_field_deactivate" value="repeater" />';
 							echo '<input type="submit" class="button" value="Deactivate" />';
 						}
@@ -68,11 +212,11 @@ if($action == ""):
 			</tr>
 			<tr>
 				<td><?php _e("Flexible Content Field",'acf'); ?></td>
-				<td><?php echo $this->is_field_unlocked('flexible_content') ? __("Active",'acf') : __("Inactive",'acf'); ?></td>
+				<td><?php echo $this->parent->is_field_unlocked('flexible_content') ? __("Active",'acf') : __("Inactive",'acf'); ?></td>
 				<td>
 					<form action="" method="post">
-						<?php if($this->is_field_unlocked('flexible_content')){
-							echo '<span class="activation_code">XXXX-XXXX-XXXX-'.substr($this->get_license_key('flexible_content'),-4) .'</span>';
+						<?php if($this->parent->is_field_unlocked('flexible_content')){
+							echo '<span class="activation_code">XXXX-XXXX-XXXX-'.substr($this->parent->get_license_key('flexible_content'),-4) .'</span>';
 							echo '<input type="hidden" name="acf_field_deactivate" value="flexible_content" />';
 							echo '<input type="submit" class="button" value="Deactivate" />';
 						}
@@ -86,12 +230,31 @@ if($action == ""):
 				</td>
 			</tr>
 			<tr>
-				<td><?php _e("Options Page",'acf'); ?></td>
-				<td><?php echo $this->is_field_unlocked('options_page') ? __("Active",'acf') : __("Inactive",'acf'); ?></td>
+				<td><?php _e("Gallery Field",'acf'); ?></td>
+				<td><?php echo $this->parent->is_field_unlocked('gallery') ? __("Active",'acf') : __("Inactive",'acf'); ?></td>
 				<td>
 					<form action="" method="post">
-						<?php if($this->is_field_unlocked('options_page')){
-							echo '<span class="activation_code">XXXX-XXXX-XXXX-'.substr($this->get_license_key('options_page'),-4) .'</span>';
+						<?php if($this->parent->is_field_unlocked('gallery')){
+							echo '<span class="activation_code">XXXX-XXXX-XXXX-'.substr($this->parent->get_license_key('gallery'),-4) .'</span>';
+							echo '<input type="hidden" name="acf_field_deactivate" value="gallery" />';
+							echo '<input type="submit" class="button" value="Deactivate" />';
+						}
+						else
+						{
+							echo '<input type="text" name="key" value="" />';
+							echo '<input type="hidden" name="acf_field_activate" value="gallery" />';
+							echo '<input type="submit" class="button" value="Activate" />';
+						} ?>
+					</form>
+				</td>
+			</tr>
+			<tr>
+				<td><?php _e("Options Page",'acf'); ?></td>
+				<td><?php echo $this->parent->is_field_unlocked('options_page') ? __("Active",'acf') : __("Inactive",'acf'); ?></td>
+				<td>
+					<form action="" method="post">
+						<?php if($this->parent->is_field_unlocked('options_page')){
+							echo '<span class="activation_code">XXXX-XXXX-XXXX-'.substr($this->parent->get_license_key('options_page'),-4) .'</span>';
 							echo '<input type="hidden" name="acf_field_deactivate" value="options_page" />';
 							echo '<input type="submit" class="button" value="Deactivate" />';
 						}
@@ -123,7 +286,7 @@ if($action == ""):
 	<br />
 	
 	<!-- Export / Import -->
-	<form method="post" action="<?php echo $this->dir; ?>/core/actions/export.php">
+	<form method="post" action="<?php echo $this->parent->dir; ?>/core/actions/export.php">
 	<div class="wp-box">
 		<div class="wp-box-half left">
 			<div class="inner">
@@ -148,7 +311,7 @@ if($action == ""):
 					}
 				}
 				
-				$this->create_field(array(
+				$this->parent->create_field(array(
 					'type'	=>	'select',
 					'name'	=>	'acf_posts',
 					'value'	=>	'',
@@ -215,7 +378,7 @@ if($action == ""):
 					}
 				}
 				
-				$this->create_field(array(
+				$this->parent->create_field(array(
 					'type'	=>	'select',
 					'name'	=>	'acf_posts',
 					'value'	=>	'',
@@ -317,9 +480,9 @@ if(function_exists("register_field_group"))
 				$var = array(
 					'id' => uniqid(),
 					'title' => get_the_title($acf->ID),
-					'fields' => $this->get_acf_fields($acf->ID),
-					'location' => $this->get_acf_location($acf->ID),
-					'options' => $this->get_acf_options($acf->ID),
+					'fields' => $this->parent->get_acf_fields($acf->ID),
+					'location' => $this->parent->get_acf_location($acf->ID),
+					'options' => $this->parent->get_acf_options($acf->ID),
 					'menu_order' => $acf->menu_order,
 				);
 				
@@ -337,12 +500,18 @@ if(function_exists("register_field_group"))
 		?></pre>
 	</div>
 </div>
-
 <?php
  
 endif;
 
-?>
-
+?>	
 </div>
 <!-- / Wrap -->
+		<?php
+		
+	}
+	
+			
+}
+
+?>

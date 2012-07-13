@@ -1,16 +1,24 @@
 <?php
-/**
- * Meta Box: Fields
- *
- * This file creates the HTML for a list of fields within a Field Group
- */
+
+/*
+*  Meta Box: Fields
+*
+*  @description: This file creates the HTML for a list of fields within a Field Group
+*  @created: 23/06/12
+*/
+
  
-// vars
+// global
 global $post;
+
+
+// vars
 $fields_names = array();
 
+
 // get fields
-$fields = $this->get_acf_fields($post->ID);
+$fields = $this->parent->get_acf_fields( $post->ID );
+
 
 // add clone
 $fields[999] = array(
@@ -22,27 +30,29 @@ $fields[999] = array(
 	'required' => '0',
 );
 
+
 // get name of all fields for use in field type drop down
-foreach($this->fields as $field)
+foreach( $this->parent->fields as $field )
 {
 	$fields_names[$field->name] = $field->title;
 }
 
-// hidden field for saving
+
 ?>
 
 <!-- Hidden Fields -->
 <div style="display:none;">
 	<script type="text/javascript">
-	acf_messages = {
+	var acf_messages = {
 		move_to_trash : "<?php _e("Move to trash. Are you sure?",'acf'); ?>"
 	};
 	</script>
 	<input type="hidden" name="save_fields" value="true" />
 </div>
+<!-- / Hidden Fields -->
 
 
-
+<!-- Fields Header -->
 <div class="fields_header">
 	<table class="acf widefat">
 		<thead>
@@ -55,6 +65,9 @@ foreach($this->fields as $field)
 		</thead>
 	</table>
 </div>
+<!-- / Fields Header -->
+
+
 <div class="fields">
 	<div class="no_fields_message" <?php if(sizeof($fields) > 1){ echo 'style="display:none;"'; } ?>>
 		<?php _e("No fields. Click the <strong>+ Add Field</strong> button to create your first field.",'acf'); ?>
@@ -94,7 +107,7 @@ foreach($this->fields as $field)
 							</td>
 							<td>
 								<?php 
-								$this->create_field(array(
+								$this->parent->create_field(array(
 									'type'	=>	'text',
 									'name'	=>	'fields['.$key.'][label]',
 									'value'	=>	$field['label'],
@@ -110,7 +123,7 @@ foreach($this->fields as $field)
 							</td>
 							<td>
 								<?php 
-								$this->create_field(array(
+								$this->parent->create_field(array(
 									'type'	=>	'text',
 									'name'	=>	'fields['.$key.'][name]',
 									'value'	=>	$field['name'],
@@ -123,7 +136,7 @@ foreach($this->fields as $field)
 							<td class="label"><label><span class="required">*</span><?php _e("Field Type",'acf'); ?></label></td>
 							<td>
 								<?php 
-								$this->create_field(array(
+								$this->parent->create_field(array(
 									'type'		=>	'select',
 									'name'		=>	'fields['.$key.'][type]',
 									'value'		=>	$field['type'],
@@ -137,7 +150,7 @@ foreach($this->fields as $field)
 							<p class="description"><?php _e("Instructions for authors. Shown when submitting data",'acf'); ?></p></td>
 							<td>
 								<?php 
-								$this->create_field(array(
+								$this->parent->create_field(array(
 									'type'	=>	'textarea',
 									'name'	=>	'fields['.$key.'][instructions]',
 									'value'	=>	$field['instructions'],
@@ -149,7 +162,7 @@ foreach($this->fields as $field)
 							<td class="label"><label><?php _e("Required?",'acf'); ?></label></td>
 							<td>
 								<?php 
-								$this->create_field(array(
+								$this->parent->create_field(array(
 									'type'	=>	'radio',
 									'name'	=>	'fields['.$key.'][required]',
 									'value'	=>	$field['required'],
@@ -164,13 +177,11 @@ foreach($this->fields as $field)
 						</tr>
 						<?php 
 						
-						$this->fields[$field['type']]->create_options($key, $field);
+						$this->parent->fields[$field['type']]->create_options($key, $field);
 						
 						?>
 						<tr class="field_save">
-							<td class="label">
-								<!-- <label><?php _e("Save Field",'acf'); ?></label> -->
-							</td>
+							<td class="label"></td>
 							<td>
 								<ul class="hl clearfix">
 									<li>

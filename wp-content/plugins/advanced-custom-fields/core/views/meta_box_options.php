@@ -1,11 +1,21 @@
 <?php
+
+/*
+*  Meta Box: Options
+*
+*  @description: 
+*  @created: 23/06/12
+*/
+	
+
+// global
+global $post;
+
 	
 // vars
-global $post;
-		
-// get options
-$options = $this->get_acf_options($post->ID);
+$options = $this->parent->get_acf_options($post->ID);
 	
+
 ?>
 <table class="acf_input widefat" id="acf_options">
 	<tr>
@@ -16,7 +26,7 @@ $options = $this->get_acf_options($post->ID);
 		<td>
 			<?php 
 			
-			$this->create_field(array(
+			$this->parent->create_field(array(
 				'type'	=>	'text',
 				'name'	=>	'menu_order',
 				'value'	=>	$post->menu_order,
@@ -32,7 +42,7 @@ $options = $this->get_acf_options($post->ID);
 		<td>
 			<?php 
 			
-			$this->create_field(array(
+			$this->parent->create_field(array(
 				'type'	=>	'radio',
 				'name'	=>	'options[position]',
 				'value'	=>	$options['position'],
@@ -52,7 +62,7 @@ $options = $this->get_acf_options($post->ID);
 		<td>
 			<?php 
 			
-			$this->create_field(array(
+			$this->parent->create_field(array(
 				'type'	=>	'radio',
 				'name'	=>	'options[layout]',
 				'value'	=>	$options['layout'],
@@ -74,7 +84,7 @@ $options = $this->get_acf_options($post->ID);
 		<td>
 			<?php 
 			
-			$this->create_field(array(
+			$this->parent->create_field(array(
 				'type'	=>	'checkbox',
 				'name'	=>	'options[hide_on_screen]',
 				'value'	=>	$options['hide_on_screen'],
@@ -94,5 +104,4 @@ $options = $this->get_acf_options($post->ID);
 			?>
 		</td>
 	</tr>
-		
 </table>
