@@ -36,6 +36,9 @@ function grunwell_register_scripts_styles() {
 }
 add_action( 'init', 'grunwell_register_scripts_styles' );
 
+/** Enable post thumbnails */
+add_theme_support( 'post-thumbnails' );
+
 /**
 * Creates the "Portfolio" (grunwell_portfolio) custom post type
 * @return void
