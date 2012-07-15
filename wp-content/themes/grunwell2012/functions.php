@@ -228,6 +228,36 @@ function grunwell_custom_field( $key, $id=false, $default='' ) {
 }
 
 /**
+ * Get specified $fields from the repeater with slug $key
+ * @global $post
+ * @param str $key The custom field slug of the repeater
+ * @param int $id The post ID (will use global $post if not specified)
+ * @param array $fields The sub-fields to retrieve
+ * @return array
+ * @uses get_custom_field()
+ * @uses the_repeater_field()
+ * @uses get_sub_field()
+ */
+function grunwell_get_repeater_content( $key, $id=null, $fields=array() ) {
+  global $post;
+  if ( ! $id ) $id = $post->ID;
+  $values = array();
+
+  if ( grunwell_get_custom_field( $key, $id, false ) && function_exists( 'the_repeater_field' ) && function_exists( 'the_sub_field' ) ) {
+    while ( the_repeater_field( $key, $id ) ) {
+      $value = array();
+      foreach ( $fields as $field ){
+        $value[$field] = get_sub_field( $field );
+      }
+      if( ! empty( $value ) ) {
+        $values[] = $value;
+      }
+    }
+  }
+  return $values;
+}
+
+/**
  * Get Tweets using the SimpleTwitterTimeline class
  * @return array
  * @uses SimpleTwitterTimeline::get_timeline()
