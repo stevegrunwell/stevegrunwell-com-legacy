@@ -20,11 +20,16 @@ function grunwell_register_scripts_styles() {
   # Scripts
   wp_register_script( 'site-scripts', get_bloginfo( 'template_url' ) . '/js/main.js', array('jquery', 'jquery-placeholder'), '', true );
 
-  // Modernizr
-  wp_register_script( 'modernizr', get_bloginfo( 'template_url' ) . '/js/modernizr.min.js', null, '2.5.3', false );
+  # Third-party
 
   // jQuery Placeholder - https://github.com/mathiasbynens/jquery-placeholder
   wp_register_script( 'jquery-placeholder', get_bloginfo( 'template_url' ) . '/js/jquery.placeholder.min.js', array('jquery'), '1.8.7', true );
+
+  // jQuery Flexslider - http://www.woothemes.com/flexslider/
+  wp_register_script( 'jquery-flexslider', get_bloginfo( 'template_url' ) . '/js/jquery.flexslider.min.js', array('jquery'), '1.8', true );
+
+  // Modernizr
+  wp_register_script( 'modernizr', get_bloginfo( 'template_url' ) . '/js/modernizr.min.js', null, '2.5.3', false );
 }
 add_action( 'init', 'grunwell_register_scripts_styles' );
 
