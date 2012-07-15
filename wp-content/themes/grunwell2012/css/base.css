@@ -77,13 +77,13 @@ header .search input[type="text"]{width:172px; padding-right:48px;}
 header .search button{position:absolute; right:0; top:0; display:block; width:40px; height:100%; font-size:0; line-height:0; text-indent:-9999px; background:url('../img/magnifying-glass.png') center center no-repeat transparent; border:none; cursor:pointer;}
 
 #menu-social-networks{clear:right; float:right;}
-#menu-social-networks li{display:inline-block; margin-left:8px;}
-#menu-social-networks li.facebook{background:url('../img/ico/facebook.png');}
-#menu-social-networks li.twitter{background:url('../img/ico/twitter-2.png');}
-#menu-social-networks li.googleplus{background:url('../img/ico/google-plus.png');}
-#menu-social-networks li.github{background:url('../img/ico/github.png');}
-#menu-social-networks li.flickr{background:url('../img/ico/flickr.png');}
-#menu-social-networks li.linkedin{background:url('../img/ico/linkedin.png');}
+#menu-social-networks li{display:inline-block; margin-left:8px; background:url('../img/ico/social-media.png') no-repeat transparent;}
+#menu-social-networks li.facebook{background-position:-131px -1px;}
+#menu-social-networks li.twitter{background-position:-1px -1px;}
+#menu-social-networks li.googleplus{background-position:-105px -1px;}
+#menu-social-networks li.github{background-position:-53px -1px;}
+#menu-social-networks li.flickr{background-position:-79px -1px;}
+#menu-social-networks li.linkedin{background-position:-27px -1px;}
 #menu-social-networks a{display:block; width:24px; height:24px; overflow:hidden; font-size:0; line-height:0; }
 
 #primary-nav{clear:left; display:block; margin-bottom:44px;}
