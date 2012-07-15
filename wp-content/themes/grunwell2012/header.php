@@ -23,17 +23,6 @@
   <div id="wrapper">
     <header role="banner">
       <a href="#content" class="screen-reader-text">Skip to main content</a>
-      <?php echo get_search_form(); ?>
-
-      <?php
-        $args = array(
-          'container' => false,
-          'depth' => 1,
-          'menu' => 'social-networks',
-          'menu_class' => 'social'
-        );
-        wp_nav_menu( $args );
-      ?>
 
       <?php echo grunwell_sitelogo(); ?>
 

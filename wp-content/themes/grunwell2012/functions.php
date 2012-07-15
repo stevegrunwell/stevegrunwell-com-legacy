@@ -281,7 +281,7 @@ function grunwell_clean_wpcf7_output( $atts, $output='' ) {
       if ( preg_match( '/value="([^"]+)"/', $v, $value_attr ) ) {
         $value = $value_attr['1'];
       }
-      $output = str_replace( $matches['0'][$k], sprintf( '<button type="submit"%s>%s</button>', $v, $value ), $output );
+      $output = str_replace( $matches['0'][$k], sprintf( '<button type="submit" class="btn"%s>%s</button>', $v, $value ), $output );
     }
   }
 
@@ -302,10 +302,6 @@ function grunwell_clean_wpcf7_output( $atts, $output='' ) {
       // Change the input type from text to something more semantic (example input.type-tel == input[type="tel"]
       if ( preg_match( '/class="[^"]*(input-[^"\s]+)[^"]*/i', $input, $type ) ){
         switch ( $type['1'] ) :
-          case 'wpcf7-email':
-          case 'input-email':
-            $new_input = str_replace( 'type="text"', 'type="email"', $new_input );
-            break;
           case 'input-url':
             $new_input = str_replace( 'type="text"', 'type="url"', $new_input );
             break;

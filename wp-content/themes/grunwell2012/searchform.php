@@ -16,7 +16,7 @@ $salt = uniqid() + mt_rand();
 
 <form method="get" action="<?php echo home_url( '/' ); ?>" class="search" role="search">
   <fieldset>
-    <label for="s-<?php echo $salt; ?>">Search for:</label>
+    <label for="s-<?php echo $salt; ?>" class="screen-reader-text">Search site for:</label>
     <input name="s" id="s-<?php echo $salt; ?>" type="text" value="<?php the_search_query(); ?>" placeholder="Search&hellip;" />
     <button type="submit" value="Search">Search</button>
   </fieldset>
