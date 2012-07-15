@@ -42,9 +42,9 @@ get_header(); ?>
     <?php echo grunwell_format_client_data( $client_name, grunwell_get_custom_field( 'agency_city' ), grunwell_get_custom_field( 'agency_url' ) ); ?>
   <?php endif; ?>
 
-  <?php echo get_the_tag_list( '<h2>Tags</h2><p>', ', ', '</p>' ); ?>
-
 <?php endif; ?>
+
+  <?php echo get_the_tag_list( '<h2>Tags</h2><p>', ', ', '</p>' ); ?>
 
 </div><!-- .secondary -->
 

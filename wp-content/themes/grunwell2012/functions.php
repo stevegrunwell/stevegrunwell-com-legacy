@@ -76,6 +76,23 @@ function grunwell_create_portfolio_post_type() {
 add_action( 'init', 'grunwell_create_portfolio_post_type' );
 
 /**
+ * Include grunwell_portfolio posts in tag archives
+ * @param object $query The WP_Query object
+ * @return object
+ * @see http://wordpress.org/support/topic/custom-post-type-tagscategories-archive-page#post-1569857
+ */
+function grunwell_query_post_type( $query ) {
+  if ( is_category() || is_tag() ) {
+    if ( ! $post_type = get_query_var( 'post_type' ) ) {
+      $post_type = array( 'post', 'page', 'nav_menu_item', 'grunwell_portfolio' );
+    }
+    $query->set( 'post_type', $post_type );
+  }
+  return $query;
+}
+add_filter( 'pre_get_posts', 'grunwell_query_post_type' );
+
+/**
  * Array filter callback to remove 'current_page_parent' and 'current_page_ancestor' CSS classes from menu items
  * @param str $class A single CSS class
  * @return bool True if $class is not in $filter, false otherwise

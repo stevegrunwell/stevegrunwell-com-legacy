@@ -11,9 +11,11 @@
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
   <h2 class="post-title"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h2>
+  <?php if ( is_single() ) : ?>
   <div class="entry-meta">
     <?php the_date(); ?>
   </div>
+  <?php endif; ?>
 
   <?php the_excerpt(); ?>
 
