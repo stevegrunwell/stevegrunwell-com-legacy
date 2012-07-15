@@ -228,4 +228,22 @@ function grunwell_get_tweets() {
   return $tweets;
 }
 
+/**
+ * Format client/agency information for the portfolio detail page
+ * If a valid URL is provided, the client's name will be a link
+ * @param str $name The client/agency name. If no name is provided, an empty string will be returned
+ * @param str $city The client/agency city
+ * @param str $url The client/agency website
+ * @return str
+ */
+function grunwell_format_client_data( $name, $city, $url ) {
+  if ( $name ) {
+    $return = ( $url && filter_var( $url, FILTER_VALIDATE_URL ) ? sprintf( '<a href="%s" class="company" rel="external">%s</a>', $url, $name ) : sprintf( '<span class="company">%s</span> ', $name ) );
+    if ( $city ) {
+      $return .= sprintf( '<span class="city">%s</span>', $city );
+    }
+  }
+  return ( $name ? sprintf( '<p>%s</p>', trim( $return ) ) : '' );
+}
+
 ?>
