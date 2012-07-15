@@ -128,6 +128,8 @@ article.primary .entry-meta{margin-bottom:2em;}
 .secondary h2{margin-top:0;}
 .secondary p + h2{margin-top:1.5em;}
 
+.secondary .company, .secondary .city{display:block;}
+
 /** Twitter module */
 #twitter-module h2{margin-bottom:0;}
 #twitter-module h2 + p{font-size:.9em;}

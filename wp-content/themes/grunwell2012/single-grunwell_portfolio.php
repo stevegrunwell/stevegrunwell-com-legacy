@@ -19,5 +19,33 @@ get_header(); ?>
 
 <?php endwhile; ?>
 
-<?php get_sidebar( 'portfolio' ); ?>
+<div class="secondary" role="complementary">
+
+<?php if ( $content = grunwell_get_custom_field( 'sidebar_content', null, false ) ) : ?>
+
+  <?php echo $content; ?>
+
+<?php else : ?>
+
+  <?php if ( $dates = grunwell_get_custom_field( 'dates', null, false ) ) : ?>
+    <h2>Dates</h2>
+    <p><?php echo $dates; ?></p>
+  <?php endif; ?>
+
+  <?php if ( $client_name = grunwell_get_custom_field( 'client_name', null, false ) ) : ?>
+    <h2>Client</h2>
+    <?php echo grunwell_format_client_data( $client_name, grunwell_get_custom_field( 'client_city' ), grunwell_get_custom_field( 'client_url' ) ); ?>
+  <?php endif; ?>
+
+  <?php if ( $agency_name = grunwell_get_custom_field( 'agency_name', null, false ) ) : ?>
+    <h2>Agency</h2>
+    <?php echo grunwell_format_client_data( $client_name, grunwell_get_custom_field( 'agency_city' ), grunwell_get_custom_field( 'agency_url' ) ); ?>
+  <?php endif; ?>
+
+  <?php echo get_the_tag_list( '<h2>Tags</h2><p>', ', ', '</p>' ); ?>
+
+<?php endif; ?>
+
+</div><!-- .secondary -->
+
 <?php get_footer(); ?>
