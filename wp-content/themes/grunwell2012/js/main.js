@@ -70,4 +70,16 @@ jQuery(function($){
     $('#content').find( 'form.wpcf7-form' ).validate();
   }
 
+  /** jQuery Flexslider */
+  if ( $.fn.flexslider ) {
+    $('#content').find( '.flexslider' ).flexslider({
+      controlNav: true,
+      directionNav: false,
+      pauseOnHover: true,
+      start: function(e) {
+        e.find('.slides').removeClass('loading');
+      }
+    });
+  }
+
 });

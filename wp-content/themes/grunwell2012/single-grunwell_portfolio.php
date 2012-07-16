@@ -9,9 +9,24 @@
 get_header(); ?>
 
 <?php while ( have_posts() ) : the_post(); ?>
+  <?php
+    $slides = grunwell_get_repeater_content( 'slides', null, array( 'image', 'caption' ) );
+    $sidebar_content = grunwell_get_custom_field( 'sidebar_content', null, false );
+  ?>
 
   <article id="post-<?php the_ID(); ?>" <?php post_class( 'primary' ); ?> role="main">
     <h1 class="post-title"><?php the_title(); ?></h1>
+
+  <?php if ( ! empty( $slides ) ) : ?>
+    <div class="flexslider">
+      <ul class="slides">
+      <?php foreach ( $slides as $slide ) : ?>
+        <?php $lightbox = wp_get_attachment_image_src( $slide['image'], 'large', false ); ?>
+        <li><a href="<?php echo $lightbox['0']; ?>" title="<?php echo $slide['caption']; ?>" rel="lightbox"><?php echo wp_get_attachment_image( $slide['image'], 'portfolio-slider', false, array( 'title' => null ) ); ?></a></li>
+      <?php endforeach; ?>
+      </ul>
+    </div>
+  <?php endif; ?>
 
     <?php the_content(); ?>
 
@@ -21,9 +36,9 @@ get_header(); ?>
 
 <div class="secondary" role="complementary">
 
-<?php if ( $content = grunwell_get_custom_field( 'sidebar_content', null, false ) ) : ?>
+<?php if ( $sidebar_content ) : ?>
 
-  <?php echo $content; ?>
+  <?php echo $sidebar_content; ?>
 
 <?php else : ?>
 

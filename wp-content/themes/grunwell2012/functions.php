@@ -18,7 +18,7 @@ function grunwell_register_scripts_styles() {
   wp_register_style( 'site-styles', get_bloginfo( 'template_url' ) . '/css/base.css', null, null, 'all' );
 
   # Scripts
-  wp_register_script( 'site-scripts', get_bloginfo( 'template_url' ) . '/js/main.js', array( 'jquery', 'jquery-placeholder', 'jquery-validator' ), '', true );
+  wp_register_script( 'site-scripts', get_bloginfo( 'template_url' ) . '/js/main.js', array( 'jquery', 'jquery-flexslider', 'jquery-placeholder', 'jquery-validator' ), '', true );
 
   # Third-party
 
@@ -38,6 +38,8 @@ add_action( 'init', 'grunwell_register_scripts_styles' );
 
 /** Enable post thumbnails */
 add_theme_support( 'post-thumbnails' );
+
+add_image_size( 'portfolio-slider', 640, 400, true );
 
 /**
 * Creates the "Portfolio" (grunwell_portfolio) custom post type
