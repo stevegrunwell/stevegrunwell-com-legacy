@@ -94,12 +94,16 @@ form.search button{position:absolute; right:0; bottom:0; display:block; width:40
 .entry-meta{margin-bottom:.2em; font-size:.9em; color:#999;}
 article.primary .entry-meta{margin-bottom:2em;}
 
-.btn, a.btn:link, a.btn:visited{display:block; width:100%; padding:.3em .5em; text-align:center; font-size:1.2em; line-height:1.5em; font-weight:bold; color:#fff; text-shadow:1px 1px 1px #333; background:#2a73ab; border:none; border-radius:5px; box-shadow:0 1px 1px #333; cursor:pointer;
-}
+.btn, a.btn:link, a.btn:visited{display:block; width:100%; padding:.3em .5em; text-align:center; font-size:1.2em; line-height:1.5em; font-weight:bold; color:#fff; text-shadow:1px 1px 1px #333; background:#2a73ab; border:none; border-radius:5px; box-shadow:0 1px 1px #333; cursor:pointer;}
 .btn:hover, a.btn:hover, a.btn:active{text-decoration:none; background:#225d8b;}
 
+/** Image styles */
+#content img{width:auto; max-width:100%; box-shadow:0 0 2px #aaa;}
+.alignleft, img.alignleft, .alignright, img.alignright, .aligncenter, img.aligncenter{clear:both; display:block; margin:0 auto 1.4em;}
+
+/** jQuery Flexslider */
 .flexslider, .flexslider ul{width:100%; max-width:640px;}
-.flexslider{position:relative; zoom:1; margin:0 0 .5em; padding:0 0 44px; box-shadow:0 0 1px #ccc;}
+.flexslider{position:relative; zoom:1; margin:0 0 .5em; padding:0 0 44px; box-shadow:0 0 1px #aaa;}
 .flexslider .slides{margin:0; zoom:1;}
 .flexslider .slides:after{content:' '; clear:both; display:block; visibility:hidden; height:0; line-height:0;} /* Clearfix */
 .flexslider .slides > li{position:relative; display:none; list-style:none; -webkit-backface-visibility:hidden;}
@@ -108,7 +112,6 @@ article.primary .entry-meta{margin-bottom:2em;}
 .flexslider .flex-pause-play span{text-transform:capitalize;}
 #content .flexslider a{border:none;}
 
-/* Control nav */
 .flexslider .flex-control-nav{position:absolute; bottom:0; width:100%; margin-left:0; text-align:center;}
 .flexslider .flex-control-nav li{display:inline; margin:0 3px; zoom:1;}
 .flexslider .flex-control-nav li a{display:inline-block; width:12px; height:12px; font-size:0; line-height:0; text-indent:-99999em; background:url('../img/carousel-navigation.png') center top no-repeat transparent; cursor:pointer;}
@@ -127,6 +130,8 @@ article.primary .entry-meta{margin-bottom:2em;}
 
 .secondary .company, .secondary .city{display:block;}
 
+.paypal-donations{margin-bottom:1.4em;}
+
 /** Twitter module */
 #twitter-module h2{margin-bottom:0;}
 #twitter-module h2 + p{font-size:.9em;}
@@ -143,6 +148,10 @@ footer{padding-top:1.4em;}
 @media ( min-width:500px ) {
   #primary-nav ul{display:block;}
   #primary-nav select{display:none;}
+
+  .alignleft, img.alignleft, .alignright, img.alignright{display:inline;}
+  .alignleft, img.alignleft{float:left; margin-right:2em;}
+  .alignright, img.alignright{float:right; margin-left:2em;}
 
   .btn{width:auto;}
 }
