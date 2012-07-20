@@ -17,7 +17,9 @@ get_header(); ?>
 
     <?php
       $args = array(
-        'post_type' => 'grunwell_portfolio',
+        'orderby' => 'menu_order',
+        'order' => 'asc',
+        'post_type' => 'grunwell_portfolio'
       );
     ?>
   <?php foreach ( get_posts( $args ) as $post ): setup_postdata( $post ); ?>
