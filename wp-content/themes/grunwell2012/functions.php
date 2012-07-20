@@ -72,8 +72,8 @@ function grunwell_create_portfolio_post_type() {
       'slug' => 'portfolio',
       'with_front' => false
     ),
-    'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
-    'taxonomies' => array('post_tag')
+    'supports' => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
+    'taxonomies' => array( 'post_tag' )
   );
   register_post_type( 'grunwell_portfolio', $args );
   return;
