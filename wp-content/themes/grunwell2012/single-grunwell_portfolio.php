@@ -54,7 +54,7 @@ get_header(); ?>
 
   <?php if ( $agency_name = grunwell_get_custom_field( 'agency_name', null, false ) ) : ?>
     <h2>Agency</h2>
-    <?php echo grunwell_format_client_data( $client_name, grunwell_get_custom_field( 'agency_city' ), grunwell_get_custom_field( 'agency_url' ) ); ?>
+    <?php echo grunwell_format_client_data( $agency_name, grunwell_get_custom_field( 'agency_city' ), grunwell_get_custom_field( 'agency_url' ) ); ?>
   <?php endif; ?>
 
 <?php endif; ?>
