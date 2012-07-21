@@ -166,6 +166,17 @@ function grunwell_remove_menus() {
 add_action( 'admin_menu', 'grunwell_remove_menus' );
 
 /**
+ * Remove the protocol and server name from a URL, making a relative link
+ * @param str $url - The URL to make relative
+ * @return str
+ */
+function grunwell_make_relative_link( $url ) {
+  return preg_replace( sprintf( '/http(s)?:\/\/%s\//i', $_SERVER['SERVER_NAME'] ), '/', $url );
+}
+add_filter( 'the_permalink', 'grunwell_make_relative_link' );
+add_filter( 'wp_get_attachment_url', 'grunwell_make_relative_link' );
+
+/**
  * Get the tag for #site-logo
  * Will use a <h1> on the front page and <div> on the others
  * @return str
