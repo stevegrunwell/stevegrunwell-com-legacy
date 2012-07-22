@@ -45,7 +45,7 @@ get_header(); ?>
 
 <?php else : ?>
 
-  <?php if ( $dates = grunwell_get_custom_field( 'dates', null, false ) ) : ?>
+  <?php if ( $dates = grunwell_get_custom_field( 'project_dates', null, false ) ) : ?>
     <h2>Dates</h2>
     <p><?php echo $dates; ?></p>
   <?php endif; ?>
