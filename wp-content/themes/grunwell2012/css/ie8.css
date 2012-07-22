@@ -33,4 +33,4 @@ form.search label.screen-reader-text{position:static;}
 /* @media ( min-width:980px ) */
 #content{padding-right:266px;}
 .primary{max-width:640px;}
-.secondary{position:absolute; right:0; top:0; min-width:226px; max-width:226px;}
+.secondary{position:absolute; right:0; top:0; width:auto; min-width:226px; max-width:226px;}
