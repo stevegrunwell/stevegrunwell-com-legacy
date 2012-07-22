@@ -60,9 +60,10 @@ label.error{font-weight:normal; font-style:italic; color:#812323;}
 .wpcf7-form.sent fieldset{display:none;}
 
 /** Header */
-#site-logo{display:block; margin:0 0 16px; padding:0; overflow:hidden; font-family:Gotham,'Helvetica Neue',sans-serif; font-size:46px; line-height:46px; text-transform:uppercase; font-weight:bold;}
-#site-logo img{display:block; width:auto; max-width:100%; height:auto; background:url('../img/site-logo.png') left top no-repeat transparent; background-size:100% auto;}
-html.svg #site-logo img{background:none;}
+#site-logo{display:block; max-width:431px; margin:0 0 16px; padding:0; overflow:hidden; font-family:Gotham,'Helvetica Neue',sans-serif; font-size:46px; line-height:46px; text-transform:uppercase; font-weight:bold;}
+#site-logo img{display:block; width:auto; max-width:100%; height:auto;}
+html.no-svg #site-logo{background:url('../img/site-logo.png') left top no-repeat transparent; background-size:100% auto;}
+html.no-svg #site-logo img{visibility:hidden;}
 
 form.search{z-index:1; width:230px; margin:0 auto 1.4em;}
 form.search fieldset{position:relative;}
