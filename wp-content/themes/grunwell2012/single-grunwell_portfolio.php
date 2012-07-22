@@ -6,6 +6,9 @@
  * @author Steve Grunwell <steve@stevegrunwell.com>
  */
 
+wp_enqueue_style( 'jquery-fancybox' );
+wp_enqueue_script( 'jquery-fancybox' );
+
 get_header(); ?>
 
 <?php while ( have_posts() ) : the_post(); ?>

@@ -82,4 +82,15 @@ jQuery(function($){
     });
   }
 
+  /** jQuery Fancybox */
+  if ( $.fn.fancybox ) {
+    // Only use Fancybox if our window is at least 480px wide - lightboxes on small screens are awful
+    if ( $( window ).width() > 480 ) {
+      $('#content').find( 'a[rel="lightbox"]' ).fancybox({
+        nextEffect: 'fade',
+        prevEffect: 'fade'
+      });
+    }
+  }
+
 });

@@ -25,6 +25,10 @@ function grunwell_register_scripts_styles() {
   // jQuery Placeholder - https://github.com/mathiasbynens/jquery-placeholder
   wp_register_script( 'jquery-placeholder', get_bloginfo( 'template_url' ) . '/js/jquery.placeholder.min.js', array( 'jquery' ), '1.8.7', true );
 
+  // jQuery Fancybox
+  wp_register_style( 'jquery-fancybox', get_bloginfo( 'template_url' ) . '/css/jquery.fancybox.css', null, '2.0.6', 'screen' );
+  wp_register_script( 'jquery-fancybox', get_bloginfo( 'template_url' ) . '/js/jquery.fancybox.pack.js', array( 'jquery' ), '2.0.6', true );
+
   // jQuery Flexslider - http://www.woothemes.com/flexslider/
   wp_register_script( 'jquery-flexslider', get_bloginfo( 'template_url' ) . '/js/jquery.flexslider.min.js', array( 'jquery' ), '1.8', true );
 
@@ -175,6 +179,11 @@ function grunwell_make_relative_link( $url ) {
 }
 add_filter( 'the_permalink', 'grunwell_make_relative_link' );
 add_filter( 'wp_get_attachment_url', 'grunwell_make_relative_link' );
+
+/** Remove some of the items in <head> that we don't need/want */
+remove_action( 'wp_head', 'rsd_link' );
+remove_action( 'wp_head', 'wlwmanifest_link' );
+remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 );
 
 /**
  * Get the tag for #site-logo
