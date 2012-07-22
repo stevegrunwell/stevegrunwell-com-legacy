@@ -153,11 +153,13 @@ footer{padding-top:1.4em;}
   #primary-nav ul{display:block;}
   #primary-nav select{display:none;}
 
+  .btn{width:auto;}
+}
+
+@media ( min-width:640px ) {
   .alignleft, img.alignleft, .alignright, img.alignright{display:inline;}
   .alignleft, img.alignleft{float:left; margin-right:2em;}
   .alignright, img.alignright{float:right; margin-left:2em;}
-
-  .btn{width:auto;}
 }
 
 @media ( min-width:770px ) {
