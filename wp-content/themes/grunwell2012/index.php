@@ -10,6 +10,8 @@ get_header(); ?>
 
 <div class="primary" role="main">
 
+  <h1>Latest blog posts</h1>
+
   <?php get_template_part( 'loop', 'index' ); ?>
 
 </div><!-- // #primary -->
