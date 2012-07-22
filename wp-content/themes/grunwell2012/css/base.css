@@ -63,7 +63,7 @@ label.error{font-weight:normal; font-style:italic; color:#812323;}
 #site-logo{display:block; max-width:431px; margin:0 0 16px; padding:0; overflow:hidden; font-family:Gotham,'Helvetica Neue',sans-serif; font-size:46px; line-height:46px; text-transform:uppercase; font-weight:bold;}
 #site-logo img{display:block; width:auto; max-width:100%; height:auto;}
 html.no-svg #site-logo{background:url('../img/site-logo.png') left top no-repeat transparent; background-size:100% auto;}
-html.no-svg #site-logo img{visibility:hidden;}
+html.no-svg #site-logo img{visibility:hidden; height:38px;}
 
 form.search{z-index:1; width:230px; margin:0 auto 1.4em;}
 form.search fieldset{position:relative;}
