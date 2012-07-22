@@ -60,7 +60,7 @@ jQuery(function($){
 
   /** Add placeholder support for older browsers */
   if( $.fn.placeholder ){
-    jQuery('#content').find('input').placeholder();
+    jQuery('#wrapper').find( 'input, textarea' ).placeholder();
   }
 
   /** jQuery validator */
