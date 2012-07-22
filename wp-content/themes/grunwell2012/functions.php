@@ -48,6 +48,7 @@ add_action( 'init', 'grunwell_register_scripts_styles' );
 add_theme_support( 'post-thumbnails' );
 
 add_image_size( 'portfolio-slider', 640, 400, true );
+add_image_size( 'portfolio-thumb', 320, 200, true );
 
 /**
 * Creates the "Portfolio" (grunwell_portfolio) custom post type

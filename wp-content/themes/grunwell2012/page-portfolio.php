@@ -27,7 +27,7 @@ get_header(); ?>
     <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
       <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
       <?php if ( has_post_thumbnail() ) : ?>
-        <a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'medium', array( 'class' => 'alignright' ) ); ?></a>
+        <a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'portfolio-thumb', array( 'class' => 'alignright' ) ); ?></a>
       <?php endif; ?>
       <?php the_excerpt(); ?>
       <?php echo get_the_tag_list( '<p>Tags: ', ', ', '</p>' ); ?>
