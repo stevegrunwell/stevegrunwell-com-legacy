@@ -40,7 +40,7 @@ function grunwell_register_scripts_styles() {
   wp_register_script( 'jquery-validator', get_bloginfo( 'template_url' ) . '/js/jquery.validate.min.js', array( 'jquery' ), '1.9.0', true );
 
   // Modernizr
-  wp_register_script( 'modernizr', get_bloginfo( 'template_url' ) . '/js/modernizr.min.js', null, '2.5.3', false );
+  wp_register_script( 'modernizr', get_bloginfo( 'template_url' ) . '/js/modernizr.min.js', null, '2.6.1', false );
 }
 add_action( 'init', 'grunwell_register_scripts_styles' );
 
