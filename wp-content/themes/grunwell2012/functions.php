@@ -14,8 +14,12 @@ include_once dirname( __FILE__ ) . '/simple-twitter-timeline/twitter.class.php';
  * @uses wp_register_style()
  */
 function grunwell_register_scripts_styles() {
+  global $wp_styles;
+
   # Styles
   wp_register_style( 'site-styles', get_bloginfo( 'template_url' ) . '/css/base.css', null, null, 'all' );
+  wp_register_style( 'ie8-fixes', get_bloginfo('template_url') . '/css/ie8.css', array( 'site-styles' ), null, 'all' );
+  $wp_styles->add_data( 'ie8-fixes', 'conditional', 'lte IE 8' );
 
   # Scripts
   wp_register_script( 'site-scripts', get_bloginfo( 'template_url' ) . '/js/main.js', array( 'jquery', 'jquery-flexslider', 'jquery-placeholder', 'jquery-validator' ), '', true );

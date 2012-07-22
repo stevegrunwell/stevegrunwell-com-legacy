@@ -6,13 +6,15 @@
  * @author Steve Grunwell <steve@stevegrunwell.com>
  */
 ?><!DOCTYPE html>
-<html <?php language_attributes(); ?>>
+<!--[if IE 8 ]><html class="no-js ie8" <?php language_attributes(); ?>> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html class="no-js" <?php language_attributes(); ?>><!--<![endif]-->
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title><?php wp_title( '' ); ?></title>
 <?php
   wp_enqueue_style( 'site-styles' );
+  wp_enqueue_style( 'ie8-fixes' );
   wp_enqueue_script( 'modernizr' );
   wp_enqueue_script( 'site-scripts' );
   wp_head();
