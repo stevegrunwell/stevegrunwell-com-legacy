@@ -56,6 +56,8 @@ input[type="text"], input[type="email"], input[type="tel"], input[type="password
 label{display:block; font-weight:bold;}
 label.error{font-weight:normal; font-style:italic; color:#812323;}
 
+.wpcf7-form.sent fieldset{display:none;}
+
 /** Header */
 #site-logo{display:block; margin:0 0 16px; padding:0; overflow:hidden; font-family:Gotham,'Helvetica Neue',sans-serif; font-size:46px; line-height:46px; text-transform:uppercase; font-weight:bold;}
 #site-logo img{display:block; width:auto; max-width:100%; height:auto; background:url('../img/site-logo.png') left top no-repeat transparent; background-size:100% auto;}
