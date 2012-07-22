@@ -329,13 +329,17 @@ function grunwell_format_client_data( $name, $city, $url ) {
  * Remove Contact Form 7's scripts and styles without having to add anything to wp-config.php (as described
  * in the CF7 docs) by using the wpcf7_enqueue_styles and wpcf7_enqueue_scripts actions that Takayuki was
  * nice enough to include in includes/controller.php
- *
- * Note that this requires PHP 5.3+ due to the anonymous functions. If you're on an older version of PHP,
- * you'll need to create named functions to deregister the script and style
  * @link http://contactform7.com/loading-javascript-and-stylesheet-only-when-it-is-necessary/
  */
-add_action( 'wpcf7_enqueue_styles', function() { wp_deregister_style( 'contact-form-7' ); } );
-add_action( 'wpcf7_enqueue_scripts', function() { wp_deregister_script( 'jquery-form' ); } );
+function grunwell_wpcf7_deregister_style() {
+  wp_deregister_style( 'contact-form-7' );
+}
+add_action( 'wpcf7_enqueue_styles', 'grunwell_wpcf7_deregister_style' );
+
+function grunwell_wpcf7_deregister_script() {
+  wp_deregister_script( 'jquery-form' );
+}
+add_action( 'wpcf7_enqueue_scripts', 'grunwell_wpcf7_deregister_script' );
 
 /**
  * Clean up the output from Contact Form 7 forms
