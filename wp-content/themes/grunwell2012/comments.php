@@ -18,9 +18,9 @@
 
 <?php if ( have_comments() ) : ?>
 
-    <h3><?php echo _n( 'One comment', '%1 comments', get_comments_number() ); ?></h3>
+    <h3><?php echo grunwell_string_plurals( 'No comments', 'One comment', '%d comments', get_comments_number() ); ?> on "<?php the_title(); ?>"</h3>
     <ol class="comments">
-      <?php wp_list_comments(); ?>
+      <?php wp_list_comments( array( 'callback' => 'grunwell_comment' ) ); ?>
     </ol>
 
 <?php else : // No comments ?>

@@ -400,4 +400,56 @@ function grunwell_clean_wpcf7_output( $atts, $output='' ) {
 }
 add_shortcode( 'grunwell-contact-form-7', 'grunwell_clean_wpcf7_output' );
 
+/**
+ * Return a different label depending on the value of $count
+ * Will send the label through sprintf() so we can do things like '%d posts' with $count
+ * @param str $none Label when $count = 0
+ * @param str $one Label when $count = 1
+ * @param str $more Label when $count > 1
+ * @param int $count
+ * @return str
+ */
+function grunwell_string_plurals( $none='', $one='', $more='', $count=0 ) {
+  $count = intval( $count );
+  $label = $more;
+  if ( $count <= 0 ) {
+    $label = $none;
+  } elseif ( $count === 1 ) {
+    $label = $one;
+  }
+  return sprintf( $label, $count );
+}
+
+/**
+ * Format post comments (heavily based on twentyten_comment)
+ * @todo I really don't like mixing HTML and PHP like this...
+ */
+function grunwell_comment( $comment, $args, $depth ) {
+  $GLOBALS['comment'] = $comment;
+  if ( $comment->comment_type == '' ) : // We don't care about pingbacks
+?>
+
+  <li <?php comment_class(); ?> id="li-comment-<?php comment_ID(); ?>">
+    <div id="comment-<?php comment_ID(); ?>" class="comment-content">
+      <div class="comment-author vcard">
+        <?php echo get_avatar( $comment, 40 ); ?>
+        <cite class="fn"><?php comment_author_link(); ?></cite>
+        <span class="comment-date"><?php printf( '%s at %s', get_comment_date(), get_comment_time() ); ?></span>
+      </div>
+      <?php if ( ! $comment->comment_approved ) : ?>
+        <em class="awaiting-moderation">Your comment is awaiting moderation</em>
+      <?php endif; ?>
+
+      <?php comment_text(); ?>
+
+      <div class="utility">
+        <?php comment_reply_link( array_merge( $args, array( 'depth' => $depth, 'max_depth' => $args['max_depth'] ) ) ); ?>
+        <?php edit_comment_link( 'Edit comment', ' <span class="sep">|</span> ' ); ?>
+      </div><!-- .utility -->
+    </div><!-- #comment-<?php comment_ID(); ?> -->
+
+<?php
+  endif;
+}
+
 ?>

@@ -126,7 +126,14 @@ article.primary .entry-meta{margin-bottom:2em;}
 
 /* Comments */
 #comments{clear:both; margin-top:3em; padding-top:2em; border-top:2px solid #dadada;}
-#comments .comments{list-style:none;}
+#comments h3{margin-bottom:1.4em;}
+#comments .comments{margin-left:0;}
+#comments .comment{list-style:none;}
+#comments .comment-content{margin-bottom:1.4em;}
+#comments .comment-author .avatar{float:left; margin:0 1em 1em 0;}
+#comments .comment-author cite{display:block; padding-top:.2em; font-weight:bold; font-style:normal;}
+#comments .comment-author .comment-date{display:block;}
+#comments .comment p{clear:both;}
 
 /** Sidebar styles */
 .secondary h2{margin-top:0; font-size:1.3em;}
