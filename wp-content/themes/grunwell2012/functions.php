@@ -205,6 +205,19 @@ function grunwell_sitelogo() {
 }
 
 /**
+ * Get the admin's gravatar and use it as the site's favicon
+ * @param str $email The email address to use for the gravatar
+ * @uses get_option()
+ */
+function grunwell_gravatar_as_favicon( $email=false ) {
+  if ( ! $email ) {
+    $email = get_option( 'admin_email' );
+  }
+  printf( '<link href="//www.gravatar.com/avatar/%s?s=16" rel="shortcut icon" />' . PHP_EOL, md5( strtolower( trim( $email ) ) ) );
+}
+add_action( 'wp_head', 'grunwell_gravatar_as_favicon' );
+
+/**
  * Wrap "st" and "th" in <sup> (useful for dates)
  * @param $str The string to search/filter
  * @return str
