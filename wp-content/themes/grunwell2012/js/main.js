@@ -86,7 +86,7 @@ jQuery(function($){
   if ( $.fn.fancybox ) {
     // Only use Fancybox if our window is at least 480px wide - lightboxes on small screens are awful
     if ( $( window ).width() > 480 ) {
-      $('#content').find( 'a[rel="lightbox"]' ).fancybox({
+      $('#content').find( 'a[rel="lightbox"], a.lightbox' ).fancybox({
         nextEffect: 'fade',
         prevEffect: 'fade'
       });
