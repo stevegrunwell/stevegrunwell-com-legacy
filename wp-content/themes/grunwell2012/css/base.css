@@ -138,21 +138,24 @@ article.primary .entry-meta{margin-bottom:2em;}
 
 /** Sidebar styles */
 .secondary h2{margin-top:0; font-size:1.3em;}
+.secondary h2 + p{font-size:.9em;}
 .secondary p + h2{margin-top:1.5em;}
+.secondary ul{margin-left:0; list-style:none;}
+.secondary time, .tweet{display:block; line-height:1.5em;}
+.secondary time{font-size:.85em; color:#999;}
 
 .secondary .company, .secondary .city{display:block;}
 
 .paypal-donations{margin-bottom:1.4em;}
 
-/** Twitter module */
+.secondary .recent-posts a{font-weight:bold;}
+
+/* Twitter module */
 #twitter-module h2{margin-bottom:0;}
-#twitter-module h2 + p{font-size:.9em;}
 #twitter-module p a{font-weight:bold;}
 .tweets{max-width:100%; margin-left:0;}
-.tweet, .tweet time{display:block; line-height:1.5em;}
 .tweet{padding-bottom:.75em;}
 .tweet + .tweet{padding-top:.75em; border-top:1px dashed #dadada;}
-.tweet time{font-size:.85em; color:#999;}
 
 /** Footer */
 footer{padding-top:1.4em;}
