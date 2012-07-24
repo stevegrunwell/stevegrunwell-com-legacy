@@ -33,6 +33,17 @@
 
 <?php endif; ?>
 
-  <?php comment_form(); ?>
+  <?php
+    $args = array(
+      'fields' => array(
+        'author' => sprintf( '<p><label for="comment-author" class="required">Your name</label> <input id="comment-author" name="author" type="text" class="required" value="%s" /></p>', esc_attr( $commenter['comment_author'] ) ),
+        'email' => sprintf( '<p><label for="comment-email" class="required">Email address</label> <input id="comment-email" name="email" type="email" class="required" value="%s" /></p>', esc_attr( $commenter['comment_author_email'] ) ),
+        'url' => sprintf( '<p><label for="comment-url">Website</label> <input id="comment-url" name="url" type="url" value="%s" placeholder="http://example.com" /></p>', esc_attr( $commenter['comment_author_url'] ) )
+      ),
+      'comment_field' => sprintf( '<p><label for="comment-comment" class="required">Your comment</label> <textarea name="comment" id="comment-comment" class="required" rows="8" cols="45"></textarea></p>' ),
+      'comment_notes_after' => ''
+    );
+    comment_form( $args );
+  ?>
 
   </div><!-- // #comments -->
