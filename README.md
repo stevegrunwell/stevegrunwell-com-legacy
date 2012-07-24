@@ -31,8 +31,8 @@ If you wish to run your own version of this WordPress installation you'll need t
 
 There are a ton of things left to do on the site, but it's being treated as a work in progress (a nice way of saying "moving target").
 
-* Blog
 * Refactor styles and convert them to SASS
+* Enhanced commenting
 * Better responsiveness
 * Concatenate and compress scripts and styles
 * Cache as much as possible
