@@ -9,7 +9,7 @@
 
 <div class="secondary" role="complementary">
 
-<?php $recent_posts = wp_get_recent_posts( array( 'numberposts' => 3 ) ); ?>
+<?php $recent_posts = wp_get_recent_posts( array( 'numberposts' => 3, 'post_status' => 'publish' ) ); ?>
 <?php if ( ! empty( $recent_posts ) ) : ?>
 
   <h2>Latest Blog Posts</h2>
