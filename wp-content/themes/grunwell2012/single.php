@@ -19,6 +19,8 @@ get_header(); ?>
 
   <?php the_content(); ?>
 
+  <?php echo get_the_tag_list( '<p class="post-tags"><strong>Tags:</strong> ', ', ', '</p>' ); ?>
+
   <div class="entry-utility">
     <?php comments_template( '', true ); ?>
   </div>
