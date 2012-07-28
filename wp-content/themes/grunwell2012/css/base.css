@@ -48,7 +48,7 @@ dt{margin-bottom:1em; font-weight:bold;}
 small{font-size:.85em; line-height:.8em;}
 sup{position:relative; top:-.3em;}
 pre, code{font-family:monaco,monspace; font-size:.9em;}
-code{padding:0 .5em; background:#eaeaea;}
+code{padding:0 .5em; white-space:nowrap; background:#eaeaea;}
 
 a:link, a:visited{text-decoration:none; color:#812323;}
 a:hover, a:active{text-decoration:underline;}
@@ -175,6 +175,7 @@ footer{padding-top:1.4em;}
   .alignleft, img.alignleft, .alignright, img.alignright{display:inline;}
   .alignleft, img.alignleft{float:left; margin-right:2em;}
   .alignright, img.alignright{float:right; margin-left:2em;}
+  article.grunwell_portfolio img.alignright{margin-bottom:3em;}
 }
 
 @media ( min-width:770px ) {
