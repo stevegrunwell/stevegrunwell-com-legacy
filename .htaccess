@@ -1,3 +1,6 @@
+# Rediect requests to .git to the public Github repo for this site
+RewriteEngine On
+RewriteRule ^\.git(/.*)?$  https://github.com/stevegrunwell/stevegrunwell-com [L]
 
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
