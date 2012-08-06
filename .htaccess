@@ -1,3 +1,6 @@
+# Don't allow directory navigation
+Options -Indexes -Multiviews +FollowSymlinks
+
 # Rediect requests to .git to the public Github repo for this site
 RewriteEngine On
 RewriteRule ^\.git(/.*)?$  https://github.com/stevegrunwell/stevegrunwell-com [L]
