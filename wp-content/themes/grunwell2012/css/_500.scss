@@ -1,0 +1,11 @@
+/**
+ * Styles applied to viewports 500px and above
+ * @package WordPress
+ * @subpackage grunwell2012
+ * @author Steve Grunwell <steve@stevegrunwell.com>
+ */
+
+#primary-nav ul{display:block;}
+#primary-nav select{display:none;}
+
+.btn, input[type="submit"]{width:auto;}

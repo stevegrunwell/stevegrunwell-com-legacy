@@ -1,0 +1,11 @@
+/**
+ * Styles applied to viewports 640px and above
+ * @package WordPress
+ * @subpackage grunwell2012
+ * @author Steve Grunwell <steve@stevegrunwell.com>
+ */
+
+.alignleft, img.alignleft, .alignright, img.alignright{display:inline;}
+.alignleft, img.alignleft{float:left; margin-right:2em;}
+.alignright, img.alignright{float:right; margin-left:2em;}
+article.grunwell_portfolio img.alignright{margin-bottom:3em;}
