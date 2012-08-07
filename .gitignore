@@ -1,6 +1,7 @@
 # Exclude these files from the git repo
 wp-content/cache/*
 wp-content/themes/grunwell2012/css/.sass-cache/*
+wp-content/themes/grunwell2012/css/ie8.css
 wp-content/themes/grunwell2012/css/style.css
 wp-content/themes/grunwell2012/simple-twitter-timeline/
 wp-content/themes/grunwell2012/tweetcache-stevegrunwell.json
