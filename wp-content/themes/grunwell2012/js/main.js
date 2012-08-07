@@ -6,22 +6,6 @@
  */
 
 /**
- * Set the height of #content equal to the tallest between .primary and .secondary
- * @return bool
- */
-function setContentHeight(){
-  var primaryHeight = jQuery('#content').find('.primary').height();
-  var secondaryHeight = jQuery('#content').find('.secondary').height();
-  var maxHeight = ( primaryHeight > secondaryHeight ? primaryHeight : secondaryHeight );
-  if( jQuery('#content').height() < maxHeight ){
-    jQuery('#content').height(maxHeight);
-    return true;
-  } else {
-    return false;
-  }
-}
-
-/**
  * Create a select menu from a series of links, using the links' href attributes as the option value attribute
  * @param mixed links A selector or jQuery object containing the links
  * @return jQuery object
@@ -47,10 +31,6 @@ function navToSelectMenu(links){
 }
 
 jQuery(function($){
-
-  /** If .secondary is taller than .primary while 770px < window size < 1060px .secondary runs out of #content */
-  setContentHeight();
-  $(window).resize(setContentHeight);
 
   /* Collapse #primary-nav into a <select> menu for smaller screens */
   $('#primary-nav').append(navToSelectMenu('#primary-nav'));
