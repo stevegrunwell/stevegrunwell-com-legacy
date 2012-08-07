@@ -339,6 +339,9 @@ function grunwell_format_client_data( $name, $city, $url ) {
   return ( $name ? sprintf( '<p>%s</p>', trim( $return ) ) : '' );
 }
 
+/** Don't put the date in post meta descriptions */
+add_filter( 'wpseo_show_date_in_snippet_preview', '__return_false' );
+
 /**
  * Remove Contact Form 7's scripts and styles without having to add anything to wp-config.php (as described
  * in the CF7 docs) by using the wpcf7_enqueue_styles and wpcf7_enqueue_scripts actions that Takayuki was
