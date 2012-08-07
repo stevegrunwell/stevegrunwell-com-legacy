@@ -13,5 +13,8 @@ cd wp-content/themes/grunwell2012/css/
 sass style.scss style.css --style compressed
 echo "style.scss -> style.css (compressed)"
 
+sass ie8.scss ie8.css --style compressed
+echo "ie8.scss -> ie8.css (compressed)"
+
 echo "Sassification is complete"
 exit 0
