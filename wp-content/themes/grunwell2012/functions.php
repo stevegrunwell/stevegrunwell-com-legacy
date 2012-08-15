@@ -468,4 +468,28 @@ function grunwell_comment( $comment, $args, $depth ) {
   endif;
 }
 
+/**
+ * Get the hash of the current git HEAD
+ * @param str $branch The git branch to check
+ * @return mixed Either the hash or a boolean false
+ */
+function grunwell_get_current_git_commit( $branch='master' ) {
+  if ( $hash = file_get_contents( sprintf( '.git/refs/heads/%s', $branch ) ) ) {
+    return $hash;
+  } else {
+    return false;
+  }
+}
+
+/**
+ * Add the current git HEAD to the <head> element
+ * @uses grunwell_get_current_git_commit()
+ */
+function grunwell_show_repository_data() {
+  if ( $hash = grunwell_get_current_git_commit() ) {
+    printf( "<!-- This site's source is available at https://github.com/stevegrunwell/stevegrunwell-com - HEAD is currently at %s -->\n", substr( $hash, 0, 8 ) );
+  }
+}
+add_action( 'wp_head', 'grunwell_show_repository_data' );
+
 ?>
