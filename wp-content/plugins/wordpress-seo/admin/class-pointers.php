@@ -22,14 +22,34 @@ class WPSEO_Pointers {
 	 */
 	function enqueue() {
 		$options = get_option( 'wpseo' );
-		if ( !isset( $options['ignore_tour'] ) || !$options['ignore_tour'] ) {
+		if ( !isset( $options['presstrends'] ) || ( !isset( $options['ignore_tour'] ) || !$options['ignore_tour'] ) ) {
 			wp_enqueue_style( 'wp-pointer' );
 			wp_enqueue_script( 'jquery-ui' );
 			wp_enqueue_script( 'wp-pointer' );
 			wp_enqueue_script( 'utils' );
-			add_action( 'admin_print_footer_scripts', array( $this, 'intro_tour' ), 99 );
+		}
+		if ( !isset( $options['presstrends'] ) ) {
+			add_action( 'admin_print_footer_scripts', array( $this, 'presstrends_request' ) );
+		} else if ( !isset( $options['ignore_tour'] ) || !$options['ignore_tour'] ) {
+			add_action( 'admin_print_footer_scripts', array( $this, 'intro_tour' ) );
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 		}
+	}
+
+	function presstrends_request() {
+		$id      = '#wpadminbar';
+		$content = '<h3>' . __( 'Help us improve WordPress SEO', 'wordpress-seo' ) . '</h3>';
+		$content .= '<p>' . __( 'You\'ve just installed WordPress SEO by Yoast. Please helps us improve it by allowing us to gather anonymous usage stats through PressTrends.', 'wordpress-seo' ) . '</p>';
+		$opt_arr   = array(
+			'content'  => $content,
+			'position' => array( 'edge' => 'top', 'align' => 'center' )
+		);
+		$button2   = __( "Allow", 'wordpress-seo' );
+		$nonce     = wp_create_nonce( 'wpseo_activate_presstrends' );
+		$function2 = 'wpseo_presstrends_ajax("' . $nonce . '", 1 );';
+		$function1 = 'wpseo_presstrends_ajax("' . $nonce . '", 0 );';
+
+		$this->print_scripts( $id, $opt_arr, __( "Do not allow", 'wordpress-seo' ), $button2, $function2, $function1 );
 	}
 
 	/**
@@ -168,8 +188,9 @@ class WPSEO_Pointers {
 	 * @param string      $button1          Text for button 1
 	 * @param string|bool $button2          Text for button 2 (or false to not show it, defaults to false)
 	 * @param string      $button2_function The JavaScript function to attach to button 2
+	 * @param string      $button1_function The JavaScript function to attach to button 1
 	 */
-	function print_scripts( $selector, $options, $button1, $button2 = false, $button2_function = '' ) {
+	function print_scripts( $selector, $options, $button1, $button2 = false, $button2_function = '', $button1_function = '' ) {
 		?>
 	<script type="text/javascript">
 		//<![CDATA[
@@ -178,7 +199,7 @@ class WPSEO_Pointers {
 
 			wpseo_pointer_options = $.extend(wpseo_pointer_options, {
 				buttons:function (event, t) {
-					button = jQuery('<a id="pointer-close" class="button-secondary">' + '<?php echo $button1; ?>' + '</a>');
+					button = jQuery('<a id="pointer-close" style="margin-left:5px" class="button-secondary">' + '<?php echo $button1; ?>' + '</a>');
 					button.bind('click.pointer', function () {
 						t.element.pointer('close');
 					});
@@ -196,7 +217,11 @@ class WPSEO_Pointers {
 						<?php echo $button2_function; ?>
 					});
 					jQuery('#pointer-close').click(function () {
-						wpseo_setIgnore("tour", "wp-pointer-0", "<?php echo wp_create_nonce( 'wpseo-ignore' ); ?>");
+						<?php if ( $button1_function == '' ) { ?>
+							wpseo_setIgnore("tour", "wp-pointer-0", "<?php echo wp_create_nonce( 'wpseo-ignore' ); ?>");
+							<?php } else { ?>
+							<?php echo $button1_function; ?>
+							<?php } ?>
 					});
 					<?php } ?>
 			};

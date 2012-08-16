@@ -6,7 +6,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: seo, SEO, google, meta, meta description, search engine optimization, xml sitemap, xml sitemaps, google sitemap, sitemap, sitemaps, robots meta, rss, rss footer, yahoo, bing, news sitemaps, XML News Sitemaps, WordPress SEO, WordPress SEO by Yoast, yoast, multisite, canonical, nofollow, noindex, keywords, meta keywords, description, webmaster tools, google webmaster tools, seo pack
 Requires at least: 3.1
 Tested up to: 3.4
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 
 Improve your WordPress SEO: Write better content and have a fully optimized WordPress site using the WordPress SEO plugin by Yoast.
 
@@ -133,6 +133,27 @@ Also, other than All In One SEO Pack, this plugin has a completely working canon
 7. The advanced section of the WordPress SEO meta box.
 
 == Changelog ==
+
+= 1.2.6 =
+
+* Enhancements:
+    * Added (optional) PressTrends tracking to get some more info on common configurations of WP to test for.
+    * Made config page loading even faster.
+    * Added a link to my [Amazon wishlist](http://amzn.com/w/CBV7CEOJJH98) to the plugin sidebar in the admin ;)
+    * Added a check to see whether your theme contains a hardcoded meta description, and options to remove it.
+    * Added a Google+ Publisher input option for the homepage.
+    * Added the option to allow showing the date in the snippet preview per post type.
+    * Removed aggressive cache deleting in the XML sitemaps. Could cause issues with some plugins but should increase speed.
+    * Force the XML Sitemap to return a 200 OK Header.
+* Deprecated functionality:
+    * The breadcrumbs functionality no longer automatically hooks as this was giving too many issues.
+* Bug fixes:
+    * Prevent adding trailing slash on paged posts when force trailing slash on categories and tags is on.
+    * Breadcrumbs now properly use `home_url` instead of `site_url`.
+    * Simplify shortcode stripping, to make it actually work.
+    * Prevent several notices in XML Sitemaps class.
+* Textual / documentation changes:
+    * Add a "without @" notice to the Twitter username input field.
 
 = 1.2.5 =
 

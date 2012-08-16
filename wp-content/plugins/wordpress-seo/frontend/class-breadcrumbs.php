@@ -12,18 +12,6 @@ class WPSEO_Breadcrumbs {
 	 * Class constructor
 	 */
 	function __construct() {
-		// Thesis
-		add_action( 'thesis_hook_before_headline', array( $this, 'breadcrumb_output' ), 10, 1 );
-
-		// Hybrid
-		remove_action( 'hybrid_before_content', 'hybrid_breadcrumb' );
-		add_action( 'hybrid_before_content', array( $this, 'breadcrumb_output' ), 10, 1 );
-
-		// Thematic
-		add_action( 'thematic_abovecontent', array( $this, 'breadcrumb_output' ), 10, 1 );
-
-		add_action( 'framework_hook_content_open', array( $this, 'breadcrumb_output' ), 10, 1 );
-
 		// If breadcrumbs are active (which they are otherwise this class wouldn't be instantiated), there's no reason
 		// to have bbPress breadcrumbs as well.
 		add_filter( 'bbp_get_breadcrumb', '__return_false' );
@@ -70,7 +58,7 @@ class WPSEO_Breadcrumbs {
 
 		$links = array(
 			array(
-				'url'  => get_site_url(),
+				'url'  => get_home_url(),
 				'text' => ( isset( $options['breadcrumbs-home'] ) && $options['breadcrumbs-home'] != '' ) ? $options['breadcrumbs-home'] : __( 'Home', 'wordpress-seo' )
 			)
 		);

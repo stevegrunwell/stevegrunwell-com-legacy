@@ -153,7 +153,7 @@ function wpseo_replace_vars( $string, $args, $omit = array() ) {
 	$replacements = array(
 		'%%date%%'                      => $date,
 		'%%title%%'                     => stripslashes( $r->post_title ),
-		'%%excerpt%%'                   => ( !empty( $r->post_excerpt ) ) ? strip_tags( $r->post_excerpt ) : substr( strip_shortcodes( strip_tags( $r->post_content ) ), 0, 155 ),
+		'%%excerpt%%'                   => ( !empty( $r->post_excerpt ) ) ? strip_tags( $r->post_excerpt ) : utf8_encode( substr( strip_shortcodes( strip_tags( utf8_decode( $r->post_content ) ) ), 0, 155 ) ),
 		'%%excerpt_only%%'              => strip_tags( $r->post_excerpt ),
 		'%%category%%'                  => wpseo_get_terms( $r->ID, 'category' ),
 		'%%category_description%%'      => !empty( $r->taxonomy ) ? trim( strip_tags( get_term_field( 'description', $r->term_id, $r->taxonomy ) ) ) : '',
@@ -290,5 +290,5 @@ function wpseo_get_term_meta( $term, $taxonomy, $meta ) {
  * @return string $text string without shortcodes
  */
 function wpseo_strip_shortcode( $text ) {
-	return preg_replace( '|\[(.+?)\](.*)?(\[/\\1\])|s', '$2', $text );
+	return preg_replace( '|\[[^\]]+\]|s', '', $text );
 }

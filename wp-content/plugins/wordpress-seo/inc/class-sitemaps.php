@@ -195,7 +195,6 @@ class WPSEO_Sitemaps {
 		// allow other plugins to add their sitemaps to the index
 		$this->sitemap .= apply_filters( 'wpseo_sitemap_index', '' );
 		$this->sitemap .= '</sitemapindex>';
-
 	}
 
 	/**
@@ -258,9 +257,6 @@ class WPSEO_Sitemaps {
 			$this->bad_sitemap = true;
 			return;
 		}
-
-		// Let's flush the object cache so we're not left with garbage from other plugins
-		wp_cache_flush();
 
 		$stackedurls = array();
 
@@ -416,7 +412,7 @@ class WPSEO_Sitemaps {
 				}
 
 				// Clear the post_meta and the term cache for the post, as we no longer need it now.
-				wp_cache_delete( $p->ID, 'post_meta' );
+				// wp_cache_delete( $p->ID, 'post_meta' );
 				// clean_object_term_cache( $p->ID, $post_type );
 			}
 		}
@@ -513,9 +509,9 @@ class WPSEO_Sitemaps {
 	 * Spit out the generated sitemap and relevant headers and encoding information.
 	 */
 	function output() {
+		header( 'HTTP/1.1 200 OK', true, 200 );
 		// Prevent the search engines from indexing the XML Sitemap.
 		header( 'X-Robots-Tag: noindex, follow', true );
-
 		header( 'Content-Type: text/xml' );
 		echo '<?xml version="1.0" encoding="' . get_bloginfo( 'charset' ) . '"?>';
 		if ( $this->stylesheet )
@@ -545,12 +541,14 @@ class WPSEO_Sitemaps {
 		$output .= "\t\t<priority>" . str_replace( ',', '.', $url['pri'] ) . "</priority>\n";
 		if ( isset( $url['images'] ) && count( $url['images'] ) > 0 ) {
 			foreach ( $url['images'] as $img ) {
+				if ( !isset( $img['sc'] ) || empty( $img['src'] ) )
+					continue;
 				$output .= "\t\t<image:image>\n";
 				$output .= "\t\t\t<image:loc>" . esc_html( $img['src'] ) . "</image:loc>\n";
-				if ( isset( $img['title'] ) )
-					$output .= "\t\t\t<image:title>" . _wp_specialchars( html_entity_decode( $img['title'], ENT_QUOTES, get_bloginfo('charset') ) ) . "</image:title>\n";
-				if ( isset( $img['alt'] ) )
-					$output .= "\t\t\t<image:caption>" . _wp_specialchars( html_entity_decode( $img['alt'], ENT_QUOTES, get_bloginfo('charset') ) ) . "</image:caption>\n";
+				if ( isset( $img['title'] ) && !empty( $img['title'] ) )
+					$output .= "\t\t\t<image:title>" . _wp_specialchars( html_entity_decode( $img['title'], ENT_QUOTES, get_bloginfo( 'charset' ) ) ) . "</image:title>\n";
+				if ( isset( $img['alt'] ) && !empty( $img['alt'] ) )
+					$output .= "\t\t\t<image:caption>" . _wp_specialchars( html_entity_decode( $img['alt'], ENT_QUOTES, get_bloginfo( 'charset' ) ) ) . "</image:caption>\n";
 				$output .= "\t\t</image:image>\n";
 			}
 		}

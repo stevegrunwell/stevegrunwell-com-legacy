@@ -213,7 +213,7 @@ function wpseo_admin_bar_menu() {
 	$score   = '';
 	$seo_url = get_admin_url( 'admin.php?page=wpseo_dashboard' );
 
-	if ( is_singular() && isset( $post ) && is_object( $post ) ) {
+	if ( is_singular() && isset( $post ) && is_object( $post ) && apply_filters( 'wpseo_use_page_analysis', true ) === true ) {
 		$focuskw    = wpseo_get_value( 'focuskw', $post->ID );
 		$perc_score = wpseo_get_value( 'linkdex', $post->ID );
 		$txtscore   = wpseo_translate_score( round( $perc_score / 10 ) );
