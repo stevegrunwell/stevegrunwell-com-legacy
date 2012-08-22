@@ -8,4 +8,4 @@
 #primary-nav ul{display:block;}
 #primary-nav select{display:none;}
 
-.btn, input[type="submit"]{width:auto;}
+.btn, a.btn:link, a.btn:visited, input[type="submit"]{display:inline-block; width:auto;}
