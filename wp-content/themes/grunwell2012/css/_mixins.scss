@@ -1,0 +1,13 @@
+/**
+ * SASS mixins
+ * @package WordPress
+ * @subpackage grunwell2012
+ * @author Steve Grunwell <steve@stevegrunwell.com>
+ */
+
+@mixin border-radius( $radius: 10px ) {
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  -o-border-radius: $radius;
+  border-radius: $radius;
+}
