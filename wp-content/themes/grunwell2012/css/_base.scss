@@ -101,6 +101,10 @@ form.search-btn{display:none; background:#333;}
 /** Utility classes */
 .screen-reader-text{position:absolute; right:-99999em;}
 
+/* Clearfix */
+.clear, .clearfix:after, #content:after{clear:both;}
+#content:before, #content:after, .clearfix:before, .clearfix:after{content:''; display:table;}
+
 /** Content styles */
 .primary .post{margin-bottom:21px;}
 
