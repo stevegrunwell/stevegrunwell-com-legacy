@@ -474,11 +474,11 @@ function grunwell_comment( $comment, $args, $depth ) {
  * @return mixed Either the hash or a boolean false
  */
 function grunwell_get_current_git_commit( $branch='master' ) {
-  if ( $hash = file_get_contents( sprintf( '.git/refs/heads/%s', $branch ) ) ) {
-    return $hash;
-  } else {
-    return false;
+  if ( ! defined( 'GRUNWELL_CURRENT_GIT_COMMIT' ) ) {
+    $hash = $hash = file_get_contents( sprintf( '.git/refs/heads/%s', $branch ) );
+    define( 'GRUNWELL_CURRENT_GIT_COMMIT', ( $hash ? $hash : false ) );
   }
+  return GRUNWELL_CURRENT_GIT_COMMIT;
 }
 
 /**
