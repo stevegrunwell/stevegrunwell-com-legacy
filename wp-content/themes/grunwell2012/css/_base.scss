@@ -134,7 +134,7 @@ article.primary .entry-meta{margin-bottom: $line_height;}
   .flex-control-nav{position:absolute; bottom:0; width:100%; margin-left:0; text-align:center;}
   .flex-control-nav li{display:inline; margin:0 3px; zoom:1;}
   .flex-control-nav li a{display:inline-block; width:12px; height:12px; font-size:0; line-height:0; text-indent:-99999em; background:url('../img/carousel-navigation.png') center top no-repeat transparent; cursor:pointer;}
-  .flex-control-nav li a:hover, .flexslider .flex-control-nav li a.active{background-position:center bottom; cursor:pointer;}
+  .flex-control-nav li a:hover, .flex-control-nav li a.active{background-position:center bottom; cursor:pointer;}
 }
 #content .flexslider a{border:none;}
 
