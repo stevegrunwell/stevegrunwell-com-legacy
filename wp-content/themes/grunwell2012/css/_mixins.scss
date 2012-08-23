@@ -11,3 +11,9 @@
   -o-border-radius: $radius;
   border-radius: $radius;
 }
+
+@mixin link-transition( $property: color, $duration: .25s ) {
+  -moz-transition-property: $property; -moz-transition-duration: $duration; -moz-transition-timing-function: ease-out;
+  -webkit-transition-property: $property; -webkit-transition-duration: $duration; -webkit-transition-timing-function: ease-out;
+  transition-property: $property; transition-duration: $duration; transition-timing-function: ease-out;
+}

@@ -94,8 +94,8 @@ form.search-btn{display:none; background:#333;}
 #primary-nav{clear:left; display:block; margin-bottom:44px;}
 #primary-nav ul{display:none;}
 #primary-nav li{display:inline; margin-right:24px;}
-#primary-nav a{font-size:20px; text-transform:lowercase; font-weight:300; color:#aaa;}
-#primary-nav a:hover, #primary-nav a:active, #primary-nav .current-menu-item a, #primary-nav .current_page_parent a, #primary-nav .current_page_ancestor a{text-decoration:none; color:#333;}
+#primary-nav a{font-size:20px; text-transform:lowercase; font-weight:300; color:#aaa; @include link-transition }
+#primary-nav a:hover, #primary-nav a:active, #primary-nav a:focus, #primary-nav .current-menu-item a, #primary-nav .current_page_parent a, #primary-nav .current_page_ancestor a{text-decoration:none; color:#333; @include link-transition }
 #primary-nav select{display:block; width:100%; max-width:100%;}
 
 /** Utility classes */
