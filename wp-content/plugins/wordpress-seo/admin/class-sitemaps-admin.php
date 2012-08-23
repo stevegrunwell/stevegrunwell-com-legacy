@@ -17,7 +17,6 @@ class WPSEO_Sitemaps_Admin {
 		if ( !isset( $options[ 'enablexmlsitemap' ] ) || !$options[ 'enablexmlsitemap' ] )
 			return;
 
-		add_action( 'init', array( $this, 'init' ), 1 );
 		add_action( 'transition_post_status', array( $this, 'status_transition' ), 10, 3 );
 		add_action( 'admin_init', array( $this, 'delete_sitemaps' ) );
 	}
@@ -38,16 +37,6 @@ class WPSEO_Sitemaps_Admin {
 				update_option( 'wpseo', $options );
 			}
 		}
-	}
-
-	/**
-	 * Initialize sitemaps. Add sitemap rewrite rules and query var
-	 */
-	function init() {
-		$GLOBALS[ 'wp' ]->add_query_var( 'sitemap' );
-		$GLOBALS[ 'wp' ]->add_query_var( 'sitemap_n' );
-		add_rewrite_rule( 'sitemap_index\.xml$', 'index.php?sitemap=1', 'top' );
-		add_rewrite_rule( '([^/]+?)-sitemap([0-9]+)?\.xml$', 'index.php?sitemap=$matches[1]&sitemap_n=$matches[2]', 'top' );
 	}
 
 	/**

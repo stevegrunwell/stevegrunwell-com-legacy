@@ -514,8 +514,17 @@ class WPSEO_Admin {
 			$count_posts    = wp_count_posts();
 			$count_pages    = wp_count_posts( 'page' );
 			$comments_count = wp_count_comments();
-			$theme_data     = wp_get_theme();
-			$plugin_name    = '&';
+
+			// wp_get_theme was introduced in 3.4, for compatibility with older versions, let's do a workaround for now.
+			if ( function_exists( 'wp_get_theme' ) ) {
+				$theme_data = wp_get_theme();
+				$theme_name = urlencode( $theme_data->Name );
+			} else {
+				$theme_data = get_theme_data( get_stylesheet_directory() . '/style.css' );
+				$theme_name = $theme_data['Name'];
+			}
+
+			$plugin_name = '&';
 			foreach ( get_plugins() as $plugin_info ) {
 				$plugin_name .= $plugin_info['Name'] . '&';
 			}
@@ -531,7 +540,7 @@ class WPSEO_Admin {
 				'pingbacks'       => $wpdb->get_var( "SELECT COUNT(comment_ID) FROM $wpdb->comments WHERE comment_type = 'pingback'" ),
 				'post_conversion' => ( $count_posts->publish > 0 && $posts_with_comments > 0 ) ? number_format( ( $posts_with_comments / $count_posts->publish ) * 100, 0, '.', '' ) : 0,
 				'theme_version'   => $plugin_data['Version'],
-				'theme_name'      => urlencode( $theme_data->Name ),
+				'theme_name'      => $theme_name,
 				'site_name'       => str_replace( ' ', '', get_bloginfo( 'name' ) ),
 				'plugins'         => count( get_option( 'active_plugins' ) ),
 				'plugin'          => urlencode( $plugin_name ),
