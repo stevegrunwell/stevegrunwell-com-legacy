@@ -10,19 +10,21 @@ include_once dirname( __FILE__ ) . '/simple-twitter-timeline/twitter.class.php';
 
 /**
  * Register scripts and styles
+ * @uses grunwell_get_current_git_commit()
  * @uses wp_register_script()
  * @uses wp_register_style()
  */
 function grunwell_register_scripts_styles() {
   global $wp_styles;
+  $hash = grunwell_get_current_git_commit( 'master', 8 );
 
   # Styles
-  wp_register_style( 'site-styles', get_bloginfo( 'template_url' ) . '/css/style.css', null, null, 'all' );
-  wp_register_style( 'ie8-fixes', get_bloginfo('template_url') . '/css/ie8.css', array( 'site-styles' ), null, 'all' );
+  wp_register_style( 'site-styles', get_bloginfo( 'template_url' ) . '/css/style.css', null, $hash, 'all' );
+  wp_register_style( 'ie8-fixes', get_bloginfo('template_url') . '/css/ie8.css', array( 'site-styles' ), $hash, 'all' );
   $wp_styles->add_data( 'ie8-fixes', 'conditional', 'lte IE 8' );
 
   # Scripts
-  wp_register_script( 'site-scripts', get_bloginfo( 'template_url' ) . '/js/main.js', array( 'jquery', 'jquery-flexslider', 'jquery-placeholder', 'jquery-validator' ), '', true );
+  wp_register_script( 'site-scripts', get_bloginfo( 'template_url' ) . '/js/main.js', array( 'jquery', 'jquery-flexslider', 'jquery-placeholder', 'jquery-validator' ), $hash, true );
 
   # Third-party
 
@@ -470,15 +472,17 @@ function grunwell_comment( $comment, $args, $depth ) {
 
 /**
  * Get the hash of the current git HEAD
+ * @global GRUNWELL_CURRENT_GIT_COMMIT
  * @param str $branch The git branch to check
+ * @param int $length Optionally only return the first $length characters of the hash
  * @return mixed Either the hash or a boolean false
  */
-function grunwell_get_current_git_commit( $branch='master' ) {
+function grunwell_get_current_git_commit( $branch='master', $length=false ) {
   if ( ! defined( 'GRUNWELL_CURRENT_GIT_COMMIT' ) ) {
     $hash = $hash = file_get_contents( sprintf( '.git/refs/heads/%s', $branch ) );
     define( 'GRUNWELL_CURRENT_GIT_COMMIT', ( $hash ? $hash : false ) );
   }
-  return GRUNWELL_CURRENT_GIT_COMMIT;
+  return ( $length ? substr( GRUNWELL_CURRENT_GIT_COMMIT, 0, $length ) : GRUNWELL_CURRENT_GIT_COMMIT );
 }
 
 /**
@@ -486,8 +490,8 @@ function grunwell_get_current_git_commit( $branch='master' ) {
  * @uses grunwell_get_current_git_commit()
  */
 function grunwell_show_repository_data() {
-  if ( $hash = grunwell_get_current_git_commit() ) {
-    printf( "<!-- This site's source is available at https://github.com/stevegrunwell/stevegrunwell-com - HEAD is currently at %s -->\n", substr( $hash, 0, 8 ) );
+  if ( $hash = grunwell_get_current_git_commit( 'master', 8 ) ) {
+    printf( "<!-- This site's source is available at https://github.com/stevegrunwell/stevegrunwell-com - HEAD is currently at %s -->\n", $hash );
   }
 }
 add_action( 'wp_head', 'grunwell_show_repository_data' );
