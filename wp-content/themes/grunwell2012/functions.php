@@ -479,7 +479,7 @@ function grunwell_comment( $comment, $args, $depth ) {
  */
 function grunwell_get_current_git_commit( $branch='master', $length=false ) {
   if ( ! defined( 'GRUNWELL_CURRENT_GIT_COMMIT' ) ) {
-    $hash = $hash = file_get_contents( sprintf( '.git/refs/heads/%s', $branch ) );
+    $hash = file_get_contents( sprintf( '%s.git/refs/heads/%s', ABSPATH, $branch ) );
     define( 'GRUNWELL_CURRENT_GIT_COMMIT', ( $hash ? $hash : false ) );
   }
   return ( $length ? substr( GRUNWELL_CURRENT_GIT_COMMIT, 0, $length ) : GRUNWELL_CURRENT_GIT_COMMIT );
