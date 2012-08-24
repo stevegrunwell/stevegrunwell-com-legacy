@@ -6,6 +6,7 @@
  * @author Steve Grunwell <steve@stevegrunwell.com>
  */
 
+include_once dirname( __FILE__ ) . '/functions/advanced-custom-fields.php';
 include_once dirname( __FILE__ ) . '/simple-twitter-timeline/twitter.class.php';
 
 /**
