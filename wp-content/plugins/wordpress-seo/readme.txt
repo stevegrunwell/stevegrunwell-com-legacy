@@ -6,7 +6,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: seo, SEO, google, meta, meta description, search engine optimization, xml sitemap, xml sitemaps, google sitemap, sitemap, sitemaps, robots meta, rss, rss footer, yahoo, bing, news sitemaps, XML News Sitemaps, WordPress SEO, WordPress SEO by Yoast, yoast, multisite, canonical, nofollow, noindex, keywords, meta keywords, description, webmaster tools, google webmaster tools, seo pack
 Requires at least: 3.1
 Tested up to: 3.4
-Stable tag: 1.2.7
+Stable tag: 1.2.8.1
 
 Improve your WordPress SEO: Write better content and have a fully optimized WordPress site using the WordPress SEO plugin by Yoast.
 
@@ -122,6 +122,13 @@ Once you'll start using this plugin, you won't ask that question anymore, you'll
 
 Also, other than All In One SEO Pack, this plugin has a completely working canonical implementation for all pages within your site, whereas the one in All In One SEO pack is broken, it was originally written by the author of this plugin, so he knows. It comes with XML Sitemaps, an XML News sitemap module, loads and loads of robots meta options and other options to improve your SEO.
 
+= I want to use your XML Sitemaps with NGINX, is that possible? =
+
+Yes, of course! Here are the rewrite rules you'll need:
+
+`rewrite ^/sitemap_index\.xml$ /index.php?sitemap=1 last;
+rewrite ^/([^/]+?)-sitemap([0-9]+)?\.xml$ /index.php?sitemap=$1&sitemap_n=$2 last;`
+
 == Screenshots ==
 
 1. The WordPress SEO plugin general meta box. You'll see this on edit post pages, for posts, pages and custom post types.
@@ -133,6 +140,29 @@ Also, other than All In One SEO Pack, this plugin has a completely working canon
 7. The advanced section of the WordPress SEO meta box.
 
 == Changelog ==
+
+= 1.2.8.1 =
+
+* Fixed one s, that caused a fatal error. Sigh.
+
+= 1.2.8 =
+
+* Bug fixes:
+    * Fix for images not showing up in XML sitemap.
+    * Fix to allow breadcrumb titles to once again be set for CPT archive pages.
+    * Prevent empty rel=publisher link from being put out.
+    * Several fixes to the strip category base settings.
+    * Several fixes to the hardcoded meta description recognition code.
+    * Prevent title testing from priming the cache.
+    * Prevent upgrading from a recent version to force a title test, no longer overrides manual force rewrite settings.
+    * Fix paginated singular post / page issue when single isn't paginated.
+* Enhancements:
+    * No longer show .htaccess editor when on NGINX.
+    * Move tracking to its own file, switching to my own tracking instead of PressTrends so more specific options can be tracked.
+    * Tracking can now be enabled and disabled from the SEO Dashboard screen.
+* Documentation:
+    * Added rewrite rules for NGINX to FAQ.
+    * Now showing rewrite rules for NGINX on XML sitemaps settings page.
 
 = 1.2.7 =
 

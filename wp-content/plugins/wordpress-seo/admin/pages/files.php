@@ -66,7 +66,7 @@ if ( file_exists( get_home_path() . "robots.txt" ) ) {
 	$wpseo_admin_pages->postbox( 'robotstxt', __( 'Robots.txt', 'wordpress-seo' ), $content );
 }
 
-if ( file_exists( get_home_path() . ".htaccess" ) ) {
+if ( (isset($_SERVER['SERVER_SOFTWARE']) && stristr($_SERVER['SERVER_SOFTWARE'], 'nginx') === false) && file_exists( get_home_path() . ".htaccess" ) ) {
 	$htaccess_file = get_home_path() . "/.htaccess";
 	$f             = fopen( $htaccess_file, 'r' );
 	$contentht     = fread( $f, filesize( $htaccess_file ) );

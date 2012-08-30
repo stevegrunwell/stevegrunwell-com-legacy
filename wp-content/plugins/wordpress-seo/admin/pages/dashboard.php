@@ -7,6 +7,15 @@ global $wpseo_admin_pages;
 
 $options = get_option( 'wpseo' );
 
+if ( isset( $_GET['allow_tracking'] ) ) {
+	$options['presstrends_popup'] = 'done';
+	if ( $_GET['allow_tracking'] == 'yes' )
+		$options['presstrends'] = 'on';
+	else
+		$options['presstrends'] = 'off';
+	update_option( 'wpseo', $options );
+}
+
 $wpseo_admin_pages->admin_header( __( 'General Settings', 'wordpress-seo' ), true, 'yoast_wpseo_options', 'wpseo' );
 
 echo $wpseo_admin_pages->hidden( 'ignore_blog_public_warning' );
@@ -15,6 +24,7 @@ echo $wpseo_admin_pages->hidden( 'ignore_page_comments' );
 echo $wpseo_admin_pages->hidden( 'ignore_permalink' );
 echo $wpseo_admin_pages->hidden( 'ms_defaults_set' );
 echo $wpseo_admin_pages->hidden( 'version' );
+echo $wpseo_admin_pages->hidden( 'presstrends_popup' );
 
 if ( isset( $options['blocking_files'] ) && is_array( $options['blocking_files'] ) && count( $options['blocking_files'] ) > 0 ) {
 	$options['blocking_files'] = array_unique( $options['blocking_files'] );
@@ -54,26 +64,29 @@ if ( isset( $_GET['fixmetadesc'] ) && isset( $options['theme_check'] ) && isset(
 	}
 }
 
-if ( !isset( $options['theme_check']['description_found'] ) && file_exists( TEMPLATEPATH . '/header.php' ) ) {
-	$header_file = file_get_contents( TEMPLATEPATH . '/header.php' );
-
-	preg_match_all( '#<\s*meta\s*(name|content)\s*=\s*("|\')(.*)("|\')\s*(name|content)\s*=\s*("|\')(.*)("|\')(\s+)?/?>#i', $header_file, $matches, PREG_SET_ORDER );
-
-	$options['theme_check']['description_found'] = false;
-	foreach ( $matches as $meta ) {
-		if ( ( strtolower( $meta[1] ) == 'name' && strtolower( $meta[3] ) == 'description' ) || ( strtolower( $meta[5] ) == 'name' && strtolower( $meta[7] ) == 'description' ) ) {
-			$options['theme_check']['description_found'] = $meta[0];
+if ( !isset( $options['theme_check']['description'] ) ) {
+	if ( file_exists( TEMPLATEPATH . '/header.php' ) ) {
+		$header_file = file_get_contents( TEMPLATEPATH . '/header.php' );
+		$issue       = preg_match_all( '#<\s*meta\s*(name|content)\s*=\s*("|\')(.*)("|\')\s*(name|content)\s*=\s*("|\')(.*)("|\')(\s+)?/?>#i', $header_file, $matches, PREG_SET_ORDER );
+		if ( !$issue ) {
+			$options['theme_check']['description'] = true;
+		} else {
+			foreach ( $matches as $meta ) {
+				if ( ( strtolower( $meta[1] ) == 'name' && strtolower( $meta[3] ) == 'description' ) || ( strtolower( $meta[5] ) == 'name' && strtolower( $meta[7] ) == 'description' ) ) {
+					$options['theme_check']['description_found'] = $meta[0];
+				}
+			}
 		}
+		update_option( 'wpseo', $options );
 	}
-	update_option( 'wpseo', $options );
-}
 
-if ( isset( $options['theme_check'] ) && isset( $options['theme_check']['description_found'] ) && $options['theme_check']['description_found'] ) {
-	echo '<p id="metadesc_found notice" class="wrong settings_error">'
-		. '<a href="' . admin_url( 'admin.php?page=wpseo_dashboard&fixmetadesc' ) . '" class="button fixit">' . __( 'Fix it.', 'wordpress-seo' ) . '</a>'
-		. __( 'Your theme contains a meta description, which blocks WordPress SEO from working properly, please delete the following line, or press fix it:', 'wordpress-seo' ) . '<br />';
-	echo '<code>' . htmlentities( $options['theme_check']['description_found'] ) . '</code>';
-	echo '</p>';
+	if ( isset( $options['theme_check'] ) && isset( $options['theme_check']['description_found'] ) && $options['theme_check']['description_found'] ) {
+		echo '<p id="metadesc_found notice" class="wrong settings_error">'
+			. '<a href="' . admin_url( 'admin.php?page=wpseo_dashboard&fixmetadesc' ) . '" class="button fixit">' . __( 'Fix it.', 'wordpress-seo' ) . '</a>'
+			. __( 'Your theme contains a meta description, which blocks WordPress SEO from working properly, please delete the following line, or press fix it:', 'wordpress-seo' ) . '<br />';
+		echo '<code>' . htmlentities( $options['theme_check']['description_found'] ) . '</code>';
+		echo '</p>';
+	}
 }
 
 if ( strpos( get_option( 'permalink_structure' ), '%postname%' ) === false && !isset( $options['ignore_permalink'] ) )
@@ -97,6 +110,10 @@ if ( isset( $options['ignore_tour'] ) && $options['ignore_tour'] ) {
 
 echo '<label class="select">' . __( 'Default Settings:', 'wordpress-seo' ) . '</label><a class="button-secondary" href="' . admin_url( 'admin.php?page=wpseo_dashboard&wpseo_reset_defaults' ) . '">' . __( 'Reset Default Settings', 'wordpress-seo' ) . '</a>';
 echo '<p class="desc label">' . __( 'If you want to restore a site to the default WordPress SEO settings, press this button.', 'wordpress-seo' ) . '</p>';
+
+echo '<h2>' . __( 'Tracking', 'wordpress-seo' ) . '</h2>';
+echo $wpseo_admin_pages->checkbox( 'presstrends', __( 'Allow tracking of this WordPress installs anonymous data.', 'wordpress-seo' ) );
+echo '<p class="desc">' . __( "To maintain a plugin as big as WordPress SEO, we need to know what we're dealing: what kinds of other plugins our users are using, what themes, etc. Please allow us to track that data from your install. It will not track <em>any</em> user details, so your security and privacy are safe with us.", 'wordpress-seo' ) . '</p>';
 
 echo '<h2>' . __( 'Security', 'wordpress-seo' ) . '</h2>';
 echo $wpseo_admin_pages->checkbox( 'disableadvanced_meta', __( 'Disable the Advanced part of the WordPress SEO meta box', 'wordpress-seo' ) );

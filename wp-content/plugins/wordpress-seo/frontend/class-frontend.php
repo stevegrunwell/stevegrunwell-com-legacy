@@ -562,13 +562,17 @@ class WPSEO_Frontend {
 			} else {
 				$obj       = get_queried_object();
 				$canonical = get_permalink( $obj->ID );
-				// Fix paginated pages
+
+				// Fix paginated pages canonical, but only if the page is truly paginated.
 				if ( get_query_var( 'page' ) > 1 ) {
 					global $wp_rewrite;
-					if ( !$wp_rewrite->using_permalinks() ) {
-						$canonical = add_query_arg( 'page', get_query_var( 'page' ), $canonical );
-					} else {
-						$canonical = user_trailingslashit( trailingslashit( $canonical ) . get_query_var( 'page' ) );
+					$numpages = substr_count( $obj->post_content, '<!--nextpage-->' ) + 1;
+					if ( $numpages && get_query_var( 'page' ) < $numpages ) {
+						if ( !$wp_rewrite->using_permalinks() ) {
+							$canonical = add_query_arg( 'page', get_query_var( 'page' ), $canonical );
+						} else {
+							$canonical = user_trailingslashit( trailingslashit( $canonical ) . get_query_var( 'page' ) );
+						}
 					}
 				}
 			}
@@ -723,7 +727,7 @@ class WPSEO_Frontend {
 		if ( $gplus )
 			echo '<link rel="author" href="' . $gplus . '"/>' . "\n";
 
-		if ( is_front_page() && isset( $options['plus-publisher'] ) ) {
+		if ( is_front_page() && isset( $options['plus-publisher'] ) && !empty( $options['plus-publisher'] ) ) {
 			echo '<link rel="publisher" href="' . esc_attr( $options['plus-publisher'] ) . '"/>' . "\n";
 		}
 	}
@@ -1184,6 +1188,15 @@ class WPSEO_Frontend {
 	 * @return string
 	 */
 	function title_test_helper( $title ) {
+		if ( !defined( 'DONOTCACHEPAGE' ) )
+			define( 'DONOTCACHEPAGE', true );
+
+		if ( !defined( 'DONOTCACHCEOBJECT' ) )
+			define( 'DONOTCACHCEOBJECT', true );
+
+		if ( !defined( 'DONOTMINIFY' ) )
+			define( 'DONOTMINIFY', true );
+
 		global $wp_version;
 		if ( $_SERVER['HTTP_USER_AGENT'] == "WordPress/${wp_version}; " . get_bloginfo( 'url' ) . " - Yoast" )
 			return 'This is a Yoast Test Title';

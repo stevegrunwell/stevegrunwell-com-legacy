@@ -5,7 +5,7 @@
 
 global $wpseo_admin_pages;
 
-$options = get_option( 'wpseo_titles' );
+$options = get_wpseo_options();
 
 ?>
 <div class="wrap">
