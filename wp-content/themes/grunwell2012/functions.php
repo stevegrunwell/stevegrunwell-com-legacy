@@ -277,7 +277,7 @@ function grunwell_custom_field( $key, $id=false, $default='' ) {
  * @param array $fields The sub-fields to retrieve
  * @return array
  * @uses get_custom_field()
- * @uses the_repeater_field()
+ * @uses has_sub_field()
  * @uses get_sub_field()
  */
 function grunwell_get_repeater_content( $key, $id=null, $fields=array() ) {
