@@ -241,7 +241,7 @@ add_filter( 'get_the_date', 'grunwell_superscript_dates' );
  * By running it through this function, we ensure that we don't die if the plugin is uninstalled/disabled (and thus the function is undefined)
  * @global $post
  * @param str $key The key to look for
- * @param int $id The post ID
+ * @param mixed $id The post ID (int|str, defaults to $post->ID)
  * @param mixed $default What to return if there's nothing
  * @return mixed (dependent upon $echo)
  * @uses get_field()
@@ -252,11 +252,7 @@ function grunwell_get_custom_field( $key, $id=false, $default='' ) {
   $result = '';
 
   if ( function_exists( 'get_field' ) ) {
-    if ( intval( $id ) > 0 ){
-      $result = get_field( $key, intval( $id ) );
-    } elseif ( isset( $post->ID ) ) {
-      $result = get_field( $key );
-    }
+    $result = ( isset( $post->ID ) && ! $id ? get_field( $key ) : get_field( $key, $id ) );
 
     if ( $result == '' ) {
       $result = $default;
@@ -289,8 +285,8 @@ function grunwell_get_repeater_content( $key, $id=null, $fields=array() ) {
   if ( ! $id ) $id = $post->ID;
   $values = array();
 
-  if ( grunwell_get_custom_field( $key, $id, false ) && function_exists( 'the_repeater_field' ) && function_exists( 'the_sub_field' ) ) {
-    while ( the_repeater_field( $key, $id ) ) {
+  if ( grunwell_get_custom_field( $key, $id, false ) && function_exists( 'has_sub_field' ) && function_exists( 'get_sub_field' ) ) {
+    while ( has_sub_field( $key, $id ) ) {
       $value = array();
       foreach ( $fields as $field ){
         $value[$field] = get_sub_field( $field );
