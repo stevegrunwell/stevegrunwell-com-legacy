@@ -116,7 +116,10 @@ article.primary .entry-meta{margin-bottom: $line_height;}
 .btn, a.btn:link, a.btn:visited, input[type="submit"]{display:block; width:100%; padding:.3em .5em; text-align:center; font-size:1.2em; line-height:1.5em; font-weight:bold; color:#fff; text-shadow:1px 1px 1px #333; background:#2a73ab; border:none; border-radius:5px; box-shadow:0 1px 1px #333; cursor:pointer;}
 .btn:hover, a.btn:hover, a.btn:active{text-decoration:none; background:#225d8b;}
 
-.update{padding:.3em .5em; background-color:#fffbc6; background-color:rgba(255,251,198,0.5); border:1px solid #f7ed64; @include border-radius( 5px );}
+.update{
+  padding:.2em .5em; background-color:#fffbc6; background-color:rgba(255,251,198,0.5); border:1px solid #f7ed64; @include border-radius( 5px );
+  code { background:transparent; }
+}
 
 /** Image styles */
 #content img{width:auto; max-width:100%; box-shadow:0 0 2px #aaa;}
