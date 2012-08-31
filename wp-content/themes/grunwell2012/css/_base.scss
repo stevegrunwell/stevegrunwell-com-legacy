@@ -158,7 +158,7 @@ article.primary .entry-meta{margin-bottom: $line_height;}
     list-style:none;
     p { clear:both; margin-bottom:1em; }
     .comment-author {
-      .avatar { float:left; margin:0 1em 1em 0; }
+      .avatar { float:left; margin:0 1em 1em 0; @include border-radius( 50% ); }
       cite { display:block; padding-top:.2em; font-weight:bold; font-style:normal; }
       .comment-date { display:block; font-size:.9em; color:#999; }
     }
