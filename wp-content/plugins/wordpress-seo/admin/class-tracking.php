@@ -70,6 +70,7 @@ if ( !class_exists( 'Yoast_Tracking' ) ) {
 					$theme_data = wp_get_theme();
 					$theme      = array(
 						'name'      => $theme_data->display( 'Name', false, false ),
+						'theme_uri' => $theme_data->display( 'ThemeURI', false, false ),
 						'version'   => $theme_data->display( 'Version', false, false ),
 						'author'    => $theme_data->display( 'Author', false, false ),
 						'author_uri'=> $theme_data->display( 'AuthorURI', false, false ),
@@ -78,6 +79,7 @@ if ( !class_exists( 'Yoast_Tracking' ) ) {
 						$theme['template'] = array(
 							'version'   => $theme_data->parent()->display( 'Version', false, false ),
 							'name'      => $theme_data->parent()->display( 'Name', false, false ),
+							'theme_uri' => $theme_data->parent()->display( 'ThemeURI', false, false ),
 							'author'    => $theme_data->parent()->display( 'Author', false, false ),
 							'author_uri'=> $theme_data->parent()->display( 'AuthorURI', false, false ),
 						);
@@ -97,6 +99,7 @@ if ( !class_exists( 'Yoast_Tracking' ) ) {
 				$plugins = array();
 				foreach ( get_option( 'active_plugins' ) as $plugin_path ) {
 					$plugin_info    = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_path );
+
 					$slug           = str_replace( '/' . basename( $plugin_path ), '', $plugin_path );
 					$plugins[$slug] = array(
 						'version'    => $plugin_info['Version'],
@@ -153,11 +156,11 @@ function wpseo_tracking_additions( $options ) {
 	$opt = get_wpseo_options();
 
 	$options['wpseo'] = array(
-		'xml_sitemaps'          => isset( $opt['enablexmlsitemap'] ) ? intval( $opt['enablexmlsitemap'] ) : 0,
-		'force_rewrite'         => isset( $opt['forcerewritetitle'] ) ? intval( $opt['forcerewritetitle'] ) : 0,
-		'opengraph'             => isset( $opt['opengraph'] ) ? intval( $opt['opengraph'] ) : 0,
-		'twitter'               => isset( $opt['twitter'] ) ? intval( $opt['twitter'] ) : 0,
-		'strip_category_base'   => isset( $opt['stripcategorybase'] ) ? intval( $opt['stripcategorybase'] ) : 0,
+		'xml_sitemaps'          => isset( $opt['enablexmlsitemap'] ) ? 1 : 0,
+		'force_rewrite'         => isset( $opt['forcerewritetitle'] ) ? 1 : 0,
+		'opengraph'             => isset( $opt['opengraph'] ) ? 1 : 0,
+		'twitter'               => isset( $opt['twitter'] ) ? 1 : 0,
+		'strip_category_base'   => isset( $opt['stripcategorybase'] ) ? 1 : 0,
 		'on_front'              => get_option( 'show_on_front' ),
 	);
 	return $options;

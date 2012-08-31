@@ -22,35 +22,38 @@ class WPSEO_Pointers {
 	 */
 	function enqueue() {
 		$options = get_option( 'wpseo' );
-		if ( !isset( $options['presstrends'] ) || ( !isset( $options['ignore_tour'] ) || !$options['ignore_tour'] ) ) {
+		if ( !isset( $options['yoast_tracking'] ) || ( !isset( $options['ignore_tour'] ) || !$options['ignore_tour'] ) ) {
 			wp_enqueue_style( 'wp-pointer' );
 			wp_enqueue_script( 'jquery-ui' );
 			wp_enqueue_script( 'wp-pointer' );
 			wp_enqueue_script( 'utils' );
 		}
 		if ( !isset( $options['presstrends_popup'] ) && !isset( $_GET['allow_tracking'] ) ) {
-			add_action( 'admin_print_footer_scripts', array( $this, 'presstrends_request' ) );
+			add_action( 'admin_print_footer_scripts', array( $this, 'tracking_request' ) );
 		} else if ( !isset( $options['ignore_tour'] ) || !$options['ignore_tour'] ) {
 			add_action( 'admin_print_footer_scripts', array( $this, 'intro_tour' ) );
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 		}
 	}
 
-	function presstrends_request() {
+	/**
+	 * Shows a popup that asks for permission to allow tracking.
+	 */
+	function tracking_request() {
 		$id      = '#wpadminbar';
-		$content = '<h3>' . __( 'Help us improve WordPress SEO', 'wordpress-seo' ) . '</h3>';
-		$content .= '<p>' . __( 'You\'ve just installed WordPress SEO by Yoast. Please helps us improve it by allowing us to gather anonymous usage stats so we know which plugins and themes to test with.', 'wordpress-seo' ) . '</p>';
+		$content = '<h3>' . __( 'Help improve WordPress SEO', 'wordpress-seo' ) . '</h3>';
+		$content .= '<p>' . __( 'You\'ve just installed WordPress SEO by Yoast. Please helps us improve it by allowing us to gather anonymous usage stats so we know which configurations, plugins and themes to test with.', 'wordpress-seo' ) . '</p>';
 		$opt_arr   = array(
 			'content'  => $content,
 			'position' => array( 'edge' => 'top', 'align' => 'center' )
 		);
-		$button2   = __( "Allow", 'wordpress-seo' );
+		$button2   = __( 'Allow tracking', 'wordpress-seo' );
 		$nonce     = wp_create_nonce( 'wpseo_activate_presstrends' );
 
 		$function2 = 'document.location="' . admin_url( 'admin.php?page=wpseo_dashboard&allow_tracking=yes&nonce='.$nonce ) . '";';
 		$function1 = 'document.location="' . admin_url( 'admin.php?page=wpseo_dashboard&allow_tracking=no&nonce='.$nonce ) . '";';
 
-		$this->print_scripts( $id, $opt_arr, __( "Do not allow", 'wordpress-seo' ), $button2, $function2, $function1 );
+		$this->print_scripts( $id, $opt_arr, __( 'Do not allow tracking', 'wordpress-seo' ), $button2, $function2, $function1 );
 	}
 
 	/**

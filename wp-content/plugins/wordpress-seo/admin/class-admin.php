@@ -442,6 +442,7 @@ class WPSEO_Admin {
 			}
 		}
 
+		$options = get_option( 'wpseo' );
 		$options['version'] = WPSEO_VERSION;
 		update_option( 'wpseo', $options );
 	}
