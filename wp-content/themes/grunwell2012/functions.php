@@ -449,7 +449,7 @@ function grunwell_comment( $comment, $args, $depth ) {
       <div class="comment-author vcard">
         <?php echo get_avatar( $comment, 48 ); ?>
         <cite class="fn"><?php comment_author_link(); ?></cite>
-        <span class="comment-date" title="<?php printf( '%s at %s', get_comment_date(), get_comment_time() ); ?>"><?php printf( '%s ago',  human_time_diff( get_the_time( 'U' ), time() ) ); ?></span>
+        <span class="comment-date" title="<?php printf( '%s at %s', get_comment_date(), get_comment_time() ); ?>"><?php printf( '%s ago',  human_time_diff( get_comment_time( 'U' ), time() ) ); ?></span>
       </div>
       <?php if ( ! $comment->comment_approved ) : ?>
         <em class="awaiting-moderation">Your comment is awaiting moderation</em>
