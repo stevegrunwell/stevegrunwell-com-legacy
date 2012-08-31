@@ -154,12 +154,18 @@ article.primary .entry-meta{margin-bottom: $line_height;}
   clear:both; margin-top:2em;
   h3{margin-bottom:1.4em;}
   .comments{margin-left:0;}
-  .comment{list-style:none;}
-  .comment-content{margin-bottom:1.4em;}
-  .comment-author .avatar{float:left; margin:0 1em 1em 0;}
-  .comment-author cite{display:block; padding-top:.2em; font-weight:bold; font-style:normal;}
-  .comment-author .comment-date{display:block;}
-  .comment p{clear:both;}
+  .comment{
+    list-style:none;
+    p { clear:both; margin-bottom:1em; }
+    .comment-author {
+      .avatar { float:left; margin:0 1em 1em 0; }
+      cite { display:block; padding-top:.2em; font-weight:bold; font-style:normal; }
+      .comment-date { display:block; }
+    }
+    .comment-content { margin-bottom:$line_height; }
+    .children { margin-left:0; padding-left:$line_height; border-left:1px solid #dadada; }
+    .utility { margin-top:-1em; font-size:.9em; }
+  }
 }
 
 /** Sidebar styles */
