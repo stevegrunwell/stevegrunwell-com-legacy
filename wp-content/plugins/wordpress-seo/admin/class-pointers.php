@@ -21,6 +21,9 @@ class WPSEO_Pointers {
 	 * Enqueue styles and scripts needed for the pointers.
 	 */
 	function enqueue() {
+		if ( ! current_user_can('manage_options') )
+			return;
+			
 		$options = get_option( 'wpseo' );
 		if ( !isset( $options['yoast_tracking'] ) || ( !isset( $options['ignore_tour'] ) || !$options['ignore_tour'] ) ) {
 			wp_enqueue_style( 'wp-pointer' );
@@ -28,7 +31,7 @@ class WPSEO_Pointers {
 			wp_enqueue_script( 'wp-pointer' );
 			wp_enqueue_script( 'utils' );
 		}
-		if ( !isset( $options['presstrends_popup'] ) && !isset( $_GET['allow_tracking'] ) ) {
+		if ( !isset( $options['tracking_popup'] ) && !isset( $_GET['allow_tracking'] ) ) {
 			add_action( 'admin_print_footer_scripts', array( $this, 'tracking_request' ) );
 		} else if ( !isset( $options['ignore_tour'] ) || !$options['ignore_tour'] ) {
 			add_action( 'admin_print_footer_scripts', array( $this, 'intro_tour' ) );
@@ -48,7 +51,7 @@ class WPSEO_Pointers {
 			'position' => array( 'edge' => 'top', 'align' => 'center' )
 		);
 		$button2   = __( 'Allow tracking', 'wordpress-seo' );
-		$nonce     = wp_create_nonce( 'wpseo_activate_presstrends' );
+		$nonce     = wp_create_nonce( 'wpseo_activate_tracking' );
 
 		$function2 = 'document.location="' . admin_url( 'admin.php?page=wpseo_dashboard&allow_tracking=yes&nonce='.$nonce ) . '";';
 		$function1 = 'document.location="' . admin_url( 'admin.php?page=wpseo_dashboard&allow_tracking=no&nonce='.$nonce ) . '";';

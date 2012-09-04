@@ -8,11 +8,11 @@ global $wpseo_admin_pages;
 $options = get_option( 'wpseo' );
 
 if ( isset( $_GET['allow_tracking'] ) ) {
-	$options['presstrends_popup'] = 'done';
+	$options['tracking_popup'] = 'done';
 	if ( $_GET['allow_tracking'] == 'yes' )
-		$options['presstrends'] = 'on';
+		$options['yoast_tracking'] = 'on';
 	else
-		$options['presstrends'] = 'off';
+		$options['yoast_tracking'] = 'off';
 	update_option( 'wpseo', $options );
 }
 
@@ -24,7 +24,7 @@ echo $wpseo_admin_pages->hidden( 'ignore_page_comments' );
 echo $wpseo_admin_pages->hidden( 'ignore_permalink' );
 echo $wpseo_admin_pages->hidden( 'ms_defaults_set' );
 echo $wpseo_admin_pages->hidden( 'version' );
-echo $wpseo_admin_pages->hidden( 'presstrends_popup' );
+echo $wpseo_admin_pages->hidden( 'tracking_popup' );
 
 if ( isset( $options['blocking_files'] ) && is_array( $options['blocking_files'] ) && count( $options['blocking_files'] ) > 0 ) {
 	$options['blocking_files'] = array_unique( $options['blocking_files'] );
@@ -112,7 +112,7 @@ echo '<label class="select">' . __( 'Default Settings:', 'wordpress-seo' ) . '</
 echo '<p class="desc label">' . __( 'If you want to restore a site to the default WordPress SEO settings, press this button.', 'wordpress-seo' ) . '</p>';
 
 echo '<h2>' . __( 'Tracking', 'wordpress-seo' ) . '</h2>';
-echo $wpseo_admin_pages->checkbox( 'presstrends', __( 'Allow tracking of this WordPress installs anonymous data.', 'wordpress-seo' ) );
+echo $wpseo_admin_pages->checkbox( 'yoast_tracking', __( 'Allow tracking of this WordPress installs anonymous data.', 'wordpress-seo' ) );
 echo '<p class="desc">' . __( "To maintain a plugin as big as WordPress SEO, we need to know what we're dealing: what kinds of other plugins our users are using, what themes, etc. Please allow us to track that data from your install. It will not track <em>any</em> user details, so your security and privacy are safe with us.", 'wordpress-seo' ) . '</p>';
 
 echo '<h2>' . __( 'Security', 'wordpress-seo' ) . '</h2>';

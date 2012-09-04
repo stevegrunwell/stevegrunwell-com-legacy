@@ -442,6 +442,19 @@ class WPSEO_Admin {
 			}
 		}
 
+		if ( version_compare( $current_version, '1.2.8.2', '<' ) ) {
+			$options = get_option( 'wpseo' );
+			if ( isset( $options['presstrends'] ) ) {
+				$options['yoast_tracking'] = 'on';
+				unset( $options['presstrends'] );
+			}
+			if ( isset( $options['presstrends_popup'] ) ) {
+				$options['tracking_popup'] = 'on';
+				unset( $options['presstrends_popup'] );
+			}
+			update_option( 'wpseo', $options );
+		}
+
 		$options = get_option( 'wpseo' );
 		$options['version'] = WPSEO_VERSION;
 		update_option( 'wpseo', $options );
