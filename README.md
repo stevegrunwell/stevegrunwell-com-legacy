@@ -25,14 +25,15 @@ If you wish to run your own version of this WordPress installation you'll need t
     git submodule update
 
 3. Try to visit your new WordPress installation. Since wp-config.php is missing, you should be shown the standard WordPress installation screen (as usual, if your system won't let WordPress create a wp-config file you'll need to copy wp-config-sample.php @cp wp-config-sample.php wp-config.php@ and edit the file manually).
-4. Once WordPress is setup, you'll need to activate the plugins and start creating your post/page structure. If you choose to use the `grunwell_portfolio` custom post type, be sure to update wp-content/themes/grunwell2012/functions.php and change the value of `GRUNWELL_PORTFOLIO_PARENT` to the ID of your "portfolio" page.
+4. Once WordPress is setup, you'll need to activate the plugins and start creating your post/page structure. If you plan on using the Advanced Custom Fields repeater, you'll need to purchase a key from http://www.advancedcustomfields.com/add-ons/repeater-field/
 
 ## Roadmap
 
 There are a ton of things left to do on the site, but it's being treated as a work in progress (a nice way of saying "moving target").
 
-* Refactor styles and convert them to SASS
+* Better organization of styles
 * Enhanced commenting
 * Better responsiveness
-* Concatenate and compress scripts and styles
 * Cache as much as possible
+* Move things like the Google Analytics profile ID to a site options page
+* Dedicated page template for code demonstrations/proofs of concept
