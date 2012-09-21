@@ -12,6 +12,13 @@ get_header(); ?>
 
   <h1>Posts tagged "<?php single_tag_title( '', true ); ?>"</h1>
 
+  <?php if ( $tag_description = tag_description() ) : ?>
+  <dl>
+    <dt class="screen-reader-text"><?php single_tag_title( '', true ); ?></dt>
+    <dd><?php echo $tag_description; ?></dd>
+  </dl>
+  <?php endif; ?>
+
   <?php get_template_part( 'loop', 'index' ); ?>
 
 </div><!-- // #primary -->
