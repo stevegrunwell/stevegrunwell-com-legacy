@@ -5,6 +5,7 @@
 #poststuff .acf_postbox .widefat th, 
 #poststuff .acf_postbox .widefat td {
 	overflow: visible;
+	
 }
 
 #poststuff .acf_postbox .inside {
@@ -200,7 +201,7 @@
 
 .acf-image-uploader img {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-	max-width:100%;
+	width:100%;
 	height: auto;
 	display: block;
 }
@@ -365,7 +366,7 @@
 }
 
 .repeater > table > thead > tr > th {
-
+	vertical-align: top;
 	border-right: 1px solid #e1e1e1;
 }
 
