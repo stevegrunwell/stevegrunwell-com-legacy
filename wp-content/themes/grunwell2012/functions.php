@@ -221,6 +221,19 @@ function grunwell_gravatar_as_favicon( $email=false ) {
 add_action( 'wp_head', 'grunwell_gravatar_as_favicon' );
 
 /**
+ * Use the admin email's gravatar as the apple-touch-icon meta tag
+ * @param str $email The email address to use for the gravatar
+ * @uses get_option()
+ */
+function grunwell_gravatar_as_apple_touch_icon( $email=false ) {
+  if ( ! $email ) {
+    $email = get_option( 'admin_email' );
+  }
+  printf( '<link href="//www.gravatar.com/avatar/%s?s=144" rel="apple-touch-icon" />' . PHP_EOL, md5( strtolower( trim( $email ) ) ) );
+}
+add_action( 'wp_head', 'grunwell_gravatar_as_apple_touch_icon' );
+
+/**
  * Wrap "st" and "th" in <sup> (useful for dates)
  * @param $str The string to search/filter
  * @return str
