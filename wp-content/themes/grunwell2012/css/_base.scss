@@ -43,7 +43,7 @@ h3{ font-size:1.2em; }
 h4{ font-size:1.1em; }
 h5{ font-size:1em; }
 h6{ font-size:.9em; }
-p, ul, ol, dl{margin-bottom:1.8em; }
+p, ul, ol, dl, table{margin-bottom:1.8em; }
 ul, ol{margin-left:1.5em; }
 ul{list-style-type:disc; }
 ul.menu{margin-left:0; }
@@ -58,6 +58,13 @@ abbr{ border-bottom:1px dotted #999; cursor:help; }
 
 a:link, a:visited{text-decoration:none; color:$link_color;}
 a:hover, a:active{text-decoration:underline;}
+
+table{ width:100%; max-width:100%;
+  th, caption{ text-align:left; font-weight:bold; }
+  caption.cite{ caption-side:bottom; font-size:.8em; font-weight:normal; }
+  tr:nth-child(even){ background-color:#f2f2f2; }
+  th, td{ border-bottom:1px solid #dadada; }
+}
 
 /** Form styles */
 input[type="text"], input[type="email"], input[type="tel"], input[type="password"], input[type="url"], textarea, select{display:block; width:100%; max-width:400px; padding:6px 8px; border:1px solid #dadada; -moz-border-radius:4px; -webkit-border-radius:4px; -o-border-radius:4px; border-radius:4px;}
