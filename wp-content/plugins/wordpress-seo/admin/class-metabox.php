@@ -600,27 +600,27 @@ class WPSEO_Metabox {
 		$content = '<div id="wpseosnippet">
 			<a class="title" href="#">' . $title . '</a><br/>';
 
-		if ( isset( $options['breadcrumbs-enable'] ) && $options['breadcrumbs-enable'] == 'on' ) {
-			require_once WPSEO_PATH . '/frontend/class-breadcrumbs.php';
-			$content .= '<span href="#" style="font-size: 13px; color: #282; line-height: 15px;" class="breadcrumb">' . yoast_breadcrumb('','',false) . '</span>';
-		} else {
+//		if ( isset( $options['breadcrumbs-enable'] ) && $options['breadcrumbs-enable'] == 'on' ) {
+//			require_once WPSEO_PATH . '/frontend/class-breadcrumbs.php';
+//			$content .= '<span href="#" style="font-size: 13px; color: #282; line-height: 15px;" class="breadcrumb">' . yoast_breadcrumb('','',false) . '</span>';
+//		} else {
 			$content .= '<a href="#" style="font-size: 13px; color: #282; line-height: 15px;" class="url">' . str_replace( 'http://', '', get_bloginfo( 'url' ) ) . '/' . $slug . '/</a>';
-		}
-		if ( $gplus = $this->get_gplus_data( $post->post_author ) ) {
-			//		$content .= '<a href="https://profiles.google.com/' . $gplus->id . '" style="text-decoration:none;line-height:15px;font-size:13px;font-family:arial,sans-serif">';
-			$content .= '<div style="margin-top: 5px; position: relative;"><img style="float: left; margin-right:8px;" src="' . str_replace( 'sz=50', 'sz=44', $gplus->image->url ) . '"/>';
-			$content .= '<p class="desc" style="width: 460px; float: left; font-size: 13px; color: #000; line-height: 15px;">';
-			$content .= '<span style="color: #666;">by ' . $gplus->displayName . ' - in 12,345 circles - More by ' . $gplus->displayName . '</span><br/>';
-			$content .= $datestr . '<span class="content">' . $desc . '</span></p>';
-			$content .= '<div style="clear:both;"></div>';
-//		$content .= '<div class="f" style="display:inline;margin-top:-10px;padding:2px 0;color:#666;font-size:13px">by ' . $gplus->displayName . ' - More by ' . $gplus->displayName . '</div></a>';
-//		$content .= '</div>';
-
-//		echo '<pre>'.print_r($gplus,1).'</pre>';
-
-		} else {
+//		}
+//		if ( $gplus = $this->get_gplus_data( $post->post_author ) ) {
+//			//		$content .= '<a href="https://profiles.google.com/' . $gplus->id . '" style="text-decoration:none;line-height:15px;font-size:13px;font-family:arial,sans-serif">';
+//			$content .= '<div style="margin-top: 5px; position: relative;"><img style="float: left; margin-right:8px;" src="' . str_replace( 'sz=50', 'sz=44', $gplus->image->url ) . '"/>';
+//			$content .= '<p class="desc" style="width: 460px; float: left; font-size: 13px; color: #000; line-height: 15px;">';
+//			$content .= '<span style="color: #666;">by ' . $gplus->displayName . ' - in 12,345 circles - More by ' . $gplus->displayName . '</span><br/>';
+//			$content .= $datestr . '<span class="content">' . $desc . '</span></p>';
+//			$content .= '<div style="clear:both;"></div>';
+////		$content .= '<div class="f" style="display:inline;margin-top:-10px;padding:2px 0;color:#666;font-size:13px">by ' . $gplus->displayName . ' - More by ' . $gplus->displayName . '</div></a>';
+////		$content .= '</div>';
+//
+////		echo '<pre>'.print_r($gplus,1).'</pre>';
+//
+//		} else {
 			$content .= '<p class="desc" style="font-size: 13px; color: #000; line-height: 15px;">' . $datestr . '<span class="content">' . $desc . '</span></p>';
-		}
+//		}
 		$content .= '</div>';
 
 //		$content .= '<pre>' . print_r( $gplus, 1 ) . '</pre>';
@@ -661,12 +661,16 @@ class WPSEO_Metabox {
 		);
 
 		$resp = wp_remote_get( 'https://www.googleapis.com/plus/v1/people/' . $gplus_id . '?key=AIzaSyBLYmCW10gzW63ob8NYIPTneph1arsxqWs', $args );
+		if ( !is_wp_error( $resp ) ) {
+			$gplus = json_decode( $resp['body'] );
 
-		$gplus = json_decode( $resp['body'] );
+			set_transient( 'gplus_' . $user_id, $gplus, ( 7 * 24 * 60 * 60 ) );
 
-		set_transient( 'gplus_' . $user_id, $gplus, ( 7 * 24 * 60 * 60 ) );
+			return $gplus;
+		} else {
+			return false;
+		}
 
-		return $gplus;
 	}
 
 	/**
