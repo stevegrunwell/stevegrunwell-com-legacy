@@ -16,7 +16,8 @@ get_header(); ?>
     <h2>Latest Blog Posts</h2>
     <?php foreach ( get_posts( array( 'numberposts' => 3, 'post_status' => 'publish' ) ) as $post ) : setup_postdata( $post ); ?>
 
-      <?php get_template_part( 'loop', 'front' ); ?>
+      <h3 class="post-title"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h3>
+      <?php the_excerpt(); ?>
 
     <?php endforeach; ?>
     <?php wp_reset_postdata(); ?>
