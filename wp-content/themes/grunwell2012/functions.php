@@ -506,4 +506,15 @@ function grunwell_show_repository_data() {
 }
 add_action( 'wp_head', 'grunwell_show_repository_data' );
 
+/**
+ * Generate pagination to use on archive-style templates - will echo directly to the page
+ * @return void
+ * @uses get_next_posts_link()
+ * @uses get_previous_posts_link()
+ */
+function grunwell_pagination() {
+  printf( '<ul class="pagination clearfix"><li class="prev">%s</li><li class="next">%s</li></ul>', get_previous_posts_link(), get_next_posts_link() );
+  return;
+}
+
 ?>

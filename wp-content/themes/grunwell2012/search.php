@@ -27,6 +27,8 @@ get_header(); ?>
     </article><!--// #post-<?php the_ID(); ?>-->
 
   <?php endwhile; ?>
+  
+  <?php grunwell_pagination(); ?>
 <?php endif; ?>
 
 </div><!-- // .primary -->

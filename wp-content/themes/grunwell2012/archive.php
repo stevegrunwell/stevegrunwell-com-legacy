@@ -11,7 +11,7 @@ get_header(); ?>
 <div class="primary" role="main">
 
 <?php if ( is_day() ) : ?>
-  <?php printf( '<h1>Blog posts from <span>%s</span></h1>', get_the_date( 'F jS, Y' ) ); ?>
+  <?php printf( '<h1>Blog posts from <span>%s</span></h1>', get_the_date( 'F j, Y' ) ); ?>
 <?php elseif ( is_month() ) : ?>
   <?php printf( '<h1>Blog posts from <span>%s</span></h1>', get_the_date( 'F Y' ) ); ?>
 <?php elseif ( is_year() ) : ?>
@@ -25,6 +25,8 @@ get_header(); ?>
   <?php get_template_part( 'loop', 'archive' ); ?>
 
 <?php endwhile; ?>
+
+<?php grunwell_pagination(); ?>
 
 </div><!-- // #primary -->
 

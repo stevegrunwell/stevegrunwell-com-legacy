@@ -18,6 +18,8 @@ get_header(); ?>
 
   <?php endwhile; ?>
 
+  <?php grunwell_pagination(); ?>
+
 </div><!-- // #primary -->
 
 <?php get_sidebar(); ?>

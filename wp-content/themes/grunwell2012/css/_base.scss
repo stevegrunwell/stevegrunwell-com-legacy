@@ -182,6 +182,11 @@ article.primary .entry-meta{margin-bottom: $line_height;}
   }
 }
 
+.pagination { margin:2em 0 0; list-style:none;
+	.prev { float:left; }
+	.next { float:right; }
+}
+
 /** Sidebar styles */
 .secondary {
   font-size: 14px;
