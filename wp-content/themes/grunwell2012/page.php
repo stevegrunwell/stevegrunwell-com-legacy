@@ -11,12 +11,8 @@ get_header(); ?>
 <?php while ( have_posts() ) : the_post(); ?>
 
   <article id="post-<?php the_ID(); ?>" <?php post_class( 'primary' ); ?> role="main">
-  <?php if ( !is_front_page() ): ?>
     <h1 class="post-title"><?php grunwell_custom_field( 'alternate_headline', $post->ID, get_the_title() ); ?></h1>
-  <?php endif; ?>
-
     <?php the_content(); ?>
-
   </article><!--// #post-<?php the_ID(); ?>-->
 
 <?php endwhile; ?>

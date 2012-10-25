@@ -12,18 +12,7 @@ get_header(); ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class( 'primary' ); ?> role="main">
 
-  <h1 class="post-title"><?php the_title(); ?></h1>
-  <div class="entry-meta">
-    Posted <?php the_date(); ?>
-  </div>
-
-  <?php the_content(); ?>
-
-  <?php echo get_the_tag_list( '<p class="post-tags"><strong>Tags:</strong> ', ', ', '</p>' ); ?>
-
-  <div class="entry-utility">
-    <?php comments_template( '', true ); ?>
-  </div>
+  <?php get_template_part( 'loop', 'single' ); ?>
 
 </article><!--// #post-<?php the_ID(); ?>-->
 

@@ -20,7 +20,11 @@ get_header(); ?>
   <h1>Blog archive</h1>
 <?php endif; ?>
 
+<?php while ( have_posts() ) : the_post(); ?>
+
   <?php get_template_part( 'loop', 'archive' ); ?>
+
+<?php endwhile; ?>
 
 </div><!-- // #primary -->
 

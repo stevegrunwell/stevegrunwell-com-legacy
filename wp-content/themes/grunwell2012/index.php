@@ -12,7 +12,11 @@ get_header(); ?>
 
   <h1>Latest blog posts</h1>
 
-  <?php get_template_part( 'loop', 'index' ); ?>
+  <?php while ( have_posts() ) : the_post(); ?>
+
+    <?php get_template_part( 'loop', 'index' ); ?>
+
+  <?php endwhile; ?>
 
 </div><!-- // #primary -->
 
