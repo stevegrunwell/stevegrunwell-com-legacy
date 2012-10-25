@@ -158,7 +158,7 @@ function wpseo_replace_vars( $string, $args, $omit = array() ) {
 		'%%pagenumber%%'                => $pagenum,
 	);
 
-	if ( isset( $r->post_type ) ) {
+	if ( isset( $r->ID ) ) {
 		$replacements = array_merge( $replacements, array(
 			'%%caption%%'                   => $r->post_excerpt,
 			'%%category%%'                  => wpseo_get_terms( $r->ID, 'category' ),
