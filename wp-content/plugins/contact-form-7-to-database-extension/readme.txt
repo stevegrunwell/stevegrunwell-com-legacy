@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=NEVDJ
 Tags: contact form,database,contact form database,save contact form
 Requires at least: 3.2.1
 Tested up to: 3.4
-Stable tag: 2.4
+Stable tag: 2.4.1
 
 Saves submitted form data to the database and provides short codes to display it. Captures data from Contact Form 7 and Fast Secure Contact Form
 
@@ -87,6 +87,9 @@ prevent it from being deleted. You can always deactivate the plugin without loos
 1. Admin Panel view of submitted form data
 
 == Changelog ==
+
+= 2.4.2 =
+* Fixed character encoding issues with Excel IQY
 
 = 2.4.1 =
 * Added new short code attribute "role" to limit short code output only to those with sufficient role.

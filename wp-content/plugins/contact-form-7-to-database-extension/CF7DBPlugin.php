@@ -229,12 +229,12 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
 
     protected function initOptions() {
         // By default ignore CF7 metadata fields
-        $this->addOption('NoSaveFields', '_wpcf7,_wpcf7_version,_wpcf7_unit_tag,_wpnonce,_wpcf7_is_ajax_call');
+        $this->addOption('NoSaveFields', '_wpcf7,_wpcf7_version,_wpcf7_unit_tag,_wpnonce,_wpcf7_is_ajax_call,_wpcf7_captcha_challenge_captcha');
     }
 
     public function add_wpcf7_noSaveFields() {
         $nsfArray = explode(',', $this->getOption('NoSaveFields',''));
-        $wpcf7Fields = array('_wpcf7', '_wpcf7_version', '_wpcf7_unit_tag', '_wpnonce', '_wpcf7_is_ajax_call');
+        $wpcf7Fields = array('_wpcf7', '_wpcf7_version', '_wpcf7_unit_tag', '_wpnonce', '_wpcf7_is_ajax_call', '_wpcf7_captcha_challenge_captcha');
         foreach ($wpcf7Fields as $aWpcf7) {
            if (!in_array($aWpcf7, $nsfArray)) {
                $nsfArray[] = $aWpcf7;
@@ -247,7 +247,7 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
         global $wpdb;
         $wpdb->query($wpdb->prepare(
             'delete from `' . $this->getSubmitsTableName() .
-                    "` where `form_name` = '%s' and `field_name` in ('_wpcf7', '_wpcf7_version', '_wpcf7_unit_tag', '_wpnonce', '_wpcf7_is_ajax_call')",
+                    "` where `form_name` = '%s' and `field_name` in ('_wpcf7', '_wpcf7_version', '_wpcf7_unit_tag', '_wpnonce', '_wpcf7_is_ajax_call', '_wpcf7_captcha_challenge_captcha')",
             $formName));
     }
 
@@ -482,10 +482,17 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
                 $cf7->user = $user;
             }
             try {
-                $cf7 = apply_filters('cfdb_form_data', $cf7);
-                $time = $cf7->submit_time;
-                $ip = $cf7->ip;
-                $user = $cf7->user;
+                $newCf7 = apply_filters('cfdb_form_data', $cf7);
+                if ($newCf7 && is_object($newCf7)) {
+                    $cf7 = $newCf7;
+                    $time = $cf7->submit_time;
+                    $ip = $cf7->ip;
+                    $user = $cf7->user;
+                }
+                else {
+                    error_log('CFDB Error: No or invalid value returned from "cfdb_form_data" filter: ' .
+                            print_r($newCf7, true));
+                }
             }
             catch (Exception $ex) {
                 error_log(sprintf('CFDB Error: %s:%s %s  %s', $ex->getFile(), $ex->getLine(), $ex->getMessage(), $ex->getTraceAsString()));
@@ -498,6 +505,11 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
             $noSaveFields = $this->getNoSaveFields();
             $foundUploadFiles = array();
             global $wpdb;
+
+//            $hasDropBox = $this->getOption('dropbox');
+//            if ($hasDropBox) {
+//                require_once('CFDBShortCodeSavePostData.php');
+//            }
             foreach ($cf7->posted_data as $name => $value) {
                 $nameClean = stripslashes($name);
                 if (in_array($nameClean, $noSaveFields)) {
