@@ -321,7 +321,7 @@ function grunwell_get_tweets() {
   $tweets = array();
   if ( class_exists( 'SimpleTwitterTimeline' ) ) {
     $args = array(
-      'exclude_replies' => false,
+      'exclude_replies' => true,
       'limit' => 3,
       'parse_links' => true,
       'use_cache' => true,
