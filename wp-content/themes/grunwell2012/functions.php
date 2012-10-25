@@ -247,7 +247,7 @@ function grunwell_superscript_dates( $str ) {
   }
   return $str;
 }
-add_filter( 'get_the_date', 'grunwell_superscript_dates' );
+add_filter( 'the_content', 'grunwell_superscript_dates' );
 
 /**
  * Get a custom field stored in the Advanced Custom Fields plugin
