@@ -296,6 +296,18 @@ class acf_input
 				{
 					$html .= '#revisionsdiv, #screen-meta label[for=revisionsdiv-hide] {display: none;} ';
 				}
+				if( in_array('categories',$acf['options']['hide_on_screen']) )
+				{
+					$html .= '#categorydiv, #screen-meta label[for=categorydiv-hide] {display: none;} ';
+				}
+				if( in_array('tags',$acf['options']['hide_on_screen']) )
+				{
+					$html .= '#tagsdiv-post_tag, #screen-meta label[for=tagsdiv-post_tag-hide] {display: none;} ';
+				}
+				if( in_array('send-trackbacks',$acf['options']['hide_on_screen']) )
+				{
+					$html .= '#trackbacksdiv, #screen-meta label[for=trackbacksdiv-hide] {display: none;} ';
+				}
 				
 				
 				break;
@@ -447,9 +459,11 @@ class acf_input
 		{
 			$this->save_post_revision( $parent_id, $post_id );
         }
+        else
+        {
+	        do_action('acf_save_post', $post_id);
+        }
         
-		
-		do_action('acf_save_post', $post_id);
 	}
 	
 	
@@ -555,6 +569,21 @@ acf.text.gallery_tb_title_edit = "<?php _e("Edit Image",'acf'); ?>";
 	
 	function acf_print_scripts_input()
 	{
+		
+		wp_register_script('acf-datepicker', $this->parent->dir . '/core/fields/date_picker/jquery.ui.datepicker.js', false, $this->parent->version);
+    
+		wp_enqueue_script(array(
+			'jquery',
+			'jquery-ui-core',
+			'jquery-ui-tabs',
+			'jquery-ui-sortable',
+			'farbtastic',
+			'thickbox',
+			'media-upload',
+			'acf-datepicker',	
+		));
+
+		
 		foreach($this->parent->fields as $field)
 		{
 			$field->admin_print_scripts();
@@ -573,6 +602,14 @@ acf.text.gallery_tb_title_edit = "<?php _e("Edit Image",'acf'); ?>";
 	
 	function acf_print_styles_input()
 	{
+		wp_register_style('acf-datepicker', $this->parent->dir . '/core/fields/date_picker/style.date_picker.css', false, $this->parent->version);
+		
+		wp_enqueue_style(array(
+			'thickbox',
+			'farbtastic',
+			'acf-datepicker',	
+		));
+		
 		foreach($this->parent->fields as $field)
 		{
 			$field->admin_print_styles();

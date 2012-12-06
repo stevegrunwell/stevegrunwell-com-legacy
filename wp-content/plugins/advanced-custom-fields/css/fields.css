@@ -32,10 +32,24 @@
 	text-decoration: none;
 }
 
-#minor-publishing,
-#misc-publishing-actions {
+#minor-publishing-actions,
+#misc-publishing-actions #visibility,
+#misc-publishing-actions .curtime {
 	display: none;
 }
+
+#minor-publishing {
+	border-bottom: 0 none;
+}
+#misc-pub-section {
+	border-bottom: 0 none;
+}
+
+#misc-publishing-actions .misc-pub-section {
+	border-bottom-color: #F5F5F5;
+}
+
+
 
 .postbox {
 	background: #FFFFFF;
@@ -224,28 +238,27 @@ table.widefat.acf td {
 	background: #F9F9F9;
 }
 
-#acf_fields .field.ui-sortable-helper {
-	
-}
-#acf_fields .field.ui-sortable-helper {
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+#acf_fields .ui-sortable-helper {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+	background: #fff;
 }
 
-#acf_fields .field.ui-sortable-placeholder {
-	background: #f5f5f5;
-	box-shadow: inset 0 0px 3px rgba(0,0,0,0.1);
-	visibility: visible !important;	
-	border: #dfdfdf solid 1px;
-	border-top: 0 none;
-	border-bottom: 0 none;
+#acf_fields .ui-sortable-placeholder {
+	visibility: visible !important;
 }
 
+#acf_fields .ui-sortable-placeholder td {
+	border: 0 none !important;
+	box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+	background: rgba(0,0,0,0.075);
+}
 
 .fields .field:nth-child(even) {
 	background: #FCFCFC;
 }
 
-.fields .field_clone {
+.fields .field-field_clone {
 	display: none;
 }
 
@@ -257,6 +270,11 @@ table.widefat.acf td {
 	border-bottom: 0 none;
 }
 
+.fields .field.ui-sortable-placeholder {
+	border: 0 none !important;
+	box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+	background: rgba(0,0,0,0.075);
+}
 
 
 /*---------------------------------------------------------------------------------------------
@@ -341,6 +359,11 @@ table.widefat.acf td {
 .field_save td {
 	line-height: 25px;
 }
+
+.field_instructions textarea {
+	height: 70px;
+}
+
 /*---------------------------------------------------------------------------------------------
 	Repeater
 ---------------------------------------------------------------------------------------------*/
@@ -358,6 +381,10 @@ table.acf_input tr td .acf tr td {
 
 .field_column_width input[type="number"] {
 	width: 50%;
+}
+
+.repeater.layout-row > .fields > .field > .field_form_mask > .field_form > .widefat > tbody > tr.field_column_width {
+	display: none;
 }
 
 /*---------------------------------------------------------------------------------------------
@@ -427,33 +454,33 @@ td.operator {
 	
 }
 
-table#location_rules {
+table.acf-rules {
 
 }
 
-table#location_rules tr {
+table.acf-rules tbody tr {
 
 }
 
-table#location_rules tr td {
+table.acf-rules tbody tr td {
 	padding: 4px;
 	border: 0 none;
 }
 
-table#location_rules tr td:first-child {
+table.acf-rules tbody tr td:first-child {
 	padding-left: 0;
 }
 
-table#location_rules tr td:last-child {
+table.acf-rules tbody tr td:last-child {
 	padding-right: 0;
 }
 
-table#location_rules tr td.buttons {
+table.acf-rules tbody tr td.buttons {
 	width: 40px;
 	vertical-align: middle;
 }
 
-table#location_rules a.remove {
+table.acf-rules tbody a.remove {
 	display: block;
 	width: 16px;
 	height: 16px;
@@ -462,17 +489,17 @@ table#location_rules a.remove {
 	margin-right: 4px;
 }
 
-table#location_rules a.remove:hover {
+table.acf-rules tbody a.remove:hover {
 	background-position: 0 100%;
 }
 
-table#location_rules a.remove.disabled {
+table.acf-rules.remove-disabled tbody a.remove {
 	opacity: 0.4;
 	background-position: 0 0 !important;
 	cursor: default;
 }
 
-table#location_rules a.add {
+table.acf-rules tbody a.add {
 	display: block;
 	width: 16px;
 	height: 16px;
@@ -480,11 +507,11 @@ table#location_rules a.add {
 	float: left;
 }
 
-table#location_rules a.add:hover {
+table.acf-rules tbody a.add:hover {
 	background-position: 0 100%;
 }
 
-table#location_rules .acf-loading {
+table.acf-rules tbody .acf-loading {
 	margin: 0 auto;
 	margin-top: -2px;
 }
@@ -558,9 +585,8 @@ table.acf_input table.acf_cf_meta select {
 	cursor: move;
 }
 
-.ui-state-highlight {
-	height: 40px;
-}
+
+
 
 
 /*---------------------------------------------------------------------------------------------
@@ -626,6 +652,7 @@ table.acf_input table.acf_cf_meta select {
 *	Select with Optgroup
 *	
 *---------------------------------------------------------------------------------------------*/
+
 #acf_fields select optgroup,
 #acf_location select optgroup {
 	padding: 5px 2px;
@@ -650,4 +677,22 @@ table.acf_input table.acf_cf_meta select {
 #acf_fields select optgroup:nth-child(2n),
 #acf_location select optgroup:nth-child(2n) {
     background: #F9F9F9;
+}
+
+
+/*---------------------------------------------------------------------------------------------
+*
+*	Conditional Logic
+*	
+*---------------------------------------------------------------------------------------------*/
+
+table.conditional-logic-rules {
+	background: transparent;
+	border: 0 none;
+	border-radius: 0;
+}
+
+table.conditional-logic-rules tbody td {
+	background: transparent;
+	border: 0 none;
 }

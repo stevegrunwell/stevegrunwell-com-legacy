@@ -93,7 +93,7 @@ function get_fields($post_id = false)
 * 
 *-------------------------------------------------------------------------------------*/
  
-function get_field($field_key, $post_id = false) 
+function get_field($field_key, $post_id = false, $format_value = true) 
 { 
 	global $post, $acf; 
 	 
@@ -125,30 +125,40 @@ function get_field($field_key, $post_id = false)
 	);
 	 
 	
-	// is $field_name a name? pre 3.4.0
-	if( strpos($field_key, "field_") === false )
+	if( $format_value )
 	{
-		// get field key
-		if( is_numeric($post_id) )
+		// is $field_name a name? pre 3.4.0
+		if( strpos($field_key, "field_") === false )
 		{
-			$field_key = get_post_meta($post_id, '_' . $field_key, true); 
+			// get field key
+			if( is_numeric($post_id) )
+			{
+				$field_key = get_post_meta($post_id, '_' . $field_key, true); 
+			}
+			elseif( strpos($post_id, 'user_') !== false )
+			{
+				$temp_post_id = str_replace('user_', '', $post_id);
+				$field_key = get_user_meta($temp_post_id, '_' . $field_key, true); 
+			}
+			else
+			{
+				$field_key = get_option('_' . $post_id . '_' . $field_key); 
+			}
 		}
-		elseif( strpos($post_id, 'user_') !== false )
+		
+		
+		// get field
+		if( strpos($field_key, "field_") !== false )
 		{
-			$temp_post_id = str_replace('user_', '', $post_id);
-			$field_key = get_user_meta($temp_post_id, '_' . $field_key, true); 
-		}
-		else
-		{
-			$field_key = get_option('_' . $post_id . '_' . $field_key); 
+			$field = $acf->get_acf_field($field_key);
 		}
 	}
-	
-	
-	// get field
-	if( strpos($field_key, "field_") !== false )
+	else
 	{
-		$field = $acf->get_acf_field($field_key);
+		$field = array(
+			'type' => 'none',
+			'name' => $field_key
+		);
 	}
 	
 	
@@ -255,13 +265,17 @@ function has_sub_field($field_name, $post_id = false)
 				'post_id' => $post_id,
 			);
 		}
-		
-		
-		// if someone used break; We should see if the parent value has this field_name as a value.
-		if( isset($GLOBALS['acf_field'][$depth-1]) && $GLOBALS['acf_field'][$depth-1]['name'] == $field_name )
+		elseif( isset($GLOBALS['acf_field'][$depth-1]) && $GLOBALS['acf_field'][$depth-1]['name'] == $field_name )
 		{
+			// if someone used break; We should see if the parent value has this field_name as a value.
 			unset( $GLOBALS['acf_field'][$depth] );
 			$GLOBALS['acf_field'] = array_values($GLOBALS['acf_field']);
+		}
+		else
+		{
+			// this was a break; (probably to get the first row only). Clear the repeater
+			$GLOBALS['acf_field'] = array();
+			return has_sub_field($field_name, $post_id);
 		}
 		
 	}
@@ -455,14 +469,16 @@ $GLOBALS['acf_register_options_page'] = array();
 
 function register_options_page($title = "")
 {
-	$GLOBALS['acf_register_options_page'][] =  array(
-		'title'	=> $title,
-		'slug' => 'options-' . sanitize_title( $title ),
-	);
+	$GLOBALS['acf_register_options_page'][] = $title;
 }
 
 function acf_register_options_page($array)
 {
+	if( empty($GLOBALS['acf_register_options_page']) )
+	{
+		return $array;
+	}
+	
 	$array = array_merge($array, $GLOBALS['acf_register_options_page']);
 	
 	return $array;
@@ -628,8 +644,6 @@ function acf_form($options = null)
 			'class' => ''
 		),
 		'return' => add_query_arg( 'updated', 'true', get_permalink() ), // return url
-		'html_field_open' => '<div class="field">', // field wrapper open
-		'html_field_close' => '</div>', // field wrapper close
 		'html_before_fields' => '', // html inside form before fields
 		'html_after_fields' => '', // html inside form after fields
 		'submit_value' => 'Update', // vale for submit field
@@ -695,7 +709,9 @@ function acf_form($options = null)
 				
 			if($field_group['fields'])
 			{
-				echo '<div id="acf_' . $field_group['id'] . '" class="postbox acf_postbox"><div class="inside">';
+				echo '<div id="acf_' . $field_group['id'] . '" class="postbox acf_postbox">';
+				echo '<h3 class="hndle"><span>' . $field_group['title'] . '</span></h3>';
+				echo '<div class="inside">';
 					echo '<div class="options" data-layout="' . $field_group['options']['layout'] . '" data-show="true"></div>';
 					$acf->render_fields_for_input($field_group['fields'], $options['post_id']);
 				echo '</div></div>';

@@ -33,7 +33,7 @@
 		action 			:	'get_input_metabox_ids',
 		post_id			:	0,
 		page_template	:	false,
-		page_parent		:	false,
+		page_parent		:	0,
 		page_type		:	false,
 		page			:	0,
 		post			:	0,
@@ -92,7 +92,7 @@
 			success: function(result){
 				
 				// hide all metaboxes
-				$('#poststuff .acf_postbox').hide();
+				$('#poststuff .acf_postbox').addClass('acf-hidden');
 				$('#adv-settings .acf_hide_label').hide();
 				
 				
@@ -108,7 +108,8 @@
 					
 					
 					var postbox = $('#poststuff #acf_' + v);
-					postbox.show();
+					
+					postbox.removeClass('acf-hidden');
 					$('#adv-settings .acf_hide_label[for="acf_' + v + '-hide"]').show();
 					
 					// load fields if needed
@@ -186,7 +187,7 @@
 		else
 		{
 			acf.data.page_type = 'parent';
-			acf.data.page_parent = false;
+			acf.data.page_parent = 0;
 		}
 		
 		update_fields();
@@ -221,7 +222,8 @@
 
 		update_fields();
 		
-	});	
+	});
+	
 	
 	
 })(jQuery);

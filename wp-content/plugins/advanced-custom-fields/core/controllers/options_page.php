@@ -58,34 +58,52 @@ class acf_options_page
 			return true;
 		}
 		
+		
+		// vars
 		$parent_slug = 'acf-options';
 		$parent_title = __('Options','acf');
+		$parent_menu = __('Options','acf');
 		
-		// set parent slug
-		$custom = apply_filters('acf_register_options_page',array());
-		if(!empty($custom))
+		
+		// redirect to first child
+		$custom = apply_filters( 'acf_register_options_page',array() );
+		if( !empty($custom) )
 		{	
-			$parent_slug = $custom[0]['slug'];
-			$parent_title = $custom[0]['title'];
+			$parent_title = $custom[0];
+			$parent_slug = 'acf-options-' . sanitize_title( $parent_title );
+		}
+		else
+		{
+			$parent_title = apply_filters('acf_options_page_title', $parent_title);
 		}
 		
 		
+		// allow override of title
+		$parent_menu = apply_filters('acf_options_page_title', $parent_menu);
+		
+		
 		// Parent
-		$parent_page = add_menu_page($parent_title, __('Options','acf'), 'edit_posts', $parent_slug, array($this, 'html'));	
+		$parent_page = add_menu_page($parent_title, $parent_menu, 'edit_posts', $parent_slug, array($this, 'html'));	
+		
 		
 		// some fields require js + css
 		add_action('admin_print_scripts-'.$parent_page, array($this, 'admin_print_scripts'));
 		add_action('admin_print_styles-'.$parent_page, array($this, 'admin_print_styles'));
 		
+		
 		// Add admin head
 		add_action('admin_head-'.$parent_page, array($this,'admin_head'));
 		add_action('admin_footer-'.$parent_page, array($this,'admin_footer'));
+		
 		
 		if(!empty($custom))
 		{
 			foreach($custom as $c)
 			{
-				$child_page = add_submenu_page($parent_slug, $c['title'], $c['title'], 'edit_posts', $c['slug'], array($this, 'html'));
+				$sub_title = $c;
+				$sub_slug = 'acf-options-' . sanitize_title( $sub_title );
+				
+				$child_page = add_submenu_page($parent_slug, $sub_title, $sub_title, 'edit_posts', $sub_slug, array($this, 'html'));
 				
 				// some fields require js + css
 				add_action('admin_print_scripts-'.$child_page, array($this, 'admin_print_scripts'));

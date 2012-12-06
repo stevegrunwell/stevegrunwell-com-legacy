@@ -20,7 +20,10 @@ class acf_Relationship extends acf_Field
     	$this->name = 'relationship';
 		$this->title = __("Relationship",'acf');
 		
+		
+		// actions
 		add_action('wp_ajax_acf_get_relationship_results', array($this, 'acf_get_relationship_results'));
+		
    	}
    	
    	
@@ -30,6 +33,7 @@ class acf_Relationship extends acf_Field
    	*  @description: 
    	*  @created: 3/09/12
    	*/
+   	
    	function posts_where( $where, &$wp_query )
 	{
 	    global $wpdb;
@@ -200,28 +204,6 @@ class acf_Relationship extends acf_Field
 		}
 		
 	}
-	
-	
-   	/*--------------------------------------------------------------------------------------
-	*
-	*	admin_print_scripts / admin_print_styles
-	*
-	*	@author Elliot Condon
-	*	@since 3.0.0
-	* 
-	*-------------------------------------------------------------------------------------*/
-	
-	function admin_print_scripts()
-	{
-		wp_enqueue_script(array(
-			'jquery-ui-sortable',
-		));
-	}
-	
-	function admin_print_styles()
-	{
-  
-	}
    		
 	
 	/*--------------------------------------------------------------------------------------
@@ -265,7 +247,7 @@ class acf_Relationship extends acf_Field
 		
 		
 		?>
-<div class="acf_relationship" data-max="<?php echo $field['max']; ?>" data-s="" data-paged="1" data-post_type="<?php echo implode(',', $field['post_type']); ?>" data-taxonomy="<?php echo implode(',', $field['taxonomy']); ?>" <?php if( defined('ICL_LANGUAGE_CODE') ){ echo 'data-lang="' . ICL_LANGUAGE_CODE . '"';} ?>">
+<div class="acf_relationship" data-max="<?php echo $field['max']; ?>" data-s="" data-paged="1" data-post_type="<?php echo implode(',', $field['post_type']); ?>" data-taxonomy="<?php echo implode(',', $field['taxonomy']); ?>" <?php if( defined('ICL_LANGUAGE_CODE') ){ echo 'data-lang="' . ICL_LANGUAGE_CODE . '"';} ?>>
 	
 	<!-- Hidden Blank default value -->
 	<input type="hidden" name="<?php echo $field['name']; ?>" value="" />
