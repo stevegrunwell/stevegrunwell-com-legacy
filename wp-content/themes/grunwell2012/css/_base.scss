@@ -136,8 +136,11 @@ article.primary .entry-meta{margin-bottom: $line_height;}
 }
 
 /** Image styles */
-#content img{width:auto; max-width:100%; box-shadow:0 0 2px #aaa;}
+#content img{display:block; width:auto; max-width:100%; height:auto; box-shadow:0 0 2px #aaa;}
 .alignleft, img.alignleft, .alignright, img.alignright, .aligncenter, img.aligncenter{clear:both; display:block; margin:0 auto 1.4em;}
+.wp-caption { max-width:100%; margin-bottom:$line_height; padding:5px; background:#eaeaea; border:1px solid #999; border-radius:4px;
+  p.wp-caption-text { margin:5px 0 0; font-size:0.8em; line-height:$line_height; }
+}
 
 /** jQuery Flexslider */
 .flexslider, .flexslider ul{width:100%; max-width:640px;}
@@ -183,8 +186,8 @@ article.primary .entry-meta{margin-bottom: $line_height;}
 }
 
 .pagination { margin:2em 0 0; list-style:none;
-	.prev { float:left; }
-	.next { float:right; }
+  .prev { float:left; }
+  .next { float:right; }
 }
 
 /** Sidebar styles */
