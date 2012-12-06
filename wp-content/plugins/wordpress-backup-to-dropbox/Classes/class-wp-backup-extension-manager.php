@@ -69,6 +69,8 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function install($name, $file) {
+		@umask(0000);
+
 		if (!defined('FS_METHOD'))
 			define('FS_METHOD', 'direct');
 
@@ -78,6 +80,7 @@ class WP_Backup_Extension_Manager {
 			'key' => $this->key,
 			'name' => $name,
 			'site' => get_site_url(),
+			'version' => BACKUP_TO_DROPBOX_VERSION,
 		);
 
 		$download_file = download_url("{$this->get_url()}/download?" . http_build_query($params));

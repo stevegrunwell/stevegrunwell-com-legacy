@@ -55,10 +55,15 @@ class WP_Backup {
 				$file = $file_info->getPathname();
 
 				if (time() > $next_check) {
-					if (!$this->config->get_option('in_progress'))
-						return;
+					if (!$this->config->get_option('in_progress', true)) {
+						$msg = __('Backup stopped by user.', 'wpbtd');
+						$this->config->log($msg);
+						die($msg);
+					}
 
-					$percent_done = round(($processed_file_count / $total_files) * 100, 0);
+					$percent_done = __('unknown', 'wpbtd');
+					if ($total_files > 0)
+						$percent_done = round(($processed_file_count / $total_files) * 100, 0);
 
 					$this->config
 						->add_processed_files($current_processed_files)
@@ -73,8 +78,6 @@ class WP_Backup {
 					continue;
 
 				if (is_file($file)) {
-					if (File_List::in_ignore_list(basename($file)))
-						continue;
 
 					if (in_array($file, $processed_files))
 						continue;
@@ -96,7 +99,9 @@ class WP_Backup {
 
 			$this->output->end();
 			$this->config->log(sprintf(__('A total of %s files were processed.'), $processed_file_count));
-			$this->config->set_option('total_file_count', $processed_file_count);
+
+			if ($processed_file_count > 800) //I doub't very much a wp installation can get smaller then this
+				$this->config->set_option('total_file_count', $processed_file_count);
 		}
 	}
 
@@ -114,6 +119,8 @@ class WP_Backup {
 				$this->config->log(__('Your Dropbox account is not authorized yet.', 'wpbtd'));
 				return;
 			}
+
+			$this->dropbox->create_directory($this->config->get_option('dropbox_location'));
 
 			$core = new WP_Backup_Database_Core();
 			$core->execute();
@@ -142,7 +149,14 @@ class WP_Backup {
 			$manager->on_failure();
 		}
 
-		$this->config->complete();
+		$this->config
+			->complete()
+			->log_finished_time()
+			->log(sprintf(
+				__('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
+				(memory_get_usage(true) / 1048576)
+			))
+			;
 	}
 
 	public function backup_now() {
@@ -153,10 +167,7 @@ class WP_Backup {
 	}
 
 	public function stop() {
-		$this->config
-			->log(__('Backup stopped.', 'wpbtd'))
-			->complete()
-			;
+		$this->config->complete();
 	}
 
 	public function create_silence_file() {
@@ -174,6 +185,7 @@ class WP_Backup {
 			fwrite($fh, "<?php\n// Silence is golden.\n");
 			fclose($fh);
 		}
+		return $this;
 	}
 
 	public function create_dump_dir() {
@@ -189,6 +201,6 @@ class WP_Backup {
 				);
 			}
 		}
-		return $dump_dir;
+		return $this;
 	}
 }
