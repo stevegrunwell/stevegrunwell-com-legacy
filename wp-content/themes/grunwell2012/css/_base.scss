@@ -55,6 +55,7 @@ sup { position:relative; top:-.3em; }
 pre, code { font-family:Monaco,'Bitstream Vera Sans Mono','Lucida Console',Terminal,monospace; font-size:.9em; }
 code { padding:0 .25em 0 .5em; white-space:nowrap; background:#eaeaea; }
 abbr { border-bottom:1px dotted #999; cursor:help; }
+blockquote { padding-left:$line_height; border-left:2px solid #999; }
 
 a:link, a:visited { text-decoration:none; color:$link_color; }
 a:hover, a:active { text-decoration:underline; }
