@@ -30,16 +30,17 @@
 	*/
 	
 	acf.data = {
-		action 			:	'get_input_metabox_ids',
-		post_id			:	0,
-		page_template	:	false,
-		page_parent		:	0,
-		page_type		:	false,
-		page			:	0,
-		post			:	0,
-		post_category	:	false,
-		post_format		:	false,
-		taxonomy		:	false
+		'action' 			:	'acf/location/match_field_groups_ajax',
+		'post_id'			:	0,
+		'page_template'		:	0,
+		'page_parent'		:	0,
+		'page_type'			:	0,
+		'post_category'		:	0,
+		'post_format'		:	0,
+		'taxonomy'			:	0,
+		'lang'				:	0,
+		'nonce'				:	0,
+		'return'			:	'json'
 	};
 	
 		
@@ -55,8 +56,7 @@
 		
 		// update post_id
 		acf.data.post_id = acf.post_id;
-		acf.data.page = acf.post_id;
-		acf.data.post = acf.post_id;
+		acf.data.nonce = acf.nonce;
 		
 		
 		// MPML
@@ -75,15 +75,14 @@
 	
 	
 	/*
-	*  update_fields
+	*  update_field_groups
 	*
 	*  @description: finds the new id's for metaboxes and show's hides metaboxes
 	*  @created: 1/03/2011
 	*/
 	
-	function update_fields()
-	{
-
+	$(document).live('acf/update_field_groups', function(){
+		
 		$.ajax({
 			url: ajaxurl,
 			data: acf.data,
@@ -91,13 +90,20 @@
 			dataType: 'json',
 			success: function(result){
 				
+				// validate
+				if( !result )
+				{
+					return false;
+				}
+				
+				
 				// hide all metaboxes
 				$('#poststuff .acf_postbox').addClass('acf-hidden');
 				$('#adv-settings .acf_hide_label').hide();
 				
 				
 				// dont bother loading style or html for inputs
-				if(result.length == 0)
+				if( result.length == 0 )
 				{
 					return false;
 				}
@@ -156,22 +162,24 @@
 				
 			}
 		});
-	}
+	});
 
 	
 	/*
-	*  update_fields (Live change events)
+	*  $(document).trigger('acf/update_field_groups'); (Live change events)
 	*
-	*  @description: call the update_fields function on live events
+	*  @description: call the $(document).trigger('acf/update_field_groups'); event on live events
 	*  @created: 1/03/2011
 	*/
 		
 	$('#page_template').live('change', function(){
 		
 		acf.data.page_template = $(this).val();
-		update_fields();
+		
+		$(document).trigger('acf/update_field_groups');
 	    
 	});
+	
 	
 	$('#parent_id').live('change', function(){
 		
@@ -190,15 +198,24 @@
 			acf.data.page_parent = 0;
 		}
 		
-		update_fields();
+		
+		$(document).trigger('acf/update_field_groups');
 	    
 	});
 
 	
 	$('#post-formats-select input[type="radio"]').live('change', function(){
 		
-		acf.data.post_format = $(this).val();
-		update_fields();
+		var val = $(this).val();
+		
+		if( val == '0' )
+		{
+			val = 'standard';
+		}
+		
+		acf.data.post_format = val;
+		
+		$(document).trigger('acf/update_field_groups');
 		
 	});	
 	
@@ -208,11 +225,11 @@
 		
 		
 		// vars
-		var values = ['0'];
+		var values = [];
 		
 		
 		$('.categorychecklist input[type="checkbox"]:checked').each(function(){
-			values.push($(this).val());
+			values.push( $(this).val() );
 		});
 
 		
@@ -220,7 +237,7 @@
 		acf.data.taxonomy = values;
 
 
-		update_fields();
+		$(document).trigger('acf/update_field_groups');
 		
 	});
 	

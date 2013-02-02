@@ -1,8 +1,8 @@
 <?php
 
-class acf_Color_picker extends acf_Field
+class acf_Tab extends acf_Field
 {
-
+	
 	/*--------------------------------------------------------------------------------------
 	*
 	*	Constructor
@@ -17,12 +17,12 @@ class acf_Color_picker extends acf_Field
 	{
     	parent::__construct($parent);
     	
-    	$this->name = 'color_picker';
-		$this->title = __("Color Picker",'acf');
+    	$this->name = 'tab';
+		$this->title = __("Tab",'acf');
 		
    	}
-   	
-	
+   
+
 	/*--------------------------------------------------------------------------------------
 	*
 	*	create_field
@@ -34,10 +34,8 @@ class acf_Color_picker extends acf_Field
 	*-------------------------------------------------------------------------------------*/
 	
 	function create_field($field)
-	{		
-		// html
-		echo '<input type="text" value="' . $field['value'] . '" class="acf_color_picker" name="' . $field['name'] . '" id="' . $field['id'] . '" />';
-
+	{
+		echo '<div class="acf-tab" data-id="' . $field['key'] . '">' . $field['label'] . '</div>';
 	}
 	
 	
@@ -53,33 +51,18 @@ class acf_Color_picker extends acf_Field
 	
 	function create_options($key, $field)
 	{
-		// vars
-		$defaults = array(
-			'default_value'	=>	'',
-		);
-		
-		$field = array_merge($defaults, $field);
-
-		
 		?>
 		<tr class="field_option field_option_<?php echo $this->name; ?>">
 			<td class="label">
-				<label><?php _e("Default Value",'acf'); ?></label>
-				<p class="description"><?php _e("eg: #ffffff",'acf'); ?></p>
+				<label><?php _e("Instructions",'acf'); ?></label>
 			</td>
 			<td>
-				<?php 
-				do_action('acf/create_field', array(
-					'type'	=>	'text',
-					'name'	=>	'fields['.$key.'][default_value]',
-					'value'	=>	$field['default_value'],
-				));
-				?>
+				<p><?php _e("All fields proceeding this \"tab field\" (or until another \"tab field\"  is defined) will appear grouped on the edit screen.",'acf'); ?></p>
+				<p><?php _e("You can use multiple tabs to break up your fields into sections.",'acf'); ?></p>
 			</td>
 		</tr>
 		<?php
 	}
-	
 	
 }
 
