@@ -1,21 +1,21 @@
 <?php
 /*
-    "Contact Form to Database Extension" Copyright (C) 2011 Michael Simpson  (email : michael.d.simpson@gmail.com)
+    "Contact Form to Database" Copyright (C) 2011-2012 Michael Simpson  (email : michael.d.simpson@gmail.com)
 
-    This file is part of Contact Form to Database Extension.
+    This file is part of Contact Form to Database.
 
-    Contact Form to Database Extension is free software: you can redistribute it and/or modify
+    Contact Form to Database is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    Contact Form to Database Extension is distributed in the hope that it will be useful,
+    Contact Form to Database is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Contact Form to Database Extension.
+    along with Contact Form to Database.
     If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -38,8 +38,8 @@ class CFDBViewWhatsInDB extends CFDBView {
         $tableHtmlId = 'cf2dbtable';
 
         // Identify which forms have data in the database
-        $rows = $wpdb->get_results("select distinct `form_name` from `$tableName` order by `form_name`");
-        if ($rows == null || count($rows) == 0) {
+        $formsFromQuery = $wpdb->get_results("select distinct `form_name` from `$tableName` order by `form_name`");
+        if ($formsFromQuery == null || count($formsFromQuery) == 0) {
             _e('No form submissions in the database', 'contact-form-7-to-database-extension');
             return;
         }
@@ -50,12 +50,16 @@ class CFDBViewWhatsInDB extends CFDBView {
         else if (isset($_GET['dbpage'])) {
             $page = $_GET['dbpage'];
         }
-        $currSelection = null; //$rows[0]->form_name;
+        $currSelection = null;
         if (isset($_REQUEST['form_name'])) {
             $currSelection = $_REQUEST['form_name'];
         }
         else if (isset($_GET['form_name'])) {
             $currSelection = $_GET['form_name'];
+        }
+        // If there is only one form in the DB, select that by default
+        if (!$currSelection && count($formsFromQuery) == 1) {
+            $currSelection = $formsFromQuery[0]->form_name;
         }
         if ($currSelection) {
             // Check for delete operation
@@ -104,7 +108,7 @@ class CFDBViewWhatsInDB extends CFDBView {
                     <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>"/>
                     <select name="form_name" id="form_name" onchange="this.form.submit();">
                         <option value=""><?php _e('* Select a form *', 'contact-form-7-to-database-extension') ?></option>
-                        <?php foreach ($rows as $aRow) {
+                        <?php foreach ($formsFromQuery as $aRow) {
                         $formName = $aRow->form_name;
                         $selected = ($formName == $currSelection) ? "selected" : "";
                         ?>

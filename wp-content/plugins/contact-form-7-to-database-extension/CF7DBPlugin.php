@@ -1,21 +1,21 @@
 <?php
 /*
-    "Contact Form to Database Extension" Copyright (C) 2011 Michael Simpson  (email : michael.d.simpson@gmail.com)
+    "Contact Form to Database" Copyright (C) 2011-2012 Michael Simpson  (email : michael.d.simpson@gmail.com)
 
-    This file is part of Contact Form to Database Extension.
+    This file is part of Contact Form to Database.
 
-    Contact Form to Database Extension is free software: you can redistribute it and/or modify
+    Contact Form to Database is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    Contact Form to Database Extension is distributed in the hope that it will be useful,
+    Contact Form to Database is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Contact Form to Database Extension.
+    along with Contact Form to Database.
     If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -276,7 +276,7 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
             add_action('grunion_pre_message_sent', array(&$this, 'saveJetPackContactFormData'), 10, 3);
         }
 
-        // Have our own hook to publish data independent of other plugins
+        // Have our own hook to receive form submissions independent of other plugins
         add_action('cfdb_submit', array(&$this, 'saveFormData'));
 
         // Register Export URL
@@ -336,8 +336,8 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
 
     public function ajaxFile() {
         require_once('CFDBDie.php');
-        //if (!$this->canUserDoRoleOption('CanSeeSubmitData')) {
-        if (!$this->canUserDoRoleOption('CanSeeSubmitDataViaShortcode')) {
+        if (!$this->canUserDoRoleOption('CanSeeSubmitData') &&
+            !$this->canUserDoRoleOption('CanSeeSubmitDataViaShortcode')) {
             CFDBDie::wp_die(__('You do not have sufficient permissions to access this page.', 'contact-form-7-to-database-extension'));
         }
         $submitTime = $_REQUEST['s'];
@@ -421,14 +421,14 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
     }
 
     public function addSettingsSubMenuPage() {
-        $this->requireExtraPluginFiles();
-        $displayName = $this->getPluginDisplayName();
-        add_submenu_page('wpcf7', //$this->getDBPageSlug(),
-                         $displayName . ' Options',
-                         __('Database Options', 'contact-form-7-to-database-extension'),
-                         'manage_options',
-                         get_class($this) . 'Settings',
-                         array(&$this, 'settingsPage'));
+//        $this->requireExtraPluginFiles();
+//        $displayName = $this->getPluginDisplayName();
+//        add_submenu_page('wpcf7', //$this->getDBPageSlug(),
+//                         $displayName . ' Options',
+//                         __('Database Options', 'contact-form-7-to-database-extension'),
+//                         'manage_options',
+//                         get_class($this) . 'Settings',
+//                         array(&$this, 'settingsPage'));
     }
 
 
@@ -448,8 +448,8 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
                 __('Database Options', 'contact-form-7-to-database-extension') .
                 '</a>  | <a href="admin.php?page=' . $this->getSortCodeBuilderPageSlug() . '">' .
                 __('Build Short Code', 'contact-form-7-to-database-extension') .
-                '</a> | <a href="http://wordpress.org/extend/plugins/contact-form-7-to-database-extension/faq/">' .
-                __('FAQ', 'contact-form-7-to-database-extension') . '</a>
+                '</a> | <a href="http://cfdbplugin.com/">' .
+                __('Reference', 'contact-form-7-to-database-extension') . '</a>
        </p>
       ';
     }
@@ -500,7 +500,7 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
 
             $tableName = $this->getSubmitsTableName();
             $parametrizedQuery = "INSERT INTO `$tableName` (`submit_time`, `form_name`, `field_name`, `field_value`, `field_order`) VALUES (%s, %s, %s, %s, %s)";
-            $parametrizedFileQuery = "UPDATE `$tableName` SET `file` = '%s' WHERE `submit_time` = %F AND `form_name` = '%s' AND `field_name` = '%s' AND `field_value` = '%s'";
+            $parametrizedFileQuery = "INSERT INTO `$tableName` (`submit_time`, `form_name`, `field_name`, `field_value`, `field_order`, `file`) VALUES (%s, %s, %s, %s, %s, %s)";
             $order = 0;
             $noSaveFields = $this->getNoSaveFields();
             $foundUploadFiles = array();
@@ -518,48 +518,54 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
 
                 $value = is_array($value) ? implode($value, ', ') : $value;
                 $valueClean = stripslashes($value);
-                $wpdb->query($wpdb->prepare($parametrizedQuery,
-                                            $time,
-                                            $title,
-                                            $nameClean,
-                                            $valueClean,
-                                            $order++));
 
-                // Store uploaded files - Do as a separate query in case it fails due to max size or other issue
+                // Check if this is a file upload field
+                $didSaveFile = false;
                 if ($cf7->uploaded_files && isset($cf7->uploaded_files[$nameClean])) {
                     $foundUploadFiles[] = $nameClean;
                     $filePath = $cf7->uploaded_files[$nameClean];
                     if ($filePath) {
                         $content = file_get_contents($filePath);
-                        $wpdb->query($wpdb->prepare($parametrizedFileQuery,
-                                                    $content,
-                                                    $time,
-                                                    $title,
-                                                    $nameClean,
-                                                    $valueClean));
+                        $didSaveFile = $wpdb->query($wpdb->prepare($parametrizedFileQuery,
+                            $time,
+                            $title,
+                            $nameClean,
+                            $valueClean,
+                            $order++,
+                            $content));
+                        if (!$didSaveFile) {
+                            error_log("CFDB Error: could not save uploaded file, field=$nameClean, file=$filePath");
+                        }
                     }
+                }
+                if (!$didSaveFile) {
+                    $wpdb->query($wpdb->prepare($parametrizedQuery,
+                        $time,
+                        $title,
+                        $nameClean,
+                        $valueClean,
+                        $order++));
                 }
             }
 
             // Since Contact Form 7 version 3.1, it no longer puts the names of the files in $cf7->posted_data
             // So check for them only only in $cf7->uploaded_files
+            // Update: This seems to have been reversed back to the original in Contact Form 7 3.2 or 3.3
             if ($cf7->uploaded_files && is_array($cf7->uploaded_files)) {
                 foreach ($cf7->uploaded_files as $field => $filePath) {
                     if (!in_array($field, $foundUploadFiles) && $filePath) {
                         $fileName = basename($filePath);
-                        $wpdb->query($wpdb->prepare($parametrizedQuery,
-                                                    $time,
-                                                    $title,
-                                                    $field,
-                                                    $fileName,
-                                                    $order++));
                         $content = file_get_contents($filePath);
-                        $wpdb->query($wpdb->prepare($parametrizedFileQuery,
-                                                    $content,
-                                                    $time,
-                                                    $title,
-                                                    $field,
-                                                    $fileName));
+                        $didSaveFile = $wpdb->query($wpdb->prepare($parametrizedFileQuery,
+                            $time,
+                            $title,
+                            $field,
+                            $fileName,
+                            $order++,
+                            $content));
+                        if (!$didSaveFile) {
+                            error_log("CFDB Error: could not save uploaded file, field=$field, file=$filePath");
+                        }
                     }
                 }
             }
@@ -613,9 +619,23 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
      * @param $extra_values array
      */
     public function saveJetPackContactFormData($post_id, $all_values, $extra_values) {
+
+//        error_log('POST=' . print_r($_POST, true));
+//        error_log('$all_values=' . print_r($all_values, true));
+//        error_log('$extra_values=' . print_r($extra_values, true));
+
+        $title = 'JetPack Contact Form';
+        if (isset($_POST['contact-form-id'])) {
+            $title .= ' ' . $_POST['contact-form-id'];
+            //$all_values['contact-form-id'] = $_POST['contact-form-id'];
+        }
+        else {
+            $title .= ' ' . $post_id;
+        }
+
         $all_values['post_id'] = $post_id;
         $data = (object)  array(
-            'title' => 'JetPack Contact Form',
+            'title' => $title,
             'posted_data' => $all_values,
             'uploaded_files' => null);
         $this->saveFormData($data);
@@ -646,13 +666,17 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
     public function createAdminMenu() {
         $displayName = $this->getPluginDisplayName();
         $roleAllowed = $this->getRoleOption('CanSeeSubmitData');
+        if (!$roleAllowed) {
+            $roleAllowed = 'administrator';
+        }
+        $menuSlug = $this->getDBPageSlug();
 
         //create new top-level menu
-//        add_menu_page($displayName . ' Plugin Settings',
-//                      'Contact Form Submissions',
-//                      'administrator', //$roleAllowed,
-//                      $this->getDBPageSlug(),
-//                      array(&$this, 'whatsInTheDBPage'));
+        add_menu_page($displayName,
+                        __('Contact Form DB', 'contact-form-7-to-database-extension'),
+                      $this->roleToCapability($roleAllowed),
+                      $menuSlug, //$this->getDBPageSlug(),
+                      array(&$this, 'whatsInTheDBPage'));
 
         // Needed for dialog in whatsInTheDBPage
         if (strpos($_SERVER['REQUEST_URI'], $this->getDBPageSlug()) !== false) {
@@ -685,21 +709,36 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle {
             wp_enqueue_script('jquery');
         }
 
-        // Put page under CF7's "Contact" page
-        add_submenu_page('wpcf7',
-                         $displayName . ' Submissions',
-                         __('Database', 'contact-form-7-to-database-extension'),
-                         $this->roleToCapability($roleAllowed),
-                         $this->getDBPageSlug(),
-                         array(&$this, 'whatsInTheDBPage'));
+//        // Put page under CF7's "Contact" page
+//        add_submenu_page('wpcf7',
+//                         $displayName . ' Submissions',
+//                         __('Database', 'contact-form-7-to-database-extension'),
+//                         $this->roleToCapability($roleAllowed),
+//                         $this->getDBPageSlug(),
+//                         array(&$this, 'whatsInTheDBPage'));
 
-        // Put page under CF7's "Contact" page
-        add_submenu_page('wpcf7',
+        add_submenu_page($menuSlug,
                          $displayName . ' Short Code Builder',
-                         __('Database Short Code', 'contact-form-7-to-database-extension'),
+                         __('Short Code', 'contact-form-7-to-database-extension'),
                          $this->roleToCapability($roleAllowed),
                          $this->getSortCodeBuilderPageSlug(),
                          array(&$this, 'showShortCodeBuilderPage'));
+
+        add_submenu_page($menuSlug,
+                         $displayName . ' Options',
+                         __('Options', 'contact-form-7-to-database-extension'),
+                         'manage_options',
+                         get_class($this) . 'Settings',
+                         array(&$this, 'settingsPage'));
+
+
+//        // Put page under CF7's "Contact" page
+//        add_submenu_page('wpcf7',
+//                         $displayName . ' Short Code Builder',
+//                         __('Database Short Code', 'contact-form-7-to-database-extension'),
+//                         $this->roleToCapability($roleAllowed),
+//                         $this->getSortCodeBuilderPageSlug(),
+//                         array(&$this, 'showShortCodeBuilderPage'));
     }
 
     /**
