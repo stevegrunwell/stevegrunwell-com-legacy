@@ -182,7 +182,19 @@ abstract class OAuth_Consumer_ConsumerAbstract
      * @param stdtclass $token A key secret pair
      */
     public function setToken($token) {
+        if (!is_object($token))
+            throw new Exception('Token is invalid.');
+
         $this->token = $token;
+        return $this;
+    }
+
+    public function resetToken() {
+        $token = new stdClass;
+        $token->oauth_token = false;
+        $token->oauth_token_secret = false;
+
+        $this->setToken($token);
         return $this;
     }
 
@@ -242,6 +254,9 @@ abstract class OAuth_Consumer_ConsumerAbstract
     */
     private function parseTokenString($response)
     {
+        if (!$response)
+            throw new Exception('Response cannot be null');
+
         $parts = explode('&', $response);
         $token = new stdClass();
         foreach ($parts as $part) {

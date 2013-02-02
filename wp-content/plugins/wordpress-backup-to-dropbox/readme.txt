@@ -3,7 +3,7 @@ Contributors: michael.dewildt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38SEXDYP28CFA
 Tags: backup, dropbox
 Requires at least: 3.0
-Tested up to: 3.5
+Tested up to: 3.5.1
 Stable tag: trunk
 
 Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
@@ -35,9 +35,11 @@ Once installed, the authorization process is easy -
 
 = Minimum Requirements =
 
-1. PHP 5.2 or higher
+1. PHP 5.2.16 or higher with [cURL support](http://www.php.net/manual/en/curl.installation.php)
 
 2. [A Dropbox account](https://www.dropbox.com/referrals/NTM1NTcwNjc5)
+
+Note: Version 1.3 of the plugin supports PHP < 5.2.16 and can be [downloaded here.](http://downloads.wordpress.org/plugin/wordpress-backup-to-dropbox.1.3.zip)
 
 = Errors and Warnings =
 
@@ -63,10 +65,6 @@ Premium extensions can be purchased securely using [PayPal](http://www.paypal.co
 = More Information =
 
 For news and updates please visit my blog - http://www.mikeyd.com.au/category/wordpress-backup-to-dropbox/
-
-= Issues =
-
-If you notice any bugs or want to request a feature please do so on GitHub - http://github.com/michaeldewildt/WordPress-Backup-to-Dropbox/issues
 
 = Translators =
 
@@ -152,6 +150,27 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
+= 1.4.3 =
+* Fixed issue where autorise link was invalid
+* Fixed session has time out issue
+* Added error message for users who's server has not connection to the internet
+* Added depricated page for people using PHP < 5.2.16
+* Added priority support premium extension
+
+= 1.4.2 =
+* Fixed the uninstaller
+* Fixed issue where files over 10mb where not being uploaded in their correct directories
+* FIxed a fatal error on a corrupt processed files list
+
+= 1.4.1 =
+* Fixed exclude widget checkbox css position
+* Fixed issue where all files where being uploaded in subsequent backups
+* Fixed cannot access empty property fatal error
+* Moved the safe mode warning out of the settings page to the backup log
+* The backup log now logs to a file in 'wp-content/backups' that is uploaded to Dropbox at the end of a backup
+* Allow for multiple emails in the email extension
+* Allow for sub folders in the store in subfolder setting
+
 = 1.4 =
 
 * Implemented a brand new Dropbox API library that utilises chunked uploads for large files.
@@ -207,4 +226,4 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Upgrade Notice ==
 
-* Remember to re-authorize the plugin with Dropbox!
+* After every update make sure that you check that your settings are still correct and run a test backup.
