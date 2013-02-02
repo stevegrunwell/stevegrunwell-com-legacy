@@ -4,7 +4,7 @@ Plugin Name: Media Tags
 Plugin URI: http://www.codehooligans.com/projects/wordpress/media-tags/
 Description: Provides ability to tag media/attachments via Media Management screens
 Author: Paul Menard
-Version: 3.0.5
+Version: 3.1
 Author URI: http://www.codehooligans.com
 */
 
@@ -35,10 +35,9 @@ class MediaTags {
 		$plugindir_node 						= dirname(plugin_basename(__FILE__));	
 		//$this->plugindir_url 					= get_bloginfo('wpurl') . "/wp-content/plugins/". $plugindir_node;
 		$this->plugindir_url 					= WP_CONTENT_URL . "/plugins/". $plugindir_node;
-		
-		
-	
+			
 		// Setup flags for third-party plugins we can integrate with
+		$this->thirdparty = new stdClass();
 		$this->thirdparty->google_sitemap 		= false;
 
 		$this->default_caps						= array();
