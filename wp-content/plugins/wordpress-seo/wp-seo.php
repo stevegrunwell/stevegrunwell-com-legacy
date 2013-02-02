@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: WordPress SEO
-Version: 1.2.8.7
+Version: 1.3.4.4
 Plugin URI: http://yoast.com/wordpress/seo/#utm_source=wpadmin&utm_medium=plugin&utm_campaign=wpseoplugin
 Description: The first true all-in-one SEO solution for WordPress, including on-page content analysis, XML sitemaps and much more.
 Author: Joost de Valk
@@ -9,7 +9,7 @@ Author URI: http://yoast.com/
 License: GPL v3
 
 WordPress SEO Plugin
-Copyright (C) 2008-2012, Joost de Valk - joost@yoast.com
+Copyright (C) 2008-2013, Joost de Valk - joost@yoast.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,6 +27,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /**
  * @package Main
  */
+
+if ( !defined('DB_NAME') ) {
+	header('HTTP/1.0 403 Forbidden');
+	die;
+}
 
 if ( !defined('WPSEO_URL') )
 	define( 'WPSEO_URL', plugin_dir_url( __FILE__ ) );
@@ -49,7 +54,7 @@ if ( version_compare(PHP_VERSION, '5.2', '<') ) {
 	}
 }
 
-define( 'WPSEO_VERSION', '1.2.8.7' );
+define( 'WPSEO_VERSION', '1.3.4.4' );
 
 $pluginurl = plugin_dir_url( __FILE__ );
 if ( preg_match( '/^https/', $pluginurl ) && !preg_match( '/^https/', get_bloginfo('url') ) )
@@ -93,7 +98,7 @@ function wpseo_admin_init() {
 		update_option( 'wpseo', $options );
 	}
 
-	if ( isset( $options['yoast_tracking'] ) && ( 'on' ==  $options['yoast_tracking'] || true === $options['yoast_tracking'] ) ) {
+	if ( isset( $options['yoast_tracking'] ) && $options['yoast_tracking'] ) {
 		require WPSEO_PATH.'admin/class-tracking.php';
 	}
 
