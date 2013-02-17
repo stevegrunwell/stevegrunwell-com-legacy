@@ -37,3 +37,5 @@ There are a ton of things left to do on the site, but it's being treated as a wo
 * Cache as much as possible
 * Move things like the Google Analytics profile ID to a site options page
 * Dedicated page template for code demonstrations/proofs of concept
+* Replace Contact Form 7 with Gravity Forms
+* Do away with the Custom Permalinks plugin
