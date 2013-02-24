@@ -3,8 +3,8 @@ Contributors: stevegrunwell, VanPattenMedia
 Donate link: http://stevegrunwell.com/wp-password-generator
 Tags: password, password generator, users, wp_generate_password, pluggable
 Requires at least: 3.2
-Tested up to: 3.3.2
-Stable tag: 2.4
+Tested up to: 3.5.1
+Stable tag: 2.5
 License: GPLv2 or later
 
 WP Password Generator takes the hassle out of creating new WordPress users by generating random, secure passwords with one click.
@@ -14,7 +14,7 @@ WP Password Generator takes the hassle out of creating new WordPress users by ge
 
 When administrators create new users through the WordPress admin interface (wp-admin/user-new.php), they are forced to come up with a password for the new user. The administrator is faced with a choice: use a separate password generator app or waste precious time coming up with a clever password only one person will ever see.
 
-WP-Password Generator takes the hassle out of creating new user passwords. Simply click "Generate Password" and your user has a unique, 7-16 character password. The password generator function is also totally pluggable, so you can easily change the way passwords are generated in order to meet your standards.
+WP Password Generator takes the hassle out of creating new user passwords. Simply click "Generate Password" and your user has a unique, 7-16 character password. The password generator function is also totally pluggable, so you can easily change the way passwords are generated in order to meet your standards.
 
 Please note that this plugin does require javascript to be enabled in order to work. Without javascript, the generator will simply be unavailable.
 
@@ -36,7 +36,7 @@ Please note that this plugin does require javascript to be enabled in order to w
 
 = How does the plugin generate passwords? =
 
-WP-Password Generator un-obtrusively injects a "Generate Password" button into /wp-admin/user-new.php. When the button is clicked, an Ajax call is fired off to /wp-content/plugins/wp-password-generator/wp-password-generator.php, which returns a randomly-generated password.
+WP Password Generator un-obtrusively injects a "Generate Password" button into /wp-admin/user-new.php. When the button is clicked, an Ajax call is fired off to /wp-content/plugins/wp-password-generator/wp-password-generator.php, which returns a randomly-generated password.
 
 As of version 2.2, WP Password Generator calls the pluggable `wp_generate_password()` function (which is the same function WordPress uses to create new passwords for users who have clicked "Forgot password?"). This function can be overridden in a theme or plugin, if desired (see "Can I change the way my passwords are generated?" below).
 
@@ -81,14 +81,26 @@ The default generator looks something like this and can be found in wp-includes/
 
 To overwrite the default behavior, simply create a function named `wp_generate_password()` in your theme's functions.php file. WordPress will then substitute your theme's `wp_generate_password()` for the default.
 
+= Can I use WP Password Generator to change existing users' passwords? =
+
+As of version 2.5 the "Generate Password" button has been added to the profile/user edit pages.
+
+= Does the plugin work with WordPress Multisite? =
+
+WordPress Multisite already generates random passwords for new Multisite users so WP Password Generator isn't necessary in Multisite installations.
+
 
 == Changelog ==
+
+= 2.5 =
+* Added password generator to user-edit.php and profile.php at the suggestion of [Dave Griffin](https://github.com/davegriffin) ([#1](https://github.com/stevegrunwell/wp-password-generator/issues/1))
+* Added Spanish translation (corrections/improvements welcome, I translated myself with Google Translate and my two years of high school Spanish).
 
 = 2.4 =
 * Added i18n support and included the POT file in the plugin files
 * Replaced instances of `bind()` and `delegate()` with jQuery's `on()` method
 * Added instructions for overriding `wp_generate_password()` in the README file
-* Promoted Chris Van Patten (VanPattenMedia) from "special thanks" to a plugin contributer
+* Promoted Chris Van Patten (VanPattenMedia) from "special thanks" to a plugin contributor
 * Plugin repo has been migrated to GitHub: https://github.com/stevegrunwell/wp-password-generator - Trac will only receive named releases (though not much has changed in that respect).
 
 = 2.3 =
@@ -123,6 +135,9 @@ To overwrite the default behavior, simply create a function named `wp_generate_p
 
 
 == Upgrade Notice ==
+
+= 2.5 =
+Password generator will now appear on user profile and edit screens. Added Spanish localization.
 
 = 2.4 =
 Added i18n support. Refactored jQuery scripting to be more future-proof.
