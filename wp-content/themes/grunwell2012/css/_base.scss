@@ -212,7 +212,7 @@ article.primary .entry-meta { margin-bottom: $line_height; }
   p { margin-bottom: 1em; }
   p a { font-weight: bold; }
   .tweets { max-width: 100%; margin-left: 0; }
-  .tweet { padding-bottom: 0.75em; }
+  .tweet { margin-bottom: 0; padding-bottom: 0.75em; }
   .tweet + .tweet { padding-top: 0.75em; border-top:1px dashed $border_color; }
 }
 
