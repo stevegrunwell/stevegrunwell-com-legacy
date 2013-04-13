@@ -4,7 +4,7 @@ Plugin Name: WP Smush.it
 Plugin URI: http://dialect.ca/code/wp-smushit/
 Description: Reduce image file sizes and improve performance using the <a href="http://smush.it/">Smush.it</a> API within WordPress.
 Author: Dialect
-Version: 1.6.0
+Version: 1.6.4
 Author URI: http://dialect.ca/
 */
 
@@ -23,10 +23,17 @@ define('SMUSHIT_REQ_URL', 'http://www.smushit.com/ysmush.it/ws.php?img=%s');
 define('SMUSHIT_BASE_URL', 'http://www.smushit.com/');
 
 define('WP_SMUSHIT_DOMAIN', 'wp_smushit');
-define('WP_SMUSHIT_UA', 'WP Smush.it/1.6.0 (+http://dialect.ca/code/wp-smushit)');
+define('WP_SMUSHIT_UA', 'WP Smush.it/1.6.3 (+http://wordpress.org/extend/plugins/wp-smushit/)');
 define('WP_SMUSHIT_PLUGIN_DIR', dirname(plugin_basename(__FILE__)));
+define('WP_SMUSHIT_MAX_BYTES', 1048576);
+
+// The number of images (including generated sizes) that can return errors before abandoning all hope.
+// N.B. this doesn't work with the bulk uploader, since it creates a new HTTP request
+// for each image.  It does work with the bulk smusher, though.
+define('WP_SMUSHIT_ERRORS_BEFORE_QUITTING', 3 * count(get_intermediate_image_sizes()));
 
 define('WP_SMUSHIT_AUTO', intval(get_option('wp_smushit_smushit_auto', 0)));
+define('WP_SMUSHIT_TIMEOUT', intval(get_option('wp_smushit_smushit_timeout', 60)));
 require( dirname(__FILE__) . '/settings.php' );
 
 /**
@@ -62,10 +69,10 @@ function wp_smushit_bulk_preview() {
   @ini_set('output_buffering','on');
   @ini_set('zlib.output_compression', 0);
   @ini_set('implicit_flush', 1);
-  
+
   $attachments = null;
   $auto_start = false;
-  
+
   if ( isset($_REQUEST['ids'])) {
     $attachments = get_posts( array(
       'numberposts' => -1,
@@ -81,7 +88,7 @@ function wp_smushit_bulk_preview() {
       'post_mime_type' => 'image'
     ));
   }
-  
+
 
   require( dirname(__FILE__) . '/bulk.php' );
 }
@@ -126,10 +133,17 @@ function wp_smushit($file, $file_url = null) {
 	//	return array($file, __('Not processed (local file)', WP_SMUSHIT_DOMAIN));
 
 	// canonicalize path - disabled 2011-02-1 troubleshooting 'Could not find...' errors.
-	// From the PHP docs: "The running script must have executable permissions on 
+	// From the PHP docs: "The running script must have executable permissions on
 	// all directories in the hierarchy, otherwise realpath() will return FALSE."
 	// $file_path = realpath($file);
-	
+
+  static $error_count = 0;
+
+  if ( $error_count >= WP_SMUSHIT_ERRORS_BEFORE_QUITTING ) {
+    $msg = __("Did not smush due to previous errors", WP_SMUSHIT_DOMAIN);
+    return array($file, $msg);
+  }
+
 	$file_path = $file;
 	// check that the file exists
 	if ( FALSE === file_exists($file_path) || FALSE === is_file($file_path) ) {
@@ -142,6 +156,12 @@ function wp_smushit($file, $file_url = null) {
 		$msg = sprintf(__("<span class='code'>%s</span> is not writable", WP_SMUSHIT_DOMAIN), $file_path);
 		return array($file, $msg);
 	}
+
+  $file_size = filesize($file_path);
+  if ( $file_size > WP_SMUSHIT_MAX_BYTES ) {
+    $msg = sprintf(__("<a href='http://developer.yahoo.com/yslow/smushit/faq.html#faq_restrict'>Too big</a> for Smush.it (%s)", WP_SMUSHIT_DOMAIN), wp_smushit_format_bytes($file_size));
+    return array($file, $msg);
+  }
 
 	// check that the file is within the WP_CONTENT_DIR
 	$upload_dir = wp_upload_dir();
@@ -160,8 +180,10 @@ function wp_smushit($file, $file_url = null) {
 
 	$data = wp_smushit_post($file_url);
 
-	if ( FALSE === $data )
+	if ( FALSE === $data ) {
+    $error_count++;
 		return array($file, __('Error posting to Smush.it', WP_SMUSHIT_DOMAIN));
+  }
 
 	// make sure the response looks like JSON -- added 2008-12-19 when
 	// Smush.it was returning PHP warnings before the JSON output
@@ -180,7 +202,7 @@ function wp_smushit($file, $file_url = null) {
 	if ( -1 === intval($data->dest_size) )
 		return array($file, __('No savings', WP_SMUSHIT_DOMAIN));
 
-	if ( !$data->dest ) {
+	if ( !isset($data->dest) ) {
 		$err = ($data->error ? 'Smush.it error: ' . $data->error : 'unknown error');
 		$err .= " while processing <span class='code'>$file_url</span> (<span class='code'>$file_path</span>)";
 		return array($file, __($err, WP_SMUSHIT_DOMAIN) );
@@ -220,7 +242,7 @@ function wp_smushit_should_resmush($previous_status) {
   if ( !$previous_status || empty($previous_status) ) {
     return TRUE;
   }
-  
+
   if ( stripos($previous_status, 'no savings') !== FALSE || stripos($previous_status, 'reduced') !== FALSE ) {
     return FALSE;
   }
@@ -239,13 +261,17 @@ function wp_smushit_should_resmush($previous_status) {
  * Called after `wp_generate_attachment_metadata` is completed.
  */
 function wp_smushit_resize_from_meta_data($meta, $ID = null, $force_resmush = true) {
+  if ( $ID && wp_attachment_is_image( $ID ) === false ) {
+    return $meta;
+  }
+
 	$file_path = $meta['file'];
 	$store_absolute_path = true;
 	$upload_dir = wp_upload_dir();
 	$upload_path = trailingslashit( $upload_dir['basedir'] );
 
 	// WordPress >= 2.6.2: determine the absolute $file_path (http://core.trac.wordpress.org/changeset/8796)
-	if ( FALSE === strpos($file,  $upload_path) ) {
+	if ( FALSE === strpos($file_path,  $upload_path) ) {
 		$store_absolute_path = false;
 		$file_path =  $upload_path . $file_path;
 	}
@@ -289,21 +315,20 @@ function wp_smushit_post($file_url) {
 	$req = sprintf( SMUSHIT_REQ_URL, urlencode( $file_url ) );
 
 	$data = false;
-	
+
 	if ( function_exists('wp_remote_get') ) {
-		$response = wp_remote_get($req, array('user-agent' => WP_SMUSHIT_UA, 'timeout' => 20));
-
-		if( is_wp_error( $response ) ) {
-		  wp_smushit_temporarily_disable();
-		  $msg = 'Automatic smushing has been disabled temporarily due to an error. ' . $response->get_error_message();
-			wp_die( $msg );
-		}
-
-		$data = wp_remote_retrieve_body($response);
+    $response = wp_remote_get($req, array('user-agent' => WP_SMUSHIT_UA, 'timeout' => WP_SMUSHIT_TIMEOUT));
+    if ( !$response || is_wp_error($response)) {
+      $data = FALSE;
+    } else {
+      $data = wp_remote_retrieve_body($response);
+    }
 	} else {
 		wp_die( __('WP Smush.it requires WordPress 2.8 or greater', WP_SMUSHIT_DOMAIN) );
 	}
-	
+
+  //$data = FALSE;
+
 	return $data;
 }
 
@@ -343,10 +368,12 @@ function wp_smushit_custom_column($column_name, $id) {
 			         $id,
 			         __('Re-smush', WP_SMUSHIT_DOMAIN));
     	} else {
-    		print __('Not processed', WP_SMUSHIT_DOMAIN);
-    		printf("<br><a href=\"admin.php?action=wp_smushit_manual&amp;attachment_ID=%d\">%s</a>",
-			         $id,
-			         __('Smush.it now!', WP_SMUSHIT_DOMAIN));
+    	  if ( wp_attachment_is_image( $id ) ) {
+      		print __('Not processed', WP_SMUSHIT_DOMAIN);
+      		printf("<br><a href=\"admin.php?action=wp_smushit_manual&amp;attachment_ID=%d\">%s</a>",
+  			         $id,
+  			         __('Smush.it now!', WP_SMUSHIT_DOMAIN));
+        }
     	}
     }
 }
