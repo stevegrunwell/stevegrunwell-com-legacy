@@ -97,7 +97,7 @@ To diagnose issues with your plugin please refer to this [sticky topic](http://w
 
 = How do I restore my website? =
 
-Simply download [WPB2D Simple Restore](http://wpb2d.com/restore) and upload it to an empty host. Once uploaded you will be guided through a wizard of 5 easy steps and have your blog restored in no time.
+Simply download [WPB2D Simple Restore](http://wpb2d.com/simple-restore) and upload it to an empty host. Once uploaded you will be guided through a wizard of 5 easy steps and have your blog restored in no time.
 
 You don’t even have to install WordPress!
 
@@ -134,6 +134,14 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 3. Premium Extensions: Add extra functionality with ease and a 60 day money back guarantee.
 
 == Changelog ==
+
+= 1.4.5 =
+* Added support for multi site
+* Added support for running WordPress in its own directory. http://codex.wordpress.org/Giving_WordPress_Its_Own_Directory
+* Added support for an alternate WP_CONTENT_DIR
+* Fixed an issue where windows servers where uploading with incorrect slashes
+* Fixed an issue where diretories where being marked as partial when they had no excluded files
+* Fixed a memory leak in the exclude file widget
 
 = 1.4.4 =
 * Attempt to set the memory limit WP_MAX_MEMORY_LIMIT and have a better go at setting the time limit
