@@ -72,9 +72,8 @@ input[type="text"], input[type="email"], input[type="tel"], input[type="password
 textarea { overflow:auto; }
 label { display:block; font-weight:bold; }
 label.required::after { content:' *'; color:#812323; }
-label.error { font-weight:normal; font-style:italic; color:#812323; }
+label.error, .validation_error, .gfield_description.validation_message { font-weight:normal; font-style:italic; color:#812323; }
 
-.wpcf7-form.sent fieldset { display:none; }
 ul.gform_fields { margin-left: 0; list-style: none; }
 .gform_wrapper form.required-implied .gfield_required { display: none; }
 

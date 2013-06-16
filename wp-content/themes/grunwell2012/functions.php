@@ -38,9 +38,6 @@ function grunwell_register_scripts_styles() {
   // jQuery Flexslider - http://www.woothemes.com/flexslider/
   wp_register_script( 'jquery-flexslider', get_bloginfo( 'template_url' ) . '/js/jquery.flexslider.min.js', array( 'jquery' ), '1.8', true );
 
-  // jQuery Validator - http://bassistance.de/jquery-plugins/jquery-plugin-validation/
-  wp_register_script( 'jquery-validator', get_bloginfo( 'template_url' ) . '/js/jquery.validate.min.js', array( 'jquery' ), '1.9.0', true );
-
   // Modernizr
   wp_register_script( 'modernizr', get_bloginfo( 'template_url' ) . '/js/modernizr.min.js', null, '2.6.1', false );
 }
@@ -342,80 +339,6 @@ function grunwell_format_client_data( $name, $city, $url ) {
 
 /** Don't put the date in post meta descriptions */
 add_filter( 'wpseo_show_date_in_snippet_preview', '__return_false' );
-
-/**
- * Remove Contact Form 7's scripts and styles without having to add anything to wp-config.php (as described
- * in the CF7 docs) by using the wpcf7_enqueue_styles and wpcf7_enqueue_scripts actions that Takayuki was
- * nice enough to include in includes/controller.php
- * @link http://contactform7.com/loading-javascript-and-stylesheet-only-when-it-is-necessary/
- */
-function grunwell_wpcf7_deregister_style() {
-  wp_deregister_style( 'contact-form-7' );
-}
-add_action( 'wpcf7_enqueue_styles', 'grunwell_wpcf7_deregister_style' );
-
-function grunwell_wpcf7_deregister_script() {
-  wp_deregister_script( 'jquery-form' );
-}
-add_action( 'wpcf7_enqueue_scripts', 'grunwell_wpcf7_deregister_script' );
-
-/**
- * Clean up the output from Contact Form 7 forms
- * Fortunately Contact Form 7 is consistent in how it outputs markup so the regex is pretty simple
- * @param array $atts Attributes passed to the shortcode
- * @param str $output The output from do_shortcode()
- * @return str
- * @todo apply .wpcf7-not-valid to labels for elements that are invalid
- */
-function grunwell_clean_wpcf7_output( $atts, $output='' ) {
-  if ( $output == '' && isset( $atts['id'] ) ) {
-    $output = do_shortcode( sprintf( '[contact-form-7 id="%d"]', $atts['id'] ) );
-  }
-
-  // Replace input[type="submit"] with a <button> element
-  if ( preg_match_all( '/\<input type="submit"([^\/\>]+)\/\>/i', $output, $matches ) ) {
-    foreach ( $matches['1'] as $k=>$v ) {
-      $value = 'Submit'; // default
-      if ( preg_match( '/value="([^"]+)"/', $v, $value_attr ) ) {
-        $value = $value_attr['1'];
-      }
-      $output = str_replace( $matches['0'][$k], sprintf( '<button type="submit" class="btn"%s>%s</button>', $v, $value ), $output );
-    }
-  }
-
-  if ( preg_match_all( '/\<input type="text"[^\/\>]+\/\>/i', $output, $text_inputs ) ) {
-    foreach ( $text_inputs['0'] as $input ) {
-      $new_input = $input;
-
-      // Turn title attributes into placeholders
-      if ( preg_match( '/title="([^"]+)"/i', $input, $title ) ) {
-        $new_input = str_replace( $title['0'], sprintf('%s placeholder="%s"', $title['0'], $title['1'] ), $new_input );
-      }
-
-      // input.wpcf7-email should be input[type="email"]
-      if ( preg_match( '/class="[^"]*wpcf7-email[^"]*/i', $input, $type ) ){
-        $new_input = str_replace( 'type="text"', 'type="email"', $new_input );
-      }
-
-      // Change the input type from text to something more semantic (example input.type-tel == input[type="tel"]
-      if ( preg_match( '/class="[^"]*(input-[^"\s]+)[^"]*/i', $input, $type ) ){
-        switch ( $type['1'] ) :
-          case 'input-url':
-            $new_input = str_replace( 'type="text"', 'type="url"', $new_input );
-            break;
-          case 'input-tel':
-            $new_input = str_replace( 'type="text"', 'type="tel"', $new_input );
-            break;
-        endswitch;
-      }
-
-      $output = str_replace( $input, $new_input, $output ) . '<div class="clear"></div>';
-    }
-  }
-
-  return $output;
-}
-add_shortcode( 'grunwell-contact-form-7', 'grunwell_clean_wpcf7_output' );
 
 /**
  * Return a different label depending on the value of $count

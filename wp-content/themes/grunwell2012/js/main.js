@@ -43,13 +43,6 @@ jQuery(function($){
     jQuery('#wrapper').find( 'input, textarea' ).placeholder();
   }
 
-  /** jQuery validator */
-  if ( $.fn.validate ) {
-    $.validator.addClassRules( 'wpcf7-validates-as-required', { required: true } );
-    $.validator.addClassRules( 'wpcf7-validates-as-email', { email: true } );
-    $('#content').find( 'form.wpcf7-form' ).validate();
-  }
-
   /** jQuery Flexslider */
   if ( $.fn.flexslider ) {
     $('#content').find( '.flexslider' ).flexslider({
