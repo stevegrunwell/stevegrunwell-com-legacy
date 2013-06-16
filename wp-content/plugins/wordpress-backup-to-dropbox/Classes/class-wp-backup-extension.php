@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (C) 2011-2012 Michael De Wildt. All rights reserved.
+ * @copyright Copyright (C) 2011-2013 Michael De Wildt. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
  *          it under the terms of the GNU General Public License as published by
@@ -20,9 +20,34 @@ abstract class WP_Backup_Extension {
 	const TYPE_DEFAULT = 1;
 	const TYPE_OUTPUT = 2;
 
-	abstract function on_start();
-	abstract function on_complete();
-	abstract function on_failure();
+	protected
+		$dropbox,
+		$dropbox_path,
+		$config
+		;
+
+	private	$chunked_upload_threashold;
+
+	public function __construct() {
+		$this->dropbox = WP_Backup_Registry::dropbox();
+		$this->config  = WP_Backup_Registry::config();
+	}
+
+	public function set_chunked_upload_threashold($threashold) {
+		$this->chunked_upload_threashold = $threashold;
+
+		return $this;
+	}
+
+	public function get_chunked_upload_threashold() {
+		if ($this->chunked_upload_threashold !== null)
+			return $this->chunked_upload_threashold;
+
+		return CHUNKED_UPLOAD_THREASHOLD;
+	}
+
+	abstract function complete();
+	abstract function failure();
 
 	abstract function get_menu();
 	abstract function get_type();

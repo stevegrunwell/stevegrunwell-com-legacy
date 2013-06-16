@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (C) 2011-2012 Michael De Wildt. All rights reserved.
+ * @copyright Copyright (C) 2011-2013 Michael De Wildt. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
  *          it under the terms of the GNU General Public License as published by
@@ -16,12 +16,12 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-$config = WP_Backup_Config::construct();
+$config = WP_Backup_Registry::config();
 
 if (!$config->get_option('in_progress'))
 	spawn_cron();
 
-$log = WP_Backup_Logger::get_log();
+$log = WP_Backup_Registry::logger()->get_log();
 
 if (empty($log)): ?>
 	<p><?php _e('You have not run a backup yet. When you do you will see a log of it here.'); ?></p>

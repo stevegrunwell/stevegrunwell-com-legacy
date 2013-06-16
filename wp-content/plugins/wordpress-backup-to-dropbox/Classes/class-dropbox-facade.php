@@ -2,7 +2,7 @@
 /**
  * A facade class with wrapping functions to administer a dropbox account
  *
- * @copyright Copyright (C) 2011-2012 Michael De Wildt. All rights reserved.
+ * @copyright Copyright (C) 2011-2013 Michael De Wildt. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
  *          it under the terms of the GNU General Public License as published by
@@ -26,20 +26,19 @@ class Dropbox_Facade {
 
 	private static $instance = null;
 
-	private $dropbox = null;
-	private $tokens = null;
-	private $oauth = null;
-	private $account_info_cache = null;
-	private $directory_cache = array();
+	private
+		$dropbox,
+		$request_token,
+		$access_token,
+		$oauth_state,
+		$oauth,
+		$account_info_cache,
+		$config,
+		$directory_cache = array()
+		;
 
-	public static function construct() {
-		if (!self::$instance)
-			self::$instance = new self();
-
-		return self::$instance;
-	}
-
-	public function __construct() {
+	public function init() {
+		$this->config = WP_Backup_Registry::config();
 
 		if (!extension_loaded('curl')) {
 			throw new Exception(sprintf(
@@ -49,71 +48,53 @@ class Dropbox_Facade {
 			));
 		}
 
-        $this->oauth = new OAuth_Consumer_Curl(self::CONSUMER_KEY, self::CONSUMER_SECRET);
-		$this->tokens = get_option('backup-to-dropbox-tokens');
+		$this->oauth = new OAuth_Consumer_Curl(self::CONSUMER_KEY, self::CONSUMER_SECRET);
 
-		//Convert array to stdClass for the new API
-		if ($this->tokens && is_array($this->tokens['access'])) {
-			$accessToken = new stdClass;
-			$accessToken->oauth_token = $this->tokens['access']["token"];
-			$accessToken->oauth_token_secret = $this->tokens['access']["token_secret"];
-			$this->tokens['access'] = $accessToken;
-			$this->tokens['state'] = 'access';
-		}
+		$this->oauth_state = $this->config->get_option('oauth_state');
+		$this->request_token = $this->get_token('request');
+		$this->access_token = $this->get_token('access');
 
-		try {
-			$this->init();
-
-			//If we are in the access state and are still not authorized then unlink and re init
-			if ($this->tokens['state'] == 'access' && !$this->is_authorized())
-				throw new Exception;
-
-		} catch (Exception $e) {
-			$this->unlink_account();
-			$this->init();
-
-		}
-	}
-
-	private function init() {
-
-		//If we have not tokens then lets setup a new request
-		if (!$this->tokens) {
-			$this->tokens = array(
-				'access' => false,
-				'request' => $this->oauth->getRequestToken(),
-				'state' => 'request',
-			);
-			add_option('backup-to-dropbox-tokens', $this->tokens, null, 'no');
-			$this->oauth->setToken($this->tokens['request']);
-		}
-
-		//If there is no state then assume we have access
-		if (!isset($this->tokens['state']))
-			$this->tokens['state'] = 'access';
-
-		//Consume the set tokens
-		if ($this->tokens['state'] == 'access') {
-			$this->oauth->setToken($this->tokens['access']);
-		} else if ($this->tokens['state'] == 'request') {
-			$this->oauth->setToken($this->tokens['request']);
+		if ($this->oauth_state == 'request') {
 			//If we have not got an access token then we need to grab one
 			try {
-				$this->tokens['access'] = $this->oauth->getAccessToken();
-				$this->tokens['state'] = 'access';
-				$this->oauth->setToken($this->tokens['access']);
+				$this->oauth->setToken($this->request_token);
+				$this->access_token = $this->oauth->getAccessToken();
+				$this->oauth_state = 'access';
+				$this->oauth->setToken($this->access_token);
+				$this->save_tokens();
 			} catch (Exception $e) {
 				//Authorization failed so we are still pending
-				$this->oauth->resetToken();
-				$this->tokens['request'] = $this->oauth->getRequestToken();
-				$this->tokens['state'] = 'request';
-
-				$this->oauth->setToken($this->tokens['request']);
+				$this->unlink_account();
 			}
+		} else if ($this->oauth_state == 'access')  {
+			$this->oauth->setToken($this->access_token);
+		} else {
+			//If we don't have an acess token then lets setup a new request
+			$this->request_token = $this->oauth->getRequestToken();
+			$this->oauth->setToken($this->request_token);
+			$this->oauth_state = 'request';
 			$this->save_tokens();
 		}
 
 		$this->dropbox = new API($this->oauth);
+		$this->dropbox->setTracker(new WP_Backup_Upload_Tracker());
+	}
+
+	private function get_token($type) {
+		$token = $this->config->get_option("{$type}_token");
+		$token_secret = $this->config->get_option("{$type}_token_secret");
+
+		$ret = new stdClass;
+		$ret->oauth_token = null;
+		$ret->oauth_token_secret = null;
+
+		if ($token && $token_secret) {
+			$ret = new stdClass;
+			$ret->oauth_token = $token;
+			$ret->oauth_token_secret = $token_secret;
+		}
+
+		return $ret;
 	}
 
 	public function is_authorized() {
@@ -139,21 +120,45 @@ class Dropbox_Facade {
 	}
 
 	private function save_tokens() {
-		update_option('backup-to-dropbox-tokens', $this->tokens);
+		$this->config->set_option('oauth_state', $this->oauth_state);
+
+		if ($this->request_token) {
+			$this->config->set_option('request_token', $this->request_token->oauth_token);
+			$this->config->set_option('request_token_secret', $this->request_token->oauth_token_secret);
+		} else {
+			$this->config->set_option('request_token', null);
+			$this->config->set_option('request_token_secret', null);
+		}
+
+		if ($this->access_token) {
+			$this->config->set_option('access_token', $this->access_token->oauth_token);
+			$this->config->set_option('access_token_secret', $this->access_token->oauth_token_secret);
+		} else {
+			$this->config->set_option('access_token', null);
+			$this->config->set_option('access_token_secret', null);
+		}
+
+		return $this;
 	}
 
 	public function upload_file($path, $file) {
 		$i = 0;
 		while ($i++ < self::RETRY_COUNT) {
 			try {
-				return $this->dropbox->putFile($file, null, $path);
+				return $this->dropbox->putFile($file, $this->remove_secret($file), $path);
 			} catch (Exception $e) {}
 		}
 		throw $e;
 	}
 
-	public function chunk_upload_file($path, $file) {
-		return $this->dropbox->chunkedUpload($file, null, $path);
+	public function chunk_upload_file($path, $file, $processed_file) {
+		$offest = $offest_id = null;
+		if ($processed_file) {
+			$offest = $processed_file->offset;
+			$upload_id = $processed_file->uploadid;
+		}
+
+		return $this->dropbox->chunkedUpload($file, $this->remove_secret($file), $path, true, $offest, $upload_id);
 	}
 
 	public function delete_file($file) {
@@ -185,11 +190,21 @@ class Dropbox_Facade {
 	}
 
 	public function unlink_account() {
-		$this->tokens = false;
-
 		$this->oauth->resetToken();
-		delete_option('backup-to-dropbox-tokens');
+		$this->request_token = null;
+		$this->access_token = null;
+		$this->oauth_state = null;
 
-		$this->init();
+		return $this->save_tokens();
+	}
+
+	public static function remove_secret($file, $basename = true) {
+		if (preg_match('/-wpb2d-secret$/', $file))
+			$file = substr($file, 0, strrpos($file, '.'));
+
+		if ($basename)
+			return basename($file);
+
+		return $file;
 	}
 }

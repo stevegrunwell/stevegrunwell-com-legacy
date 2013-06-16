@@ -82,6 +82,9 @@ For news and updates please visit my blog - http://www.mikeyd.com.au/category/wo
 * Italian (it_IT) - [René Querin](http://q-design.it)
 * Hungarian (hu_HU) - [Lazarevics](http://hardverborze.tk)
 * Russian (ru_RU) - [Evgeny Vlasov](http://verha.net)
+* Sweedish (sv_SE) - [Webbyrå](http://webbyra.se)
+
+Help keep WPB2D's language files up ot date on [HunStart](https://code.google.com/p/wpbtd)
 
 == Installation ==
 
@@ -134,6 +137,43 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 3. Premium Extensions: Add extra functionality with ease and a 60 day money back guarantee.
 
 == Changelog ==
+
+= 1.5.4 =
+* Fixed another weird state issue with the Dropbox oauth flow
+* Fixed regression where the last backup time was not being recognised
+* Fixed full paths being uploaded to Drobpox from Windows servers
+* Fixed exclude file issues Windows servers
+* Fixed error closing zip archive in premium extension
+* Added better clean up of files on success or failure
+
+= 1.5.3 =
+* Fixed critical issue where SQL dumps where being missed in some circumstances
+* Fixed plugin stylesheet showing up globally
+* Fixed some chunked upload resume issues
+* Fixed initialisation exceptions taking out WP admin
+* Fixed another obscure oauth autorisation issue affecting some users
+
+= 1.5.2 =
+* Fixed WP object cache issue that was incorrectly telling the plugin that the new table stucture was up to do date thus causing authorisation issues and DB warnings for some people
+* Fixed reauthorisation issue when unlinking a Dropbox account
+* Increased perfomance of the plugin after running it through P3, now only the bear minimum is loaded in a non admin context
+* Fixed an issue where zipped backups where loosing their directory structure
+
+= 1.5.1 =
+* Fixed DB errors displaying with for servers show errors on by default
+* Fixed excluded widget not working after update due to lengthy DB key
+* Fixed autorisation not working for some people after update
+
+= 1.5 =
+* Fix issue #127: in_array() warning on multisite setups
+* Fix a few E_NOTICES, sorry guys I did not realise these supressed
+* Add a sha1 secret to SQL dump files and Zip archives to make them imposible to guess and download
+* Fix copy on subscriptions page
+* Added style to some buttons
+* Moved all plugin storage into it's own table structure to increse performance
+* Added the ablilty for chunked uploads to resume
+* Added a brand new logo!
+* More info here: http://www.mikeyd.com.au/2013/05/15/wordpress-backup-to-dropbox-1-5
 
 = 1.4.5 =
 * Added support for multi site

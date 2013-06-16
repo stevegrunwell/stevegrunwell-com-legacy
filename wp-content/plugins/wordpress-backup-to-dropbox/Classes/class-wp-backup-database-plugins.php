@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (C) 2011-2012 Michael De Wildt. All rights reserved.
+ * @copyright Copyright (C) 2011-2013 Michael De Wildt. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
  *          it under the terms of the GNU General Public License as published by
@@ -17,15 +17,15 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 class WP_Backup_Database_Plugins extends WP_Backup_Database {
-	public function __construct($wpdb = null) {
-		parent::__construct('plugins', $wpdb);
+	public function __construct() {
+		parent::__construct('plugins');
 	}
 
 	public function execute() {
 		if ($this->exists())
 			return false;
 
-		WP_Backup_Logger::log(__('Creating SQL backup of your WordPress plugins.', 'wpbtd'));
+		WP_Backup_Registry::logger()->log(__('Creating SQL backup of your WordPress plugins.', 'wpbtd'));
 
 		$this->write_db_dump_header();
 

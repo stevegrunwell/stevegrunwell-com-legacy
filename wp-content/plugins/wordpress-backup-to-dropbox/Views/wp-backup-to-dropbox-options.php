@@ -2,7 +2,7 @@
 /**
  * This file contains the contents of the Dropbox admin options page.
  *
- * @copyright Copyright (C) 2011-2012 Michael De Wildt. All rights reserved.
+ * @copyright Copyright (C) 2011-2013 Michael De Wildt. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
  *          it under the terms of the GNU General Public License as published by
@@ -19,12 +19,16 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 try {
-	global $wpdb;
+	if ($errors = get_option('wpb2d-init-errors')) {
+		delete_option('wpb2d-init-errors');
+		throw new Exception(__('WordPress Backup to Dropbox failed to initialize due to these database errors.', 'wpbtd') . '<br /><br />' . $errors);
+	}
 
 	$validation_errors = null;
 
-	$dropbox = Dropbox_Facade::construct();
-	$config = WP_Backup_Config::construct();
+	$dropbox = WP_Backup_Registry::dropbox();
+	$config = WP_Backup_Registry::config();
+
 	$backup = new WP_Backup();
 
 	$backup->create_dump_dir();
@@ -47,7 +51,7 @@ try {
 		}
 	} else if (array_key_exists('unlink', $_POST)) {
 		check_admin_referer('backup_to_dropbox_options_save');
-		$dropbox->unlink_account();
+		$dropbox->unlink_account()->init();
 	} else if (array_key_exists('clear_history', $_POST)) {
 		check_admin_referer('backup_to_dropbox_options_save');
 		$config->clear_history();
@@ -86,7 +90,7 @@ try {
 
 		//Display the file tree with a call back to update the clicked on check box and white list
 		$('#file_tree').fileTree({
-			root: '<?php echo addslashes(get_blog_root_dir()); ?>',
+			root: '<?php echo str_replace("\\", "/", get_sanitized_home_path()) . "/"; ?>',
 			script: ajaxurl,
 			expandSpeed: 500,
 			collapseSpeed: 500,
@@ -347,22 +351,22 @@ try {
 		<?php
 
 	} else {
-		//We need to re authenticate this user
-		$url = $dropbox->get_authorize_url();
+
 		?>
 	<h3><?php _e('Thank you for installing WordPress Backup to Dropbox!', 'wpbtd'); ?></h3>
 	<p><?php _e('In order to use this plugin you will need to authorized it with your Dropbox account.', 'wpbtd'); ?></p>
 	<p><?php _e('Please click the authorize button below and follow the instructions inside the pop up window.', 'wpbtd'); ?></p>
-		<?php if (array_key_exists('continue', $_POST) && !$dropbox->is_authorized()) { ?>
-		<p style="color: red"><?php _e('There was an error authorizing the plugin with your Dropbox account. Please try again.', 'wpbtd'); ?></p>
-			<?php } ?>
+		<?php if (array_key_exists('continue', $_POST) && !$dropbox->is_authorized()): ?>
+			<?php $dropbox->unlink_account()->init(); ?>
+			<p style="color: red"><?php _e('There was an error authorizing the plugin with your Dropbox account. Please try again.', 'wpbtd'); ?></p>
+		<?php endif; ?>
 	<p>
 	<form id="backup_to_dropbox_continue" name="backup_to_dropbox_continue"
 		  action="options-general.php?page=backup-to-dropbox" method="post">
 		<input type="button" name="authorize" id="authorize" value="<?php _e('Authorize', 'wpbtd'); ?>"
-			   onclick="dropbox_authorize('<?php echo $url ?>')"/><br/>
+			   class="button-primary" onclick="dropbox_authorize('<?php echo $dropbox->get_authorize_url() ?>')"/><br/>
 		<input style="visibility: hidden;" type="submit" name="continue" id="continue"
-			   value="<?php _e('Continue', 'wpbtd'); ?>"/>
+			   class="button-primary" value="<?php _e('Continue', 'wpbtd'); ?>"/>
 	</form>
 	</p>
 		<?php
