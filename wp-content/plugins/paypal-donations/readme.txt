@@ -1,9 +1,10 @@
 === PayPal Donations ===
 Contributors: artstorm
+Donate link: http://johansteen.se/donate/
 Tags: paypal, donation, shortcode, widget, donate, button, sidebar
-Requires at least: 2.8
+Requires at least: 3.0
 Tested up to: 3.5.1
-Stable tag: 1.7
+Stable tag: 1.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,21 +24,21 @@ Insert the button in your pages or posts with this shortcode
 
 `[paypal-donation]`
 
-Which is the simplest option, and uses all default and optional settings. If you want to make a specific button for a specific purpose you can add these options:
+Which is the simplest option, and uses all default and optional settings. If you want to make a specific button for a specific purpose you can add additional options. Example:
 
 `[paypal-donation purpose="Spline Importer" reference="3D Plugins"]`
 
-as an example.
-
 This donation plugin generates valid XHTML Transitional and Strict code.
 
-For complete usage instructions see: [PayPal Donations](http://wpstorm.net/wordpress-plugins/paypal-donations/ "Complete Usage Instructions for PayPal Donations")
+= Related Links =
 
-See the [Changelog](http://wordpress.org/extend/plugins/paypal-donations/changelog/) for what's new. Available [Translations](http://wpstorm.net/wordpress-plugins/paypal-donations/#translations).
+* [Documentation](http://johansteen.se/code/paypal-donations/ 
+  "Usage instructions")
+* [Support Forum](http://wordpress.org/support/plugin/paypal-donations 
+  "Use this for support and feature requests")
+* [GitHub](https://github.com/artstorm/paypal-donations 
+  "Develop and contribute your code or report bugs")
 
-= Contribute =
-
-The plugin is available on [GitHub](https://github.com/artstorm/paypal-donations), so developers feel free to fork the repository, make any updates and then send me a pull request.
 
 == Installation ==
 
@@ -53,21 +54,52 @@ The plugin is available on [GitHub](https://github.com/artstorm/paypal-donations
 2. After Deactivation a 'Delete' link appears below the plugin name, follow the link and confim with 'Yes, Delete these files'.
 3. This will delete all the plugin files from the server as well as erasing all options the plugin has stored in the database.
 
+
 == Frequently Asked Questions ==
 
-Please visit [PayPal Donations' Comments](http://wpstorm.net/wordpress-plugins/paypal-donations/#comments) for questions and answers.
+= Where can I get support? =
+
+Please visit the [Support Forum](http://wordpress.org/support/plugin/paypal-donations "Use this for support and feature requests") 
+for questions, answers, support and feature requests.
+
+= Where can I send bug reports? =
+
+Please visit the GitHub repository for [PayPal Donations](https://github.com/artstorm/paypal-donations)
+and open an [issue](https://github.com/artstorm/paypal-donations/issues).
+
+= How can I contribute to the plugin? =
+
+If you want to contribute improved code or new features for the plugin. Please
+open a pull request at the [PayPal Donations GitHub repository](https://github.com/artstorm/paypal-donations).
+Contributions are appreciated and encouraged.
+
 
 == Screenshots ==
 
 1. Admin page where you setup the plugin
 1. Sidebar Widget Admin Options
 
+
 == Changelog ==
 
-= Version 1.7 - 19 feb 2013 =
- * Moved the development to [GitHub](https://github.com/artstorm/paypal-donations). 
+= Version 1.8.1 - 27 Apr 2013 =
+ * Various minor code improvements.
+ * Bumps required WordPress version to v3.0.
+ * Updated Romanian Translation by Denis Ciumbargi.
+
+= Version 1.8 - 9 Mar 2013 =
+ * Added tabbed navigation in the plugin admin settings, and moved Extras into
+   the advanced tab.
+ * Updated the admin input fields in size to follow WordPress standard layout.
+ * Implemented return method, as an advanced option.
+ * Updated administration to use WordPress Settings API.
+ * Updated Swedish translation.
+
+= Version 1.7 - 19 Feb 2013 =
+ * Moved the development to 
+   [GitHub](https://github.com/artstorm/paypal-donations). 
  * Refactored code to comply with the PSR-2 standard.
- * Bumped miniumum PHP version to 5.2.4.
+ * Bumped minimum PHP version to 5.2.4.
  * Bumped minimum required WordPress version to WordPress 2.8.
 
 = Version 1.6 - 13 Mar 2012 =

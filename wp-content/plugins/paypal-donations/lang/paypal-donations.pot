@@ -1,178 +1,195 @@
-# Copyright (C) 2012 PayPal Donations
-# This file is distributed under the same license as the PayPal Donations package.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PayPal Donations 1.6\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/paypal-donations\n"
-"POT-Creation-Date: 2012-03-13 19:45:48+00:00\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2012-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-04-27 13:45+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: classes/settings.php:42
-msgid "PayPal Account"
+#: views/admin.php:8
+msgid "General"
 msgstr ""
 
-#: classes/settings.php:43
-msgid "Your PayPal email address or your PayPal secure merchant account ID."
+#: views/admin.php:9
+msgid "Advanced"
 msgstr ""
 
-#: classes/settings.php:46
-msgid "Currency"
-msgstr ""
-
-#: classes/settings.php:54
-msgid "The currency to use for the donations."
-msgstr ""
-
-#: classes/settings.php:58
-msgid "Optional Settings"
-msgstr ""
-
-#: classes/settings.php:61
-msgid "Page Style"
-msgstr ""
-
-#: classes/settings.php:62
-msgid ""
-"Specify the name of a custom payment page style from your PayPal account "
-"profile."
-msgstr ""
-
-#: classes/settings.php:65
-msgid "Return Page"
-msgstr ""
-
-#: classes/settings.php:66
-msgid ""
-"URL to which the donator comes to after completing the donation; for "
-"example, a URL on your site that displays a \"Thank you for your donation\"."
-msgstr ""
-
-#: classes/settings.php:70
-msgid "Defaults"
-msgstr ""
-
-#: classes/settings.php:73
-msgid "Amount"
-msgstr ""
-
-#: classes/settings.php:74
-msgid "The default amount for a donation (Optional)."
-msgstr ""
-
-#: classes/settings.php:77
-msgid "Purpose"
-msgstr ""
-
-#: classes/settings.php:78
-msgid "The default purpose of a donation (Optional)."
-msgstr ""
-
-#: classes/settings.php:81
-msgid "Reference"
-msgstr ""
-
-#: classes/settings.php:82
-msgid "Default reference for the donation (Optional)."
-msgstr ""
-
-#: classes/settings.php:86
-msgid "Donation Button"
-msgstr ""
-
-#: classes/settings.php:89
-msgid "Select Button"
-msgstr ""
-
-#: classes/settings.php:107
-msgid "Custom Button:"
-msgstr ""
-
-#: classes/settings.php:110
-msgid "Enter a URL to a custom donation button."
-msgstr ""
-
-#: classes/settings.php:115
-msgid "Country and Language"
-msgstr ""
-
-#: classes/settings.php:122
-msgid ""
-"Localize the language and the country for the button (Updated after saving "
-"the settings)."
-msgstr ""
-
-#: classes/settings.php:129
-msgid "Extras"
-msgstr ""
-
-#: classes/settings.php:133
-msgid "Disable PayPal Statistics"
-msgstr ""
-
-#: classes/settings.php:139
-msgid "Theme CSS Override: Center Button"
-msgstr ""
-
-#: classes/settings.php:145
-msgid "Set Checkout Language:"
-msgstr ""
-
-#: classes/settings.php:166
-msgid "Save Changes"
-msgstr ""
-
-#: paypal-donations.php:255
-msgid "The PayPal Donations settings have been updated."
-msgstr ""
-
-#: paypal-donations.php:283
-msgid "PayPal Donation Button"
-msgstr ""
-
-#: paypal-donations.php:336
-msgid "Donate"
-msgstr ""
-
-#: paypal-donations.php:340
+#: views/widget-form.php:2
 msgid "Title:"
 msgstr ""
 
-#: paypal-donations.php:346
+#: views/widget-form.php:8
 msgid "Text:"
 msgstr ""
 
-#: paypal-donations.php:352
+#: views/widget-form.php:14
 msgid "Purpose:"
 msgstr ""
 
-#: paypal-donations.php:358
+#: views/widget-form.php:20
 msgid "Reference:"
 msgstr ""
 
-#. Plugin Name of the plugin/theme
-msgid "PayPal Donations"
+#: lib/PayPalDonations/Admin.php:105
+msgid "Account Setup"
 msgstr ""
 
-#. Plugin URI of the plugin/theme
-msgid "http://wpstorm.net/wordpress-plugins/paypal-donations/"
+#: lib/PayPalDonations/Admin.php:111
+msgid "PayPal Account"
 msgstr ""
 
-#. Description of the plugin/theme
+#: lib/PayPalDonations/Admin.php:118
+msgid "Your PayPal Email or Secure Merchant Account ID."
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:125
+msgid "Currency"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:132
+msgid "The currency to use for the donations."
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:140
+msgid "Optional Settings"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:146
+msgid "Page Style"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:153
 msgid ""
-"Easy and simple setup and insertion of PayPal donate buttons with a "
-"shortcode or through a sidebar Widget. Donation purpose can be set for each "
-"button. A few other customization options are available as well."
+"The name of a custom payment page style that exist in your\n"
+"                     PayPal account profile."
 msgstr ""
 
-#. Author of the plugin/theme
-msgid "Johan Steen"
+#: lib/PayPalDonations/Admin.php:161
+msgid "Return Page"
 msgstr ""
 
-#. Author URI of the plugin/theme
-msgid "http://johansteen.se/"
+#: lib/PayPalDonations/Admin.php:168
+msgid ""
+"URL to which the donator comes to after completing the\n"
+"                     donation; for example, a URL on your site that displays "
+"a\n"
+"                     \"Thank you for your donation\"."
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:178
+msgid "Defaults"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:184
+msgid "Amount"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:191
+msgid "The default amount for a donation (Optional)."
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:198
+msgid "Purpose"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:205
+msgid "The default purpose of a donation (Optional)."
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:212
+msgid "Reference"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:219
+msgid "Default reference for the donation (Optional)."
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:227
+msgid "Donation Button"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:233
+msgid "Select Button"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:244 lib/PayPalDonations/Admin.php:499
+msgid "Custom Button"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:251
+msgid "Enter a URL to a custom donation button."
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:258
+msgid "Country and Language"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:265
+msgid "Localize the language and the country for the button."
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:280
+msgid "Extras"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:286
+msgid "Disable PayPal Statistics"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:298
+msgid "Theme CSS Override: Center Button"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:311
+msgid "Enable Checkout Language"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:322
+msgid "Checkout Language"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:333
+msgid "Return Method"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:340
+msgid "Takes effect only if the return page is set."
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:360
+msgid "Required fields."
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:374
+msgid "Optional extra settings to fine tune the setup in certain scenarios."
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:616
+msgid "GET method (default)"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:617
+msgid "GET method, no variables"
+msgstr ""
+
+#: lib/PayPalDonations/Admin.php:618
+msgid "POST method"
+msgstr ""
+
+#: lib/PayPalDonations/Widget.php:18
+msgid "PayPal Donation Button"
+msgstr ""
+
+#: lib/PayPalDonations/Widget.php:89
+msgid "Donate"
 msgstr ""
