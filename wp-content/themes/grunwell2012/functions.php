@@ -6,8 +6,7 @@
  * @author Steve Grunwell <steve@stevegrunwell.com>
  */
 
-include_once dirname( __FILE__ ) . '/functions/advanced-custom-fields.php';
-include_once dirname( __FILE__ ) . '/simple-twitter-timeline/twitter.class.php';
+require_once dirname( __FILE__ ) . '/functions/advanced-custom-fields.php';
 
 /**
  * Register scripts and styles
@@ -313,25 +312,15 @@ function grunwell_get_repeater_content( $key, $id=null, $fields=array() ) {
 }
 
 /**
- * Get Tweets using the SimpleTwitterTimeline class
- * @return array
- * @uses SimpleTwitterTimeline::get_timeline()
+ * Format a tweet from Display Tweets
+ * @param object $tweet
+ * @return void
  */
-function grunwell_get_tweets() {
-  $tweets = array();
-  if ( class_exists( 'SimpleTwitterTimeline' ) ) {
-    $args = array(
-      'exclude_replies' => true,
-      'limit' => 3,
-      'parse_links' => true,
-      'use_cache' => true,
-      'cache_path' => dirname( __FILE__ )
-    );
-    $twitter = new SimpleTwitterTimeline( 'stevegrunwell', $args );
-    $tweets = $twitter->get_timeline();
-  }
-  return $tweets;
+function grunwell_format_tweet( $tweet ) {
+  $time = strtotime( $tweet->created_at );
+  printf( '<li class="tweet">%s<time datetime="%s" title="%s">%s ago</time></li>', $tweet->text, date( 'Y-m-d H:i:s', $time ), date( 'M jS, Y @ g:ia', $time ), human_time_diff( $time, time() ) );
 }
+add_action( 'displaytweets_tweet_template', 'grunwell_format_tweet' );
 
 /**
  * Format client/agency information for the portfolio detail page
