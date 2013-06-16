@@ -75,6 +75,8 @@ label.required::after { content:' *'; color:#812323; }
 label.error { font-weight:normal; font-style:italic; color:#812323; }
 
 .wpcf7-form.sent fieldset { display:none; }
+ul.gform_fields { margin-left: 0; list-style: none; }
+.gform_wrapper form.required-implied .gfield_required { display: none; }
 
 /** Header */
 #site-logo { display:block; max-width:431px; margin:0 0 16px; padding:0; overflow:hidden; font-family:Gotham,'Helvetica Neue',sans-serif; font-size:46px; line-height:46px; text-transform:uppercase; font-weight:bold; }
