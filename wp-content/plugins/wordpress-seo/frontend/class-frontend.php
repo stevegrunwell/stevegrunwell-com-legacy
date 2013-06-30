@@ -739,13 +739,11 @@ class WPSEO_Frontend {
 	}
 
 	/**
-	 * Output the rel=publisher code on the frontpage of the site.
+	 * Output the rel=publisher code on every page of the site.
 	 */
 	public function publisher() {
-		if ( is_front_page() ) {
-			if ( isset( $this->options['plus-publisher'] ) && !empty( $this->options['plus-publisher'] ) )
-				echo '<link rel="publisher" href="' . esc_attr( $this->options['plus-publisher'] ) . '"/>' . "\n";
-		}
+		if ( isset( $this->options['plus-publisher'] ) && !empty( $this->options['plus-publisher'] ) )
+			echo '<link rel="publisher" href="' . esc_attr( $this->options['plus-publisher'] ) . '"/>' . "\n";
 	}
 
 	/**
@@ -757,6 +755,12 @@ class WPSEO_Frontend {
 		if ( is_singular() ) {
 			global $post;
 			$gplus = get_the_author_meta( 'googleplus', $post->post_author );
+
+			// unset gplus when authorship is disabled for this post type
+			if ( isset( $this->options['noauthorship-' . $post->post_type] ) && $this->options['noauthorship-' . $post->post_type] ) {
+				$gplus = false;
+			}
+
 		} else if ( is_home() ) {
 			if ( isset( $this->options['plus-author'] ) )
 				$gplus = get_the_author_meta( 'googleplus', $this->options['plus-author'] );
