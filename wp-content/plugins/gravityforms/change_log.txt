@@ -1,4 +1,23 @@
 -------------------------------------------------------------------------------------------------------------------
+Version 1.7.6
+    - Fixed "ob_clean(): failed to delete buffer" notice thrown in export
+    - Fixed issue with create_lead() not taking conditional logic into account for calculation fields
+    - Fixed issue with addon framework's checkbox fields onclick attribute
+    - Added JS hook: gform_conditional_logic_fields, allows filtering which fields are avialable for conditional logic (and adding custom fields)
+    - Added JS hook: gform_conditional_logic_operators, allows filtering which conditional logic operators are avialable for the selected field
+    - Added JS hook: gform_conditional_logic_values_input, allows filtering the input provided for the conditional logic comparison value
+    - Various modifications in the conditional logic functions found in form_admin.js to better support the new filters
+    - Added entry meta to conditional logic for confirmations and notifications
+    - Added gform_entry_meta_conditional_logic_confirmations and gform_entry_meta_conditional_logic_notifications so the entry meta filters can be modified depending on their context
+    - Fixed typo in GetLabel function when testing for "undefined", was "undefind"
+    - Fixed issue where not specifying a field label could at times throw javascript errors (merge tags)
+    - Updated merge tag list in admin to use admin label if one exists
+    - Fixed issue where the database wasn't being updated on every site when updating a network activated install of Gravity Forms, causing forms to display an error after updating
+    - Fixed issue with quantity drop down when "enhanced interface" is enabled not calculating the total correctly
+    - Fixed issue with limiting form entries per day not validating the form properly
+    - Added an Add-On Framework to provide tools for developers when creating new Gravity Forms Add-Ons
+
+-------------------------------------------------------------------------------------------------------------------
 Version 1.7.5
     - Fixed issue with new form not displaying fields after first time it was saved
     - Fixed issue with notification's conditional logic causing notifications to not be sent even when conditional logic was disabled

@@ -305,26 +305,26 @@ class GFFormDisplay{
             case "day" :
                 return array(
                     "start_date" => gmdate("Y-m-d"),
-                    "end_date" => gmdate("Y-m-d"));
+                    "end_date" => gmdate("Y-m-d 23:59:59"));
             break;
 
             case "week" :
                 return array(
                     "start_date" => gmdate("Y-m-d", strtotime("last Monday")),
-                    "end_date" => gmdate("Y-m-d", strtotime("next Sunday")));
+                    "end_date" => gmdate("Y-m-d 23:59:59", strtotime("next Sunday")));
             break;
 
             case "month" :
                 $month_start = gmdate("Y-m-1");
                 return array(
                     "start_date" => $month_start,
-                    "end_date" => gmdate("Y-m-d", strtotime("{$month_start} +1 month - 1 hour")));
+                    "end_date" => gmdate("Y-m-d H:i:s", strtotime("{$month_start} +1 month -1 second")));
             break;
 
             case "year" :
                 return array(
                     "start_date" => gmdate("Y-1-1"),
-                    "end_date" => gmdate("Y-12-31"));
+                    "end_date" => gmdate("Y-12-31 23:59:59"));
             break;
         }
     }
@@ -998,9 +998,8 @@ class GFFormDisplay{
             return false;
 
         // validate entry limit
-        if(self::validate_entry_limit($form)){
+        if(self::validate_entry_limit($form))
             return false;
-        }
 
         foreach($form["fields"] as &$field){
 

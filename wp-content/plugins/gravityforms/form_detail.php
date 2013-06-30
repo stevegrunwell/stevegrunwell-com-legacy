@@ -2318,7 +2318,7 @@ class GFFormDetail{
         check_ajax_referer('rg_save_form', 'rg_save_form');
         $id = $_POST["id"];
         $form_json = $_POST["form"];
-        
+
         $result = self::save_form_info($id, $form_json);
 
         switch(rgar($result,"status")){
@@ -2342,11 +2342,12 @@ class GFFormDetail{
     }
 
     public static function get_post_category_values(){
+        $has_input_name = strtolower(rgpost("inputName")) != "false";
 
-        $id = rgpost("objectType") . "_rule_value_" . rgpost("ruleIndex");
+        $id = !$has_input_name ? rgpost("objectType") . "_rule_value_" . rgpost("ruleIndex") : rgpost("inputName");
         $selected = rgempty("selectedValue") ? 0 : rgpost("selectedValue");
 
-        $dropdown = wp_dropdown_categories(array("class"=>"gfield_rule_select gfield_rule_value_dropdown gfield_category_dropdown", "orderby"=> "name", "id"=> $id, "selected"=>$selected, "hierarchical"=>true, "hide_empty"=>0, "echo"=>false));
+        $dropdown = wp_dropdown_categories(array("class"=>"gfield_rule_select gfield_rule_value_dropdown gfield_category_dropdown", "orderby"=> "name", "id"=> $id, "name"=> $id, "selected"=>$selected, "hierarchical"=>true, "hide_empty"=>0, "echo"=>false));
         die($dropdown);
     }
 }

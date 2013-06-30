@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms
 Plugin URI: http://www.gravityforms.com
 Description: Easily create web forms and manage form entries within the WordPress admin.
-Version: 1.7.5
+Version: 1.7.6
 Author: rocketgenius
 Author URI: http://www.rocketgenius.com
 
@@ -265,194 +265,24 @@ class GFForms {
         return GFCommon::check_update($update_plugins_option, true);
     }
 
-    //Creates or updates database tables. Will only run when version changes
+        //Creates or updates database tables. Will only run when version changes
     public static function setup($force_setup = false){
         global $wpdb;
 
-        $version = GFCommon::$version;
+        if(get_option("rg_form_version") != GFCommon::$version || $force_setup){
 
-        if(get_option("rg_form_version") != $version || $force_setup){
+            require_once(ABSPATH . '/wp-admin/includes/plugin.php');
 
-            $error = "";
-            if(!self::has_database_permission($error)){
-                ?>
-                <div class='error' style="padding:15px;"><?php echo $error?></div>
-                <?php
+            if(is_plugin_active_for_network("gravityforms/gravityforms.php") ){
+                //if gravity forms is network activated, run the database setup for every site
+                $blog_ids = $wpdb->get_col( $wpdb->prepare("SELECT blog_id FROM $wpdb->blogs WHERE site_id = %d AND public = '1' AND archived = '0' AND mature = '0' AND spam = '0' AND deleted = '0'", $wpdb->siteid) );
+                foreach($blog_ids as $id){
+                    self::setup_site($id);
+                }
             }
-
-            require_once(ABSPATH . '/wp-admin/includes/upgrade.php');
-
-            if ( ! empty($wpdb->charset) )
-                $charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
-            if ( ! empty($wpdb->collate) )
-                $charset_collate .= " COLLATE $wpdb->collate";
-
-            //Fixes issue with dbDelta lower-casing table names, which cause problems on case sensitive DB servers.
-            add_filter( 'dbdelta_create_queries', array("RGForms", "dbdelta_fix_case"));
-
-            //------ FORM -----------------------------------------------
-            $form_table_name = RGFormsModel::get_form_table_name();
-            $sql = "CREATE TABLE " . $form_table_name . " (
-                  id mediumint(8) unsigned not null auto_increment,
-                  title varchar(150) not null,
-                  date_created datetime not null,
-                  is_active tinyint(1) not null default 1,
-                  PRIMARY KEY  (id)
-                ) $charset_collate;";
-            dbDelta($sql);
-
-            //droping table that was created by mistake in version 1.6.3.2
-            $wpdb->query("DROP TABLE IF EXISTS A" . $form_table_name);
-
-            //------ META -----------------------------------------------
-            $meta_table_name = RGFormsModel::get_meta_table_name();
-            $sql = "CREATE TABLE " . $meta_table_name . " (
-                  form_id mediumint(8) unsigned not null,
-                  display_meta longtext,
-                  entries_grid_meta longtext,
-                  confirmations longtext,
-                  notifications longtext,
-                  PRIMARY KEY  (form_id)
-                ) $charset_collate;";
-            dbDelta($sql);
-
-            //droping outdated form_id index (if one exists)
-            self::drop_index($meta_table_name, 'form_id');
-
-            //------ FORM VIEW -----------------------------------------------
-            $form_view_table_name = RGFormsModel::get_form_view_table_name();
-            $sql = "CREATE TABLE " . $form_view_table_name . " (
-                  id bigint(20) unsigned not null auto_increment,
-                  form_id mediumint(8) unsigned not null,
-                  date_created datetime not null,
-                  ip char(15),
-                  count mediumint(8) unsigned not null default 1,
-                  PRIMARY KEY  (id),
-                  KEY form_id (form_id)
-                ) $charset_collate;";
-            dbDelta($sql);
-
-            //------ LEAD -----------------------------------------------
-            $lead_table_name = RGFormsModel::get_lead_table_name();
-            $sql = "CREATE TABLE " . $lead_table_name . " (
-                  id int(10) unsigned not null auto_increment,
-                  form_id mediumint(8) unsigned not null,
-                  post_id bigint(20) unsigned,
-                  date_created datetime not null,
-                  is_starred tinyint(1) not null default 0,
-                  is_read tinyint(1) not null default 0,
-                  ip varchar(39) not null,
-                  source_url varchar(200) not null default '',
-                  user_agent varchar(250) not null default '',
-                  currency varchar(5),
-                  payment_status varchar(15),
-                  payment_date datetime,
-                  payment_amount decimal(19,2),
-                  transaction_id varchar(50),
-                  is_fulfilled tinyint(1),
-                  created_by bigint(20) unsigned,
-                  transaction_type tinyint(1),
-                  status varchar(20) not null default 'active',
-                  PRIMARY KEY  (id),
-                  KEY form_id (form_id),
-                  KEY status (status)
-                ) $charset_collate;";
-           dbDelta($sql);
-
-           //------ LEAD NOTES ------------------------------------------
-            $lead_notes_table_name = RGFormsModel::get_lead_notes_table_name();
-            $sql = "CREATE TABLE " . $lead_notes_table_name . " (
-                  id int(10) unsigned not null auto_increment,
-                  lead_id int(10) unsigned not null,
-                  user_name varchar(250),
-                  user_id bigint(20),
-                  date_created datetime not null,
-                  value longtext,
-                  PRIMARY KEY  (id),
-                  KEY lead_id (lead_id),
-                  KEY lead_user_key (lead_id,user_id)
-                ) $charset_collate;";
-           dbDelta($sql);
-
-            //------ LEAD DETAIL -----------------------------------------
-            $lead_detail_table_name = RGFormsModel::get_lead_details_table_name();
-            $sql = "CREATE TABLE " . $lead_detail_table_name . " (
-                  id bigint(20) unsigned not null auto_increment,
-                  lead_id int(10) unsigned not null,
-                  form_id mediumint(8) unsigned not null,
-                  field_number float not null,
-                  value varchar(". GFORMS_MAX_FIELD_LENGTH ."),
-                  PRIMARY KEY  (id),
-                  KEY form_id (form_id),
-                  KEY lead_id (lead_id),
-                  KEY lead_field_number (lead_id,field_number)
-                ) $charset_collate;";
-            dbDelta($sql);
-
-            //------ LEAD DETAIL LONG -----------------------------------
-            $lead_detail_long_table_name = RGFormsModel::get_lead_details_long_table_name();
-
-            $sql = "CREATE TABLE " . $lead_detail_long_table_name . " (
-                  lead_detail_id bigint(20) unsigned not null,
-                  value longtext,
-                  PRIMARY KEY  (lead_detail_id)
-                ) $charset_collate;";
-            dbDelta($sql);
-
-            //droping outdated form_id index (if one exists)
-            self::drop_index($lead_detail_long_table_name, 'lead_detail_key');
-
-            //------ LEAD META -----------------------------------
-            $lead_meta_table_name = RGFormsModel::get_lead_meta_table_name();
-            $sql = "CREATE TABLE " . $lead_meta_table_name . " (
-                  id bigint(20) unsigned not null auto_increment,
-				  form_id mediumint(8) unsigned not null default 0,
-                  lead_id bigint(20) unsigned not null,
-                  meta_key varchar(255),
-                  meta_value longtext,
-                  PRIMARY KEY  (id),
-                  KEY meta_key (meta_key),
-                  KEY lead_id (lead_id),
-				  KEY form_id_meta_key (form_id,meta_key)
-                ) $charset_collate;";
-            dbDelta($sql);
-
-            remove_filter('dbdelta_create_queries', array("RGForms", "dbdelta_fix_case"));
-
-			//fix form_id value needed to update from version 1.6.11
-			self::fix_lead_meta_form_id_values();
-
-            //fix checkbox value. needed for version 1.0 and below but won't hurt for higher versions
-            self::fix_checkbox_value();
-
-            //auto-setting license key based on value configured via the GF_LICENSE_KEY constant or the gf_license_key variable
-            global $gf_license_key;
-            $license_key = defined("GF_LICENSE_KEY") && empty($gf_license_key) ? GF_LICENSE_KEY : $gf_license_key;
-            if(!empty($license_key))
-                update_option("rg_gforms_key", md5($license_key));
-
-            //auto-setting recaptcha keys based on value configured via the constant or global variable
-            global $gf_recaptcha_public_key, $gf_recaptcha_private_key;
-            $private_key = defined("GF_RECAPTCHA_PRIVATE_KEY") && empty($gf_recaptcha_private_key) ? GF_RECAPTCHA_PRIVATE_KEY : $gf_recaptcha_private_key;
-            if(!empty($private_key))
-                update_option("rg_gforms_captcha_private_key", $private_key);
-
-            $public_key = defined("GF_RECAPTCHA_PUBLIC_KEY") && empty($gf_recaptcha_public_key) ? GF_RECAPTCHA_PUBLIC_KEY : $gf_recaptcha_public_key;
-            if(!empty($public_key))
-                update_option("rg_gforms_captcha_public_key", $public_key);
-
-            //Auto-importing forms based on GF_IMPORT_FILE AND GF_THEME_IMPORT_FILE
-            if(defined("GF_IMPORT_FILE") && !get_option("gf_imported_file")){
-                GFExport::import_file(GF_IMPORT_FILE);
-                update_option("gf_imported_file", true);
+            else{
+                self::setup_site();
             }
-
-            //adds empty index.php files to upload folders. only for v1.5.2 and below
-            if(version_compare(get_option("rg_form_version"), "1.6", "<")){
-                self::add_empty_index_files();
-            }
-
-            update_option("rg_form_version", $version);
         }
 
         //Import theme specific forms if configured. Will only import forms once per theme.
@@ -473,6 +303,203 @@ class GFForms {
                 update_option("gf_imported_theme_file", $themes);
             }
         }
+    }
+
+    public static function setup_site($blog_id=null){
+
+        if(empty($blog_id))
+            $blog_id = get_current_blog_id();
+
+        //if a blog id is specified, switch to it
+        if(MULTISITE && !switch_to_blog($blog_id))
+            return;
+
+        global $wpdb;
+
+        $error = "";
+        if(!self::has_database_permission($error)){
+            ?>
+            <div class='error' style="padding:15px;"><?php echo $error?></div>
+            <?php
+        }
+
+        require_once(ABSPATH . '/wp-admin/includes/upgrade.php');
+
+        if ( ! empty($wpdb->charset) )
+            $charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+        if ( ! empty($wpdb->collate) )
+            $charset_collate .= " COLLATE $wpdb->collate";
+
+        //Fixes issue with dbDelta lower-casing table names, which cause problems on case sensitive DB servers.
+        add_filter( 'dbdelta_create_queries', array("RGForms", "dbdelta_fix_case"));
+
+        //------ FORM -----------------------------------------------
+        $form_table_name = RGFormsModel::get_form_table_name();
+        $sql = "CREATE TABLE " . $form_table_name . " (
+              id mediumint(8) unsigned not null auto_increment,
+              title varchar(150) not null,
+              date_created datetime not null,
+              is_active tinyint(1) not null default 1,
+              PRIMARY KEY  (id)
+            ) $charset_collate;";
+        dbDelta($sql);
+
+        //droping table that was created by mistake in version 1.6.3.2
+        $wpdb->query("DROP TABLE IF EXISTS A" . $form_table_name);
+
+        //------ META -----------------------------------------------
+        $meta_table_name = RGFormsModel::get_meta_table_name();
+        $sql = "CREATE TABLE " . $meta_table_name . " (
+              form_id mediumint(8) unsigned not null,
+              display_meta longtext,
+              entries_grid_meta longtext,
+              confirmations longtext,
+              notifications longtext,
+              PRIMARY KEY  (form_id)
+            ) $charset_collate;";
+        dbDelta($sql);
+
+        //droping outdated form_id index (if one exists)
+        self::drop_index($meta_table_name, 'form_id');
+
+        //------ FORM VIEW -----------------------------------------------
+        $form_view_table_name = RGFormsModel::get_form_view_table_name();
+        $sql = "CREATE TABLE " . $form_view_table_name . " (
+              id bigint(20) unsigned not null auto_increment,
+              form_id mediumint(8) unsigned not null,
+              date_created datetime not null,
+              ip char(15),
+              count mediumint(8) unsigned not null default 1,
+              PRIMARY KEY  (id),
+              KEY form_id (form_id)
+            ) $charset_collate;";
+        dbDelta($sql);
+
+        //------ LEAD -----------------------------------------------
+        $lead_table_name = RGFormsModel::get_lead_table_name();
+        $sql = "CREATE TABLE " . $lead_table_name . " (
+              id int(10) unsigned not null auto_increment,
+              form_id mediumint(8) unsigned not null,
+              post_id bigint(20) unsigned,
+              date_created datetime not null,
+              is_starred tinyint(1) not null default 0,
+              is_read tinyint(1) not null default 0,
+              ip varchar(39) not null,
+              source_url varchar(200) not null default '',
+              user_agent varchar(250) not null default '',
+              currency varchar(5),
+              payment_status varchar(15),
+              payment_date datetime,
+              payment_amount decimal(19,2),
+              transaction_id varchar(50),
+              is_fulfilled tinyint(1),
+              created_by bigint(20) unsigned,
+              transaction_type tinyint(1),
+              status varchar(20) not null default 'active',
+              PRIMARY KEY  (id),
+              KEY form_id (form_id),
+              KEY status (status)
+            ) $charset_collate;";
+       dbDelta($sql);
+
+       //------ LEAD NOTES ------------------------------------------
+        $lead_notes_table_name = RGFormsModel::get_lead_notes_table_name();
+        $sql = "CREATE TABLE " . $lead_notes_table_name . " (
+              id int(10) unsigned not null auto_increment,
+              lead_id int(10) unsigned not null,
+              user_name varchar(250),
+              user_id bigint(20),
+              date_created datetime not null,
+              value longtext,
+              PRIMARY KEY  (id),
+              KEY lead_id (lead_id),
+              KEY lead_user_key (lead_id,user_id)
+            ) $charset_collate;";
+       dbDelta($sql);
+
+        //------ LEAD DETAIL -----------------------------------------
+        $lead_detail_table_name = RGFormsModel::get_lead_details_table_name();
+        $sql = "CREATE TABLE " . $lead_detail_table_name . " (
+              id bigint(20) unsigned not null auto_increment,
+              lead_id int(10) unsigned not null,
+              form_id mediumint(8) unsigned not null,
+              field_number float not null,
+              value varchar(". GFORMS_MAX_FIELD_LENGTH ."),
+              PRIMARY KEY  (id),
+              KEY form_id (form_id),
+              KEY lead_id (lead_id),
+              KEY lead_field_number (lead_id,field_number)
+            ) $charset_collate;";
+        dbDelta($sql);
+
+        //------ LEAD DETAIL LONG -----------------------------------
+        $lead_detail_long_table_name = RGFormsModel::get_lead_details_long_table_name();
+
+        $sql = "CREATE TABLE " . $lead_detail_long_table_name . " (
+              lead_detail_id bigint(20) unsigned not null,
+              value longtext,
+              PRIMARY KEY  (lead_detail_id)
+            ) $charset_collate;";
+        dbDelta($sql);
+
+        //droping outdated form_id index (if one exists)
+        self::drop_index($lead_detail_long_table_name, 'lead_detail_key');
+
+        //------ LEAD META -----------------------------------
+        $lead_meta_table_name = RGFormsModel::get_lead_meta_table_name();
+        $sql = "CREATE TABLE " . $lead_meta_table_name . " (
+              id bigint(20) unsigned not null auto_increment,
+              form_id mediumint(8) unsigned not null default 0,
+              lead_id bigint(20) unsigned not null,
+              meta_key varchar(255),
+              meta_value longtext,
+              PRIMARY KEY  (id),
+              KEY meta_key (meta_key),
+              KEY lead_id (lead_id),
+              KEY form_id_meta_key (form_id,meta_key)
+            ) $charset_collate;";
+        dbDelta($sql);
+
+        remove_filter('dbdelta_create_queries', array("RGForms", "dbdelta_fix_case"));
+
+        //fix form_id value needed to update from version 1.6.11
+        self::fix_lead_meta_form_id_values();
+
+        //fix checkbox value. needed for version 1.0 and below but won't hurt for higher versions
+        self::fix_checkbox_value();
+
+        //auto-setting license key based on value configured via the GF_LICENSE_KEY constant or the gf_license_key variable
+        global $gf_license_key;
+        $license_key = defined("GF_LICENSE_KEY") && empty($gf_license_key) ? GF_LICENSE_KEY : $gf_license_key;
+        if(!empty($license_key))
+            update_option("rg_gforms_key", md5($license_key));
+
+        //auto-setting recaptcha keys based on value configured via the constant or global variable
+        global $gf_recaptcha_public_key, $gf_recaptcha_private_key;
+        $private_key = defined("GF_RECAPTCHA_PRIVATE_KEY") && empty($gf_recaptcha_private_key) ? GF_RECAPTCHA_PRIVATE_KEY : $gf_recaptcha_private_key;
+        if(!empty($private_key))
+            update_option("rg_gforms_captcha_private_key", $private_key);
+
+        $public_key = defined("GF_RECAPTCHA_PUBLIC_KEY") && empty($gf_recaptcha_public_key) ? GF_RECAPTCHA_PUBLIC_KEY : $gf_recaptcha_public_key;
+        if(!empty($public_key))
+            update_option("rg_gforms_captcha_public_key", $public_key);
+
+        //Auto-importing forms based on GF_IMPORT_FILE AND GF_THEME_IMPORT_FILE
+        if(defined("GF_IMPORT_FILE") && !get_option("gf_imported_file")){
+            GFExport::import_file(GF_IMPORT_FILE);
+            update_option("gf_imported_file", true);
+        }
+
+        //adds empty index.php files to upload folders. only for v1.5.2 and below
+        if(version_compare(get_option("rg_form_version"), "1.6", "<")){
+            self::add_empty_index_files();
+        }
+
+        update_option("rg_form_version", GFCommon::$version);
+
+        //going back to current blog
+        if (MULTISITE)
+            restore_current_blog();
     }
 
 	//Changes form_id values from default value "0" to the correct value. Neededed when upgrading users from 1.6.11
@@ -907,6 +934,14 @@ class GFForms {
         $shortcode_string = apply_filters("gform_shortcode_{$action}", $shortcode_string, $attributes, $content);
 
         return $shortcode_string;
+    }
+
+    public static function include_addon_framework() {
+        require_once( GFCommon::get_base_path() . '/includes/addon/class-gf-addon.php' );
+    }
+
+    public static function include_feed_addon_framework() {
+        require_once(GFCommon::get_base_path() . '/includes/addon/class-gf-feed-addon.php' );
     }
 
     //-------------------------------------------------

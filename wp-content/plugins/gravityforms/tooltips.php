@@ -141,10 +141,11 @@ function gform_tooltip($name, $css_class="", $return=false){
     $css_class = empty($css_class) ? "tooltip" : $css_class;
     $gf_tooltips = apply_filters("gform_tooltips", $gf_tooltips);
 
-    $tooltip = "";
-    if(isset($gf_tooltips[$name])){
-        $tooltip ="<a href='#' onclick='return false;' class='" . esc_attr($css_class) . " tooltip_" . $name . "' tooltip='" . esc_attr($gf_tooltips[$name]) . "'>(?)</a>";
-    }
+    $tooltip_text = isset($gf_tooltips[$name]) ? $gf_tooltips[$name] : $name;
+    $tooltip_class = isset($gf_tooltips[$name]) ? "tooltip_{$name}" : "";
+
+    $tooltip ="<a href='#' onclick='return false;' class='" . esc_attr($css_class) . " {$tooltip_class}' tooltip='" . esc_attr($tooltip_text) . "'>(?)</a>";
+
     if($return)
         return $tooltip;
     else

@@ -127,10 +127,14 @@ Class GFNotification {
         if(empty($form["notifications"]))
             $form["notifications"] = array();
 
+        $entry_meta = GFFormsModel::get_entry_meta($form_id);
+        $entry_meta = apply_filters("gform_entry_meta_conditional_logic_notifications", $entry_meta, $form, $notification_id);
+
         ?>
 
         var form = <?php echo GFCommon::json_encode($form) ?>;
         var current_notification = <?php echo GFCommon::json_encode($notification) ?>;
+        var entry_meta = <?php echo GFCommon::json_encode($entry_meta) ?>;
 
         function SetRoutingValueDropDown(element){
             //parsing ID to get routing Index
@@ -795,7 +799,7 @@ Class GFNotification {
                 </label>
             </th>
             <td>
-                <input type="checkbox" id="notification_conditional_logic" onclick="SetConditionalLogic(this.checked); ToggleConditionalLogic(false, 'notification');" <?php checked(is_array($notification["conditionalLogic"]), true) ?> />
+                <input type="checkbox" id="notification_conditional_logic" onclick="SetConditionalLogic(this.checked); ToggleConditionalLogic(false, 'notification');" <?php checked(is_array(rgar($notification,"conditionalLogic")), true) ?> />
                 <label for="notification_conditional_logic" class="inline"><?php _e("Enable conditional logic", "gravityforms") ?><?php gform_tooltip("notification_conditional_logic") ?></label>
                 <br/>
             </td>

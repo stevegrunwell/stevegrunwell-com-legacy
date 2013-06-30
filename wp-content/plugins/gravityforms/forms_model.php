@@ -264,6 +264,7 @@ class GFFormsModel {
         $description_placement = rgar($form, "descriptionPlacement") == "above" ? "above" : "below";
         if(is_array(rgar($form,"fields"))){
             foreach($form["fields"] as &$field){
+                $field["label"] = !isset($field["label"]) ? "" : $field["label"];
                 $field["formId"] = $form["id"];
                 $field["pageNumber"] = $page_number;
                 $field["descriptionPlacement"] = $description_placement;
@@ -1150,6 +1151,11 @@ class GFFormsModel {
 
         if(!empty($calculation_fields)) {
             foreach($calculation_fields as $field) {
+
+                // only save fields that are not hidden
+                if(RGFormsModel::is_field_hidden($form, $field, array()) )
+                    continue;
+
                 if(isset($field["inputs"]) && is_array($field["inputs"])){
                     foreach($field["inputs"] as $input) {
                         $lead[(string)$input['id']] = self::get_prepared_input_value($form, $field, $lead, $input["id"]);
@@ -1158,6 +1164,7 @@ class GFFormsModel {
                 else{
                     $lead[$field['id']] = self::get_prepared_input_value($form, $field, $lead, $field["id"]);
                 }
+
             }
             self::refresh_product_cache($form, $lead);
         }

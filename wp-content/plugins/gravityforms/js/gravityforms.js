@@ -327,10 +327,10 @@ function gformCalculateProductPrice(formId, productFieldId){
         quantityElement = jQuery(".gfield_quantity_" + formId + "_" + productFieldId);
 
         quantity = 1;
-        if(quantityElement.find("input").length > 0)
-            quantity = quantityElement.find("input").val();
-        else if (quantityElement.find("select").length > 0)
+        if (quantityElement.find("select").length > 0)
             quantity = quantityElement.find("select").val();
+        else if(quantityElement.find("input").length > 0)
+            quantity = quantityElement.find("input").val();
 
         if(!gformIsNumber(quantity))
             quantity = 0;
@@ -475,6 +475,7 @@ function gformInitPriceFields(){
         gformRegisterPriceField(productIds);
 
        jQuery(this).find("input[type=\"text\"], input[type=\"number\"], select").change(function(){
+
            var productIds = gformGetProductIds("gfield_price", this);
            if(productIds.formId == 0)
                 productIds = gformGetProductIds("gfield_shipping", this);
