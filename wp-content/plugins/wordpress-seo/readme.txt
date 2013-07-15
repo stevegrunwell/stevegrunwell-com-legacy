@@ -6,7 +6,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Tags: seo, SEO, google, meta, meta description, search engine optimization, xml sitemap, xml sitemaps, google sitemap, sitemap, sitemaps, robots meta, rss, rss footer, yahoo, bing, news sitemaps, XML News Sitemaps, WordPress SEO, WordPress SEO by Yoast, yoast, multisite, canonical, nofollow, noindex, keywords, meta keywords, description, webmaster tools, google webmaster tools, seo pack
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 1.4.12
+Stable tag: 1.4.13
 
 Improve your WordPress SEO: Write better content and have a fully optimized WordPress site using the WordPress SEO plugin by Yoast.
 
@@ -102,6 +102,27 @@ You'll find the [FAQ on Yoast.com](http://yoast.com/wordpress/seo/faq/).
 7. The advanced section of the WordPress SEO meta box.
 
 == Changelog ==
+
+= 1.4.13 =
+
+* Bugfixes
+	* Fixed ampersand (&) in sitetitle in Title Templates loading as &amp;
+	* Fixed error when focus keyword contains a / - props [Jrf](http://profiles.wordpress.org/jrf).
+	* Fixed issue with utf8 characters in meta description - props [Jrf](http://profiles.wordpress.org/jrf).
+	* Fixed undefined property error - props [Jrf](http://profiles.wordpress.org/jrf).
+	* Fixed undefined index error for the last page of the tour - props [Jrf](http://profiles.wordpress.org/jrf).
+	* Fixed undefined index error for images without alt - props [Jrf](http://profiles.wordpress.org/jrf).
+    * Fix output of author for Google+ when using a static front page - props [petervanderdoes](https://github.com/petervanderdoes).
+    * Keyword density calculation not working when special character in focus keyword - props [siriuzwhite](https://github.com/siriuzwhite).
+    * Reverse output buffer cleaning for XML sitemaps, as that collides with WP Super Cache, thanks to [Rarst](https://github.com/Rarst) for finding this.
+    * Fix canonical and rel=prev / rel=next links for paginated home pages using index.php links.
+    * Fixed og:title not following title settings.
+* Enhancements
+	* Improved breadcrumbs and titles for 404 pages - props [Jrf](http://profiles.wordpress.org/jrf).
+    * Moved XSL stylesheet from a static file in wp-content folder to a dynamic one, allowing it to work for sites that prevented the wp-content dir from being opened directly, f.i. through Sucuri's hardening.
+    * Added a link in the XSL pointing back to the sitemap index on individual sitemaps.
+    * When remove replytocom is checked in the permalink settings, these are now also redirected out.
+    * Added filters to OpenGraph output functions that didn't have them yet.
 
 = 1.4.12 =
 
@@ -1271,10 +1292,6 @@ You'll find the [FAQ on Yoast.com](http://yoast.com/wordpress/seo/faq/).
 * Initial beta release.
 
 == Upgrade Notice ==
-
-= 1.4.12 =
-Upgrade to prevent issues with XML sitemaps and missing save buttons on some settings pages.
-
 
 = 0.3.4 =
 Upgrade immediately to make sure your WordPress install is secure.

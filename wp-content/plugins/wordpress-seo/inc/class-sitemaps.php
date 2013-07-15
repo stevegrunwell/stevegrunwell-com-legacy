@@ -47,7 +47,7 @@ class WPSEO_Sitemaps {
 		add_action( 'wpseo_hit_sitemap_index', array( $this, 'hit_sitemap_index' ) );
 
 		// default stylesheet
-		$this->stylesheet = '<?xml-stylesheet type="text/xsl" href="' . WPSEO_FRONT_URL . 'css/xml-sitemap-xsl.php"?>';
+		$this->stylesheet = '<?xml-stylesheet type="text/xsl" href="' . home_url( 'sitemap.xsl' ) . '"?>';
 
 		$this->options = get_wpseo_options();
 	}
@@ -63,6 +63,18 @@ class WPSEO_Sitemaps {
 		add_action( 'wpseo_do_sitemap_' . $name, $function );
 		if ( !empty( $rewrite ) )
 			add_rewrite_rule( $rewrite, 'index.php?sitemap=' . $name, 'top' );
+	}
+
+	/**
+	 * Register your own XSL file. Call this during 'init'.
+	 *
+	 * @param string   $name     The name of the XSL file
+	 * @param callback $function Function to build your XSL file
+	 * @param string   $rewrite  Optional. Regular expression to match your sitemap with
+	 */
+	function register_xsl( $name, $function, $rewrite ) {
+		add_action( 'wpseo_xsl_' . $name, $function );
+		add_rewrite_rule( $rewrite, 'index.php?xsl=' . $name, 'top' );
 	}
 
 	/**
@@ -100,17 +112,25 @@ class WPSEO_Sitemaps {
 	function init() {
 		$GLOBALS['wp']->add_query_var( 'sitemap' );
 		$GLOBALS['wp']->add_query_var( 'sitemap_n' );
+		$GLOBALS['wp']->add_query_var( 'xsl' );
 
 		$this->max_entries = ( isset( $this->options['entries-per-page'] ) && $this->options['entries-per-page'] != '' ) ? intval( $this->options['entries-per-page'] ) : 1000;
 
 		add_rewrite_rule( 'sitemap_index\.xml$', 'index.php?sitemap=1', 'top' );
 		add_rewrite_rule( '([^/]+?)-sitemap([0-9]+)?\.xml$', 'index.php?sitemap=$matches[1]&sitemap_n=$matches[2]', 'top' );
+		add_rewrite_rule( 'sitemap\.xsl$', 'index.php?xsl=1', 'top' );
 	}
 
 	/**
-	 * Hijack requests for potential sitemaps.
+	 * Hijack requests for potential sitemaps and XSL files.
 	 */
 	function redirect() {
+		$xsl = get_query_var( 'xsl' );
+		if ( !empty( $xsl ) ) {
+			$this->xsl_output( $xsl );
+			die;
+		}
+
 		$type = get_query_var( 'sitemap' );
 		if ( empty( $type ) )
 			return;
@@ -133,8 +153,6 @@ class WPSEO_Sitemaps {
 	 * @param string $type The requested sitemap's identifier.
 	 */
 	function build_sitemap( $type ) {
-		if ( !is_admin() )
-			@ob_clean();
 
 		$type = apply_filters( 'wpseo_build_sitemap_post_type', $type );
 
@@ -160,8 +178,6 @@ class WPSEO_Sitemaps {
 	 */
 
 	function build_root_map() {
-		if ( !is_admin() )
-			@ob_clean();
 
 		global $wpdb;
 
@@ -193,7 +209,7 @@ class WPSEO_Sitemaps {
 				}
 
 				$date = date( 'c', strtotime( $date ) );
-				
+
 				$this->sitemap .= '<sitemap>' . "\n";
 				$this->sitemap .= '<loc>' . home_url( $base . $post_type . '-sitemap' . $count . '.xml' ) . '</loc>' . "\n";
 				$this->sitemap .= '<lastmod>' . htmlspecialchars( $date ) . '</lastmod>' . "\n";
@@ -220,7 +236,7 @@ class WPSEO_Sitemaps {
 			$n         = ( $count > $this->max_entries ) ? (int) ceil( $count / $this->max_entries ) : 1;
 
 			for ( $i = 0; $i < $n; $i++ ) {
-				$count = ( $n > 1 ) ? $i + 1 : '';
+				$count  = ( $n > 1 ) ? $i + 1 : '';
 				$taxobj = get_taxonomy( $tax );
 
 				if ( ( empty( $count ) || $count == $n ) && false ) {
@@ -287,7 +303,7 @@ class WPSEO_Sitemaps {
 					) );
 					$date = date( 'c', $date );
 
-				// Retrieve the newest updated profile timestamp by an offset
+					// Retrieve the newest updated profile timestamp by an offset
 				} else {
 					$date = $wpdb->get_var( $wpdb->prepare( "
 					SELECT mt1.meta_value FROM $wpdb->users
@@ -704,6 +720,31 @@ class WPSEO_Sitemaps {
 		$this->sitemap .= '</urlset>';
 	}
 
+	/**
+	 * Spits out the XSL for the XML sitemap.
+	 *
+	 * @param string $type
+	 *
+	 * @since 1.4.13
+	 */
+	function xsl_output( $type ) {
+		if ( $type == '1' ) {
+			header( 'HTTP/1.1 200 OK', true, 200 );
+			// Prevent the search engines from indexing the XML Sitemap.
+			header( 'X-Robots-Tag: noindex, follow', true );
+			header( 'Content-Type: text/xml' );
+
+			// Make the browser cache this file properly.
+			$expires = 60 * 60 * 24 * 365;
+			header( 'Pragma: public' );
+			header( 'Cache-Control: maxage=' . $expires );
+			header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + $expires ) . ' GMT' );
+
+			require WPSEO_PATH . '/css/xml-sitemap-xsl.php';
+		} else {
+			do_action( 'wpseo_xsl_' . $type );
+		}
+	}
 
 	/**
 	 * Spit out the generated sitemap and relevant headers and encoding information.
@@ -775,6 +816,10 @@ class WPSEO_Sitemaps {
 	function canonical( $redirect ) {
 		$sitemap = get_query_var( 'sitemap' );
 		if ( !empty( $sitemap ) )
+			return false;
+
+		$xsl = get_query_var( 'xsl' );
+		if ( !empty( $xsl ) )
 			return false;
 
 		return $redirect;
