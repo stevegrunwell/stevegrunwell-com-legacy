@@ -50,45 +50,6 @@ add_image_size( 'portfolio-slider', 640, 400, true );
 add_image_size( 'portfolio-thumb', 320, 200, true );
 
 /**
-* Creates the "Portfolio" (grunwell_portfolio) custom post type
-* @return void
-* @uses register_post_type()
-*/
-function grunwell_create_portfolio_post_type() {
-  $args = array(
-    'can_export' => true,
-    'has_archive' => false,
-    'hierarchical' => false,
-    'labels' => array(
-      'name' => 'Portfolio',
-      'singular_name' => 'Portfolio piece',
-      'add_new' => 'Add new',
-      'all_items' => 'All entries',
-      'add_new_item' => 'New entry',
-      'edit_item' => 'Edit entry',
-      'new_item' => 'New entry',
-      'view_item' => 'View entry',
-      'search_items' => 'Search portfolio',
-      'not_found' => 'No portfolio entries found',
-      'not_found_in_trash' => 'No portfolio entries found in trash',
-      'parent_item_colon' => 'Portfolio',
-      'menu_name' => 'Portfolio'
-    ),
-    'menu_icon' => null,
-    'public' => true,
-    'rewrite' => array(
-      'slug' => 'portfolio',
-      'with_front' => false
-    ),
-    'supports' => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
-    'taxonomies' => array( 'post_tag' )
-  );
-  register_post_type( 'grunwell_portfolio', $args );
-  return;
-}
-add_action( 'init', 'grunwell_create_portfolio_post_type' );
-
-/**
  * Include grunwell_portfolio posts in tag archives
  * @param object $query The WP_Query object
  * @return object
