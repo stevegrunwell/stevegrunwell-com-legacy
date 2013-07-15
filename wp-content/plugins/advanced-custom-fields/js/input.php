@@ -9,14 +9,12 @@ $files = array(
 	'color-picker.js',
 	'date-picker.js',
 	'file.js',
-	'flexible-content.js',
-	'gallery.js',
 	'image.js',
 	'relationship.js',
-	'repeater.js',
 	'tab.js',
 	'validation.js',
-	'wysiwyg.js'
+	'wysiwyg.js',
+	'radio.js'
 );
 
 

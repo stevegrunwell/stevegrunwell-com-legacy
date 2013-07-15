@@ -8,6 +8,28 @@
 
 (function($){
 	
+	
+	/*
+	*  Vars
+	*
+	*  @description: 
+	*  @since: 3.6
+	*  @created: 30/01/13
+	*/
+	
+	acf.fields.repeater = {
+		update_order : function(){},
+		set_column_widths : function(){},
+		add_sortable : function(){},
+		update_classes : function(){},
+		add_row : function(){},
+		remove_row : function(){},
+		text : {
+			min : "Minimum rows reached ( {min} rows )",
+			max : "Maximum rows reached ( {max} rows )"
+		}
+	};
+	
 	var _repeater = acf.fields.repeater;
 	
 	

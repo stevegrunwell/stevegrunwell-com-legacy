@@ -40,8 +40,18 @@
 			}
 			
 			
+			// if is hidden by conditional logic on a parent tab, ignore
+			if( div.hasClass('acf-tab_group-hide') )
+			{
+				if( div.prevAll('.field_type-tab:first').hasClass('acf-conditional_logic-hide') )
+				{
+					return;
+				}
+			}
+			
+			
 			// text / textarea
-			if( div.find('input[type="text"], input[type="number"], input[type="hidden"], textarea').val() == "" )
+			if( div.find('input[type="text"], input[type="email"], input[type="number"], input[type="hidden"], textarea').val() == "" )
 			{
 				div.data('validation', false);
 			}
@@ -55,7 +65,8 @@
 				var id = div.find('.wp-editor-area').attr('id'),
 					editor = tinyMCE.get( id );
 
-				if( ! editor.getContent() )
+
+				if( editor && !editor.getContent() )
 				{
 					div.data('validation', false);
 				}
@@ -74,12 +85,29 @@
 			}
 
 			
-			// checkbox
-			if( div.find('input[type="checkbox"]:checked').exists() )
+			// radio
+			if( div.find('input[type="radio"]').exists() )
 			{
-				div.data('validation', true);
+				div.data('validation', false);
+
+				if( div.find('input[type="radio"]:checked').exists() )
+				{
+					div.data('validation', true);
+				}
 			}
 			
+			
+			// checkbox
+			if( div.find('input[type="checkbox"]').exists() )
+			{
+				div.data('validation', false);
+
+				if( div.find('input[type="checkbox"]:checked').exists() )
+				{
+					div.data('validation', true);
+				}
+			}
+
 			
 			// relationship
 			if( div.find('.acf_relationship').exists() )
@@ -139,7 +167,7 @@
 				div.closest('.field').addClass('error');
 			}
 			
-			
+
 		});
 		
 		
