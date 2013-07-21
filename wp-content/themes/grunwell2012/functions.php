@@ -24,7 +24,7 @@ function grunwell_register_scripts_styles() {
   $wp_styles->add_data( 'ie8-fixes', 'conditional', 'lte IE 8' );
 
   # Scripts
-  wp_register_script( 'site-scripts', get_bloginfo( 'template_url' ) . '/js/main.js', array( 'jquery', 'jquery-flexslider', 'jquery-placeholder', 'jquery-validator' ), $hash, true );
+  wp_register_script( 'site-scripts', get_bloginfo( 'template_url' ) . '/js/main.js', array( 'jquery', 'jquery-flexslider', 'jquery-placeholder' ), $hash, true );
 
   # Third-party
 
@@ -40,6 +40,13 @@ function grunwell_register_scripts_styles() {
 
   // Modernizr
   wp_register_script( 'modernizr', get_bloginfo( 'template_url' ) . '/js/modernizr.min.js', null, '2.6.1', false );
+
+  if ( ! is_admin() && ! is_login_page() ) {
+    wp_enqueue_style( 'site-styles' );
+    wp_enqueue_style( 'ie8-fixes' );
+    wp_enqueue_script( 'modernizr' );
+    wp_enqueue_script( 'site-scripts' );
+  }
 }
 add_action( 'init', 'grunwell_register_scripts_styles' );
 
@@ -393,4 +400,13 @@ function grunwell_pagination() {
   return;
 }
 
-?>
+/**
+ * Check to see if the current page is the login/register page
+ * Use this in conjunction with is_admin() to separate the front-end from the back-end of your theme
+ * @return bool
+ */
+if ( ! function_exists( 'is_login_page' ) ) {
+  function is_login_page() {
+    return in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ) );
+  }
+}

@@ -12,13 +12,9 @@
 <meta charset="<?php bloginfo( 'charset' ); ?>" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title><?php wp_title( '' ); ?></title>
-<?php
-  wp_enqueue_style( 'site-styles' );
-  wp_enqueue_style( 'ie8-fixes' );
-  wp_enqueue_script( 'modernizr' );
-  wp_enqueue_script( 'site-scripts' );
-  wp_head();
-?>
+<link rel="profile" href="http://microformats.org/profile/hcard" />
+<link rel="profile" href="http://microformats.org/profile/hcalendar" />
+<?php wp_head(); ?>
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-9214996-1']);
