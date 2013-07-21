@@ -46,6 +46,9 @@ add_action( 'init', 'grunwell_register_scripts_styles' );
 /** Enable post thumbnails */
 add_theme_support( 'post-thumbnails' );
 
+/** Page excerpts */
+add_post_type_support( 'page', 'excerpt' );
+
 add_image_size( 'portfolio-slider', 640, 400, true );
 add_image_size( 'portfolio-thumb', 320, 200, true );
 
