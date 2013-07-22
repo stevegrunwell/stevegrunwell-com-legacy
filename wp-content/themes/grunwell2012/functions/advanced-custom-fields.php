@@ -18,6 +18,63 @@
 if(function_exists("register_field_group"))
 {
   register_field_group(array (
+    'id' => 'acf_presentation-details',
+    'title' => 'Presentation details',
+    'fields' => array (
+      array (
+        'key' => 'field_51e3807ddd27e',
+        'label' => 'Presentation date',
+        'name' => 'event_date',
+        'type' => 'text',
+        'instructions' => 'YYYY-MM-DD HH:MM:SS timestamp in UTC',
+        'default_value' => '',
+        'formatting' => 'html',
+      ),
+      array (
+        'key' => 'field_51e380c5dd27f',
+        'label' => 'Event name',
+        'name' => 'event_name',
+        'type' => 'text',
+        'default_value' => '',
+        'formatting' => 'html',
+      ),
+      array (
+        'key' => 'field_51e380efdd280',
+        'label' => 'Event URL',
+        'name' => 'event_url',
+        'type' => 'text',
+        'default_value' => '',
+        'formatting' => 'none',
+      ),
+      array (
+        'key' => 'field_51e380fcdd281',
+        'label' => 'Venue',
+        'name' => 'venue',
+        'type' => 'textarea',
+        'default_value' => '',
+        'formatting' => 'br',
+      ),
+    ),
+    'location' => array (
+      array (
+        array (
+          'param' => 'post_type',
+          'operator' => '==',
+          'value' => 'grunwell_talk',
+          'order_no' => 0,
+          'group_no' => 0,
+        ),
+      ),
+    ),
+    'options' => array (
+      'position' => 'side',
+      'layout' => 'default',
+      'hide_on_screen' => array (
+      ),
+    ),
+    'menu_order' => 0,
+  ));
+  register_field_group(array (
     'id' => 'acf_agency-information',
     'title' => 'Agency Information',
     'fields' => array (
