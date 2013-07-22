@@ -60,7 +60,7 @@ add_image_size( 'portfolio-slider', 640, 400, true );
 add_image_size( 'portfolio-thumb', 320, 200, true );
 
 /**
- * Include grunwell_portfolio posts in tag archives
+ * Include grunwell_portfolio and grunwell_talk posts in tag archives
  * @param object $query The WP_Query object
  * @return object
  * @see http://wordpress.org/support/topic/custom-post-type-tagscategories-archive-page#post-1569857
@@ -68,7 +68,7 @@ add_image_size( 'portfolio-thumb', 320, 200, true );
 function grunwell_query_post_type( $query ) {
   if ( is_category() || is_tag() ) {
     if ( ! $post_type = get_query_var( 'post_type' ) ) {
-      $post_type = array( 'post', 'page', 'nav_menu_item', 'grunwell_portfolio' );
+      $post_type = array( 'post', 'page', 'nav_menu_item', 'grunwell_portfolio', 'grunwell_talk' );
     }
     $query->set( 'post_type', $post_type );
   }
@@ -98,8 +98,9 @@ function grunwell_remove_active_nav_classes( $class ) {
  */
 function grunwell_repair_nav_classes( $classes, $item ) {
   global $post;
-  if ( get_post_type() === 'grunwell_portfolio' ) {
-    if ( in_array( 'grunwell_portfolio', $classes ) ) {
+  $post_type = get_post_type();
+  if ( in_array( $post_type, array( 'grunwell_portfolio', 'grunwell_talk' ) ) ) {
+    if ( in_array( $post_type, $classes ) ) {
       $classes[] = ( $item->ID == get_the_ID() ? 'current_page_parent' : 'current_page_ancestor' );
     } else { // Make sure nobody else has it
       $classes = array_filter( $classes, 'grunwell_remove_active_nav_classes' );
