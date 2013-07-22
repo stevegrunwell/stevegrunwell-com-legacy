@@ -47,7 +47,7 @@ get_header(); ?>
   <?php endif; ?>
 
   <?php if ( $previous->have_posts() ) : ?>
-    <h2><?php _e( 'Previous talks', 'grunwell-2012' ); ?></h2>
+    <h2><?php _e( 'Past talks', 'grunwell-2012' ); ?></h2>
     <ul class="post-list upcoming">
     <?php while ( $previous->have_posts() ) : $previous->the_post(); ?>
 
