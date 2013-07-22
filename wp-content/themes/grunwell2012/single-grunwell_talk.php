@@ -33,7 +33,8 @@ get_header(); ?>
     $details = '';
 
     if ( $event_date ) {
-      $details = sprintf( '<span class="dtstart event-date" title="%s">%s</span> ', $event_date, date( 'F j, Y', strtotime( $event_date ) ) );
+      $date = strtotime( $event_date );
+      $details = sprintf( '<time class="dtstart event-date" title="%s">%s</time> ', date( 'c', $date ), date( 'F j, Y', $date ) );
     }
 
     if ( $event_name ) {
