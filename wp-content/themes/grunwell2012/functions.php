@@ -126,25 +126,6 @@ function grunwell_custom_menus() {
 add_action( 'init', 'grunwell_custom_menus' );
 
 /**
- * Remove admin menus we don't need (Links)
- * @global $menu
- * @return void
- */
-function grunwell_remove_menus() {
-  global $menu;
-  $restricted = array(__('Links'));
-  end( $menu );
-  while ( prev( $menu ) ){
-    $value = explode( ' ', $menu[key( $menu )]['0'] );
-    if ( in_array( ( $value['0'] != null ? $value['0'] : '' ) , $restricted ) ) {
-      unset( $menu[key( $menu )] );
-    }
-  }
-  return;
-}
-add_action( 'admin_menu', 'grunwell_remove_menus' );
-
-/**
  * Remove the protocol and server name from a URL, making a relative link
  * @param str $url - The URL to make relative
  * @return str
