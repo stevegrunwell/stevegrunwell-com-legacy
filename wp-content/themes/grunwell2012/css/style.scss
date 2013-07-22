@@ -16,12 +16,8 @@
   @import "640";
 }
 
-@media ( max-width:769px ) {
-  @import "769";
-}
-
-@media ( min-width:770px ) {
-  @import "770";
+@media ( min-width:800px ) {
+  @import "800";
 }
 
 @media ( min-width:980px ) {

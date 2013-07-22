@@ -6,16 +6,16 @@
  * @author Steve Grunwell <steve@stevegrunwell.com>
  */
 
-// min-width:500px
+// min-width: 500px
 @import "500";
 
-// min-width:640px
+// min-width: 640px
 @import "640";
 
-// min-width:770px
-@import "770";
+// min-width: 800px
+@import "800";
 
-// min-width:980px
+// min-width: 980px
 @import "980";
 
-#wrapper{ width:960px; }
+#wrapper{ min-width: 960px; }

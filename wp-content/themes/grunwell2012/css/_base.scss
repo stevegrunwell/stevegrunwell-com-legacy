@@ -87,6 +87,7 @@ form.search { z-index:1; width:230px; margin:0 auto $line_height;
   fieldset { position: relative; }
   input { width:100%; padding-right:48px; }
   button { position:absolute; right:0; bottom:0; display:block; width:40px; height:27px; font-size:0; line-height:0; text-indent:-9999px; background:url('../img/magnifying-glass.png') center center no-repeat transparent; border:none; cursor:pointer; }
+  label.screen-reader-text { position: static; }
 }
 form.search-btn { display:none; background:#333; }
 
@@ -123,11 +124,19 @@ form.search-btn { display:none; background:#333; }
 
 .post {
   aside { margin-bottom:$line_height; padding:0 $line_height; background:#eaeaea; border-top:2px solid #999; border-bottom:2px solid #999; }
-  .post-title { margin-bottom:.3em; }
+  .post-title { margin-bottom: .3em; }
 }
+h3.post-title, h4.post-title { font-size: 1.5em; }
 .entry-meta { margin-bottom:.2em; font-size:.9em; color:#999; }
 article.primary .entry-meta { margin-bottom: $line_height; }
-.post-tags { margin-top:4em; }
+.event-date { margin-bottom: 0; font-size: 1em; text-transform: uppercase; font-weight: bold; color: #666;
+  + h3, + h4 { margin-top: 0; }
+}
+.vevent {
+  .event-date, .event-name, .location { display: block; }
+}
+.post-tags { margin-top: 4em; }
+.post-list { margin-left: 0; }
 
 .btn, a.btn:link, a.btn:visited, input[type="submit"] { display:block; width:100%; padding:.3em .5em; text-align:center; font-size:1.2em; line-height:1.5em; font-weight:bold; color:#fff; text-shadow:1px 1px 1px #333; background:#2a73ab; border:none; border-radius:5px; box-shadow:0 1px 1px #333; cursor:pointer; }
 .btn:hover, a.btn:hover, a.btn:active { text-decoration:none; background:#225d8b; }

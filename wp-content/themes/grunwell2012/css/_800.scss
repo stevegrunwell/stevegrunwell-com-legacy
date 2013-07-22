@@ -1,0 +1,17 @@
+/**
+ * Styles applied to viewports 800px and above
+ * @package WordPress
+ * @subpackage grunwell2012
+ * @author Steve Grunwell <steve@stevegrunwell.com>
+ */
+
+header .search { margin-bottom: 0; }
+form.search {
+  label.screen-reader-text { position: absolute; }
+}
+
+#site-utility { position: absolute; right: 4%; top: 2.25em; margin: 0; }
+form.search { margin: 0 0 8px; }
+#menu-social-networks { text-align: right; }
+
+footer { padding-top: 0; }
