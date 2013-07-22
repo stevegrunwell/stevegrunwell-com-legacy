@@ -22,9 +22,9 @@ $args = array(
 );
 $upcoming = new WP_Query( $args );
 
+$args['order'] = 'DESC';
 $args['meta_query']['0']['compare'] = '<';
 $previous = new WP_Query( $args );
-
 
 get_header(); ?>
 
