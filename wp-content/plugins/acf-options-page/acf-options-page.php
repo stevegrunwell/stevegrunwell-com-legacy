@@ -3,7 +3,7 @@
 Plugin Name: Advanced Custom Fields: Options Page
 Plugin URI: http://www.advancedcustomfields.com/
 Description: This premium Add-on creates a static menu item for the Advanced Custom Fields plugin
-Version: 1.1.0
+Version: 1.2.0
 Author: Elliot Condon
 Author URI: http://www.elliotcondon.com/
 License: GPL
@@ -28,6 +28,7 @@ class acf_options_page_plugin
 		// vars
 		$this->settings = array(
 			'title' 		=> __('Options','acf'),
+			'menu'			=> __('Options','acf'),
 			'slug' 			=> 'acf-options',
 			'capability'	=> 'edit_posts',
 			'pages' 		=> array(),
@@ -35,7 +36,8 @@ class acf_options_page_plugin
 		
 		
 		// set text domain
-		load_plugin_textdomain('acf', false, basename(dirname(__FILE__)) . '/lang' );
+		//load_plugin_textdomain('acf', false, basename(dirname(__FILE__)) . '/lang' );
+		load_textdomain('acf', dirname(__FILE__) . '/lang/acf-options-page-' . get_locale() . '.mo');
 		
 		
 		// actions
@@ -77,6 +79,7 @@ class acf_options_page_plugin
 			// defaults
 			$defaults = array(
 				'title'			=>	'',
+				'menu'			=>	'',
 				'slug'			=>	'',
 				'parent'		=>	'',
 				'capability'	=>	''
@@ -108,6 +111,13 @@ class acf_options_page_plugin
 				}
 				
 				
+				// menu
+				if( ! $page['menu'] )
+				{
+					$page['menu'] = $page['title'];
+				}
+				
+				
 				// slug
 				if( ! $page['slug'] )
 				{
@@ -132,6 +142,13 @@ class acf_options_page_plugin
 						$slug_changed = true;
 						
 						$this->settings['slug'] = $page['slug'];
+						
+						// solidate the parent menu
+						$this->settings['menu'] = $this->settings['title'];
+						
+						// update the parent title
+						$this->settings['title'] = $page['title'];
+						
 						$page['parent'] = $page['slug'];
 					}
 				}
@@ -236,7 +253,14 @@ class acf_options_page_plugin
 		// parent
 		if( $this->settings['show_parent'] )
 		{
-			$parent_page = add_menu_page( $this->settings['title'], $this->settings['title'], $this->settings['capability'], $this->settings['slug'], array($this, 'html'));
+			// menu
+			if( ! $this->settings['menu'] )
+			{
+				$this->settings['menu'] = $this->settings['title'];
+			}
+			
+			
+			$parent_page = add_menu_page( $this->settings['title'], $this->settings['menu'], $this->settings['capability'], $this->settings['slug'], array($this, 'html'));
 			
 			// actions
 			add_action('load-' . $parent_page, array($this,'admin_load'));
@@ -248,7 +272,7 @@ class acf_options_page_plugin
 		{
 			foreach( $this->settings['pages'] as $page )
 			{
-				$child_page = add_submenu_page( $page['parent'], $page['title'], $page['title'], $page['capability'], $page['slug'], array($this, 'html'));
+				$child_page = add_submenu_page( $page['parent'], $page['menu'], $page['title'], $page['capability'], $page['slug'], array($this, 'html'));
 			
 				
 				// actions
@@ -544,6 +568,24 @@ function acf_set_options_page_title( $title = 'Options' )
 
 
 /*
+*  acf_set_options_page_menu
+*
+*  this function is used to customize the options page admin menu name
+*
+*  @type	function
+*  @date	13/07/13
+*
+*  @param	{string}	$title
+*  @return	N/A
+*/
+
+function acf_set_options_page_menu( $menu = 'Options' )
+{
+	$GLOBALS['acf_options_page']->settings['menu'] = $menu;
+}
+
+
+/*
 *  acf_set_options_page_capability
 *
 *  this function is used to customize the options page capability. Defaults to 'edit_posts'
@@ -572,10 +614,11 @@ function acf_set_options_page_capability( $capability = 'edit_posts' )
 *
 *  @param	{mixed}	$page	either a string for the sub page title, or an array with more information. 
 *							The array can contain the following args:
-*							+ {string} title
-*							+ {mixed} slug
-*							+ {mixed} parent
-*							+ {mixed} capability
+*							+ {string} title - required
+*							+ {string} menu - not required
+*							+ {string} slug - not required
+*							+ {string} parent - not required
+*							+ {string} capability - not required
 *  @return	N/A
 */
 

@@ -67,7 +67,7 @@ class acf_options_page_plugin_update
 		// update info
 		global $pagenow;
 
-		if( $pagenow == 'plugins.php' )
+		if( in_array( $pagenow, array('plugins.php', 'update.php') ) )
 		{
 			// load plugin data
 			$plugin_data = get_plugin_data( str_replace('-update.php', '.php', __FILE__) );
@@ -139,18 +139,7 @@ class acf_options_page_plugin_update
 
 			foreach( $changelog as $item )
 			{
-				$item = explode('http', $item);
-
-				$o .= '<li>' . $item[0];
-
-				if( isset($item[1]) )
-				{
-					$o .= '<a href="http' . $item[1] . '" target="_blank">' . __("credits",'acf') . '</a>';
-				}
-
-				$o .= '</li>';
-
-
+				$o .= '<li>' . make_clickable( $item ) . '</li>';
 			}
 
 			$o .= '</ul></div>';

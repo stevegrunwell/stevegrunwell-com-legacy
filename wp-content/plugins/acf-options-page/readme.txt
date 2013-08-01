@@ -7,7 +7,7 @@ Requires at least: 3.0
 Tested up to: 3.5.1
 Stable tag: trunk
 Homepage: http://www.advancedcustomfields.com/add-ons/options-page/
-Version: 1.1.0
+Version: 1.2.0
 
 
 == Copyright ==
@@ -55,6 +55,11 @@ include_once('acf-options-page/acf-options-page.php');
 
 == Changelog ==
 
+= 1.2.0 =
+* Added Polish translation - Thanks to matczar (http://support.advancedcustomfields.com/forums/users/matczar/)
+* Added function acf_set_options_page_menu()
+* Added new param 'menu' to the acf_add_options_sub_page function
+
 = 1.1.0 =
 * Big thank you to Edir Pedro (http://edirpedro.com.br) for his contribution to this version!
 * Added function acf_add_options_sub_page()
@@ -62,7 +67,7 @@ include_once('acf-options-page/acf-options-page.php');
 * Added function acf_set_options_page_capability()
 * Improved sub page functionality to allow for individual title, capability, parent and slug. This allows you to place the sub page onto any parent page in the wp-admin menu!
 * Added lang folder including .pot file
-* Added Portuguese language - Thanks to Edir Pedro (http://edirpedro.com.br)
+* Added Portuguese translation - Thanks to Edir Pedro (http://edirpedro.com.br)
 
 = 1.0.1 =
 * wrapped the register_options_page function in an if statement to prevent error when activation this add-on with ACF v3
