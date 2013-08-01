@@ -69,7 +69,7 @@ class SteveGrunwell {
   protected function register_talk_cpt() {
     $args = array(
       'can_export' => true,
-      'has_archive' => false,
+      'has_archive' => true,
       'hierarchical' => false,
       'labels' => array(
         'name' => __( 'Talks', 'stevegrunwell' ),
