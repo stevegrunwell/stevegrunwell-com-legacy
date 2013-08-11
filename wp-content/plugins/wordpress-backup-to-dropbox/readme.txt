@@ -3,7 +3,7 @@ Contributors: michael.dewildt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38SEXDYP28CFA
 Tags: backup, dropbox
 Requires at least: 3.0
-Tested up to: 3.5.2
+Tested up to: 3.6
 Stable tag: trunk
 
 Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
@@ -83,6 +83,7 @@ For news and updates please visit my blog - http://www.mikeyd.com.au/category/wo
 * Hungarian (hu_HU) - [Lazarevics](http://hardverborze.tk)
 * Russian (ru_RU) - [Evgeny Vlasov](http://verha.net)
 * Sweedish (sv_SE) - [Webbyrå](http://webbyra.se)
+* Finland (fi_FI) - [Timo Leiniö](http://wpopas.fi)
 
 Help keep WPB2D's language files up ot date on [HunStart](https://code.google.com/p/wpbtd)
 
@@ -137,6 +138,12 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 3. Premium Extensions: Add extra functionality with ease and a 60 day money back guarantee.
 
 == Changelog ==
+
+= 1.6 =
+* Added Finnish translations
+* WordPress 3.6 compatiblity release
+* Fixed some issues where temporary files where not being cleaned up as expected
+* Removed upgrade migration code for performance reasons. So, if you are upagading form <1.5 you will need to re-authorize and re-configure the plugin.
 
 = 1.5.5 =
 * Updated Arabic translations
