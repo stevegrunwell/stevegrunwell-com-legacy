@@ -7,8 +7,10 @@ class GFAutoUpgrade{
     protected $_full_path;
     protected $_path;
     protected $_url;
+    protected $_is_gravityforms_supported;
 
-    public function __construct($slug, $version, $min_gravityforms_version, $title, $full_path, $path, $url){
+
+    public function __construct($slug, $version, $min_gravityforms_version, $title, $full_path, $path, $url, $is_gravityforms_supported){
         $this->_slug = $slug;
         $this->_version = $version;
         $this->_min_gravityforms_version = $min_gravityforms_version;
@@ -16,6 +18,7 @@ class GFAutoUpgrade{
         $this->_full_path = $full_path;
         $this->_path = $path;
         $this->_url = $url;
+        $this->_is_gravityforms_supported = $is_gravityforms_supported;
         add_action('init', array($this, 'init'));
     }
 
@@ -31,16 +34,16 @@ class GFAutoUpgrade{
             if (RG_CURRENT_PAGE == "plugins.php")
                 add_action('after_plugin_row_' . $this->_path, array($this, 'rg_plugin_row'));
 
-        } else {
-            // ManageWP premium update filters
-            add_filter('mwp_premium_update_notification', array($this, 'premium_update_push'));
-            add_filter('mwp_premium_perform_update', array($this, 'premium_update'));
         }
+
+        // ManageWP premium update filters
+        add_filter('mwp_premium_update_notification', array($this, 'premium_update_push'));
+        add_filter('mwp_premium_perform_update', array($this, 'premium_update'));
     }
 
     public function rg_plugin_row() {
 
-        if (!GFAddOn::is_gravityforms_supported($this->_min_gravityforms_version)) {
+        if (!$this->_is_gravityforms_supported) {
             $message = sprintf(__("Gravity Forms " . $this->_min_gravityforms_version . " is required. Activate it now or %spurchase it today!%s", "gravityformsaddon"), "<a href='http://www.gravityforms.com'>", "</a>");
             GFAddOn::display_plugin_message($message, true);
         } else {
@@ -202,7 +205,7 @@ class GFAutoUpgrade{
     }
 
     private function get_key() {
-        if (GFAddOn::is_gravityforms_supported($this->_min_gravityforms_version))
+        if ($this->_is_gravityforms_supported)
             return GFCommon::get_key();
         else
             return "";

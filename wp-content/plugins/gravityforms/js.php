@@ -577,7 +577,10 @@ function SetDefaultValues(field){
                 field.inputType = "singleproduct";
 
             if(field.inputType == "singleproduct" || field.inputType == "hiddenproduct" || field.inputType == "calculation"){
-                field.inputs = [new Input(field.id + 0.1, '<?php echo __("Name", "gravityforms"); ?>'), new Input(field.id + 0.2, '<?php echo __("Price", "gravityforms"); ?>'), new Input(field.id + 0.3, '<?php echo __("Quantity", "gravityforms"); ?>')];
+            	//convert field id to a number so it isn't treated as a string
+            	//caused concatenation below instead of addition
+            	field_id = parseFloat(field.id);
+                field.inputs = [new Input(field_id + 0.1, '<?php echo __("Name", "gravityforms"); ?>'), new Input(field_id + 0.2, '<?php echo __("Price", "gravityforms"); ?>'), new Input(field_id + 0.3, '<?php echo __("Quantity", "gravityforms"); ?>')];
                 field.enablePrice = null;
             }
 

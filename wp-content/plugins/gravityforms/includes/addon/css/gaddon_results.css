@@ -52,6 +52,27 @@ table#gquiz-results-summary td.gquiz-results-summary-data {
     margin-bottom:10px;
 }
 
+.gresults-results-field table{
+    border-bottom: 1px solid silver;
+    border-spacing: 0;
+}
+
+.gresults-results-field table td{
+    padding:5px;
+    border-right: 1px solid silver;
+    border-top: 1px solid silver;
+    text-align:center;
+}
+
+.gresults-results-field-table-header{
+    background-color: #EEEEEE;
+}
+
+.gresults-results-field table td:first-child {
+    border-left: 1px solid silver;
+}
+
+
 ul.gresults-results-field-content,
 ul.gresults-results-field-content li{
     list-style:disc outside none;
@@ -113,6 +134,7 @@ td.gresults-rank-field-rank{
     color:silver;
 }
 
+.gresults-datepicker,
 .gresults-filter-value,
 .gresults-filter-field {
     width:150px;
@@ -120,7 +142,8 @@ td.gresults-rank-field-rank{
     -ms-box-sizing:border-box;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
-    padding:0;
+    height: 2em;
+    padding: 2px;
 }
 
 .gresults-filter-operator {
@@ -152,8 +175,8 @@ td.gresults-rank-field-rank{
     font-weight:bold;
 }
 
-#gresults-results-field-filters-container {
-
+#gresults-results-filter {
+    visibility: hidden;
 }
 
 #gresults-results-field-filters-container.resizable {
@@ -189,3 +212,6 @@ td.gresults-rank-field-rank{
     left:0px;
 }
 
+.gsurvey-likert-score{
+    margin-top:5px;
+}

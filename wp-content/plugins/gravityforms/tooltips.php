@@ -3,17 +3,17 @@
 //Prints required tooltip scripts
 add_action("admin_print_scripts", 'print_tooltip_scripts');
 function print_tooltip_scripts(){
-    wp_register_script('qtip-lib' , GFCommon::get_base_url() ."/js/jquery.qtip-1.0.0-rc2.min.js", null, GFCommon::$version);
-    wp_enqueue_script('qtip-init' , GFCommon::get_base_url() ."/js/qtip_init.js", array('jquery', 'qtip-lib'), GFCommon::$version);
     wp_enqueue_style("gf_tooltip", GFCommon::get_base_url() ."/css/tooltip.css", null, GFCommon::$version);
 
-    //qtip is required to be printed in the head
-    wp_print_scripts("qtip-init");
+    wp_print_scripts("gf_tooltip_init");
     wp_print_styles("gf_tooltip");
+
 }
 
 function gform_tooltip($name, $css_class="", $return=false){
-    $gf_tooltips = array(
+    global $__gf_tooltips; //declared as global to improve WPML performance
+
+    $__gf_tooltips = array(
         "notification_send_to_email" => "<h6>" . __("Send To Email Address", "gravityforms") . "</h6>" . __("Enter the email address you would like the notification email sent to.", "gravityforms"),
         "notification_autoformat" => "<h6>" . __("Disable Auto-Formatting", "gravityforms") . "</h6>" . __("When enabled, auto-formatting will insert paragraph breaks automatically. Disable auto-formatting when using HTML to create email notification content.", "gravityforms"),
         "notification_send_to_routing" => "<h6>" . __("Routing", "gravityforms") . "</h6>" . __("Allows notification to be sent to different email addresses depending on values selected in the form.", "gravityforms"),
@@ -139,17 +139,21 @@ function gform_tooltip($name, $css_class="", $return=false){
     );
 
     $css_class = empty($css_class) ? "tooltip" : $css_class;
-    $gf_tooltips = apply_filters("gform_tooltips", $gf_tooltips);
+    $__gf_tooltips = apply_filters("gform_tooltips", $__gf_tooltips);
 
-    $tooltip_text = isset($gf_tooltips[$name]) ? $gf_tooltips[$name] : $name;
-    $tooltip_class = isset($gf_tooltips[$name]) ? "tooltip_{$name}" : "";
+    //AC: the $name parameter is a key when it has only one word. Maybe try to improve this later.
+    $parameter_is_key = count(explode(" ", $name)) == 1;
 
-    $tooltip ="<a href='#' onclick='return false;' class='" . esc_attr($css_class) . " {$tooltip_class}' tooltip='" . esc_attr($tooltip_text) . "'>(?)</a>";
+    $tooltip_text = $parameter_is_key ? rgar($__gf_tooltips, $name) : $name;
+    $tooltip_class = isset($__gf_tooltips[$name]) ? "tooltip_{$name}" : "";
+
+    if(empty($tooltip_text))
+        return "";
+
+    $tooltip = "<a href='#' onclick='return false;' class='gf_tooltip " . esc_attr($css_class) . " {$tooltip_class}' title='" . esc_attr($tooltip_text) . "'>(?)</a>";
 
     if($return)
         return $tooltip;
     else
         echo $tooltip;
 }
-
-?>

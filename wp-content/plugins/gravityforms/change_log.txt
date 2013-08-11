@@ -1,4 +1,37 @@
 -------------------------------------------------------------------------------------------------------------------
+Version 1.7.7
+
+    - Added support for touchscreen devices
+    - Added safeguard to prevent double clicks from creating duplicate entries
+    - Added logging statements around the setup() function
+    - Added support for filtering return of 'has_conditional_logic', useful for developers using conditional logic in objects not checked by Gravity Forms
+    - Added support for updating page title based on settings page
+
+    - Updated multi-site database upgrade procedure so that it only updates all sites in the network on network admin pages
+    - Updated tooltips so that they use the jQuery UI Tooltip script instead of qTip
+    - Updated masked input script to 1.3.1
+    - Updated chosen script to 0.9.12
+    - Updated tooltip function so that it uses a global variable improving performance on sites using WPML
+    - Updated ManageWP hooks so that they fire in the admin and front end
+    - Updated GFFormsModel::search_leads() to accept both a single form id and an array of form ids
+    - Updated dutch translation file
+    - Updated Pot file
+    - Updated Add-On framework with various fixes and enhancements
+
+    - Fixed issue with scheduling when "weekly" is selected.
+    - Fixed an issue where user defined pricing field wouldn't format to currency on AJAX forms after a validation failure
+    - Fixed an issue where the confirmation message would not be displayed below the progress bar on AJAX enabled forms.
+    - Fixed E_STRICT notices under WP 3.6 running on PHP 5.4
+    - Fixed entry meta conditional logic in confirmations and notifications
+    - Fixed issue with pagination on entry list page displaying wrong counts after a search is performed
+    - Fixed notices
+    - Fixed localization issues
+    - Fixed issue with admin_title filter return false instead of original title when not on form settings page
+    - Fixed bug with hidden, single, or calculated product inputs object creation treating the field id as a string instead of number, resulting in the ids of the items in the inputs object not matching the field id
+
+
+
+-------------------------------------------------------------------------------------------------------------------
 Version 1.7.6
     - Fixed "ob_clean(): failed to delete buffer" notice thrown in export
     - Fixed issue with create_lead() not taking conditional logic into account for calculation fields

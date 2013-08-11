@@ -2303,16 +2303,6 @@ function IndexOf(ary, item){
     return -1;
 }
 
-function DefaultValueCallback(){
-    SetFieldDefaultValue(jQuery('#field_default_value').val())
-}
-
-function HtmlContentCallback(){
-    SetFieldProperty('content', jQuery('#field_content').val())
-}
-
-
-
 function ToggleCalculationOptions(isEnabled, field) {
 
     if(isEnabled) {

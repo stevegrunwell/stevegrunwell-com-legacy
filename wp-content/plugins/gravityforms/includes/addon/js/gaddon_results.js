@@ -53,7 +53,7 @@ var gresults = {
         var viewSlug = jQuery("#gresults-view-slug").val();
         var data_str = "action=gresults_get_results_" + viewSlug + "&" + gresultsData;
         if (serverStateObject)
-            data_str += "&state=" + JSON.stringify(serverStateObject) + "&checkSum=" + checkSum;
+            data_str += "&state=" + serverStateObject + "&checkSum=" + checkSum;
 
         gresultsAjaxRequest = jQuery.ajax({
             url       : ajaxurl,
@@ -117,7 +117,7 @@ var gresults = {
     },
 
     getMoreResults: function (formId, fieldId) {
-        container = jQuery('#gresults-results-field-content-' + fieldId);
+        var container = jQuery('#gresults-results-field-content-' + fieldId);
         var results = jQuery("#gresults-results");
         var offset = jQuery(container).data('offset');
         var viewSlug = jQuery("#gresults-view-slug").val();
@@ -155,17 +155,17 @@ var gresults = {
             jQuery("#gresults-results-field-filters").append(gresults.getNewFilterRow());
         }
         jQuery(".gresults-filter-field").each(function (j) {
-            fieldId = gresultsVars.filterFields[j];
+            var fieldId = gresultsVars.filterFields[j];
             jQuery(this).val(fieldId);
             jQuery(this).change();
         });
         jQuery(".gresults-filter-operator").each(function (k) {
-            operator = gresultsVars.filterOperators[k];
+            var operator = gresultsVars.filterOperators[k];
             jQuery(this).val(operator);
             jQuery(this).change();
         });
         jQuery(".gresults-filter-value").each(function (l) {
-            value = gresultsVars.filterValues[l];
+            var value = gresultsVars.filterValues[l];
             jQuery(this).val(value);
             jQuery(this).change();
         });
@@ -206,8 +206,7 @@ var gresults = {
             jQuery(this).prop("defaultValue", jQuery(this).val());
         });
         jQuery("#gresults-results-filter-form select option").each(function () {
-            jQuery(this).prop("defaultSelected", jQuery(this).attr('selected'));
-
+            jQuery(this).prop("defaultSelected", jQuery(this).prop('selected'));
         });
     },
 
@@ -266,10 +265,11 @@ var gresults = {
     },
 
     getFilterOperators: function (filter) {
-        var str = "<select name='o[]' class='gresults-filter-operator'>";
+        var str = "<select name='o[]' class='gresults-filter-operator'>", operator;
         if (filter) {
             for (i = 0; i < filter.operators.length; i++) {
-                str += "<option value='" + filter.operators[i].value + "'>" + filter.operators[i].text + "</option>";
+                operator = filter.operators[i];
+                str += "<option value='" + operator + "'>" + gresultsOperatorStrings[operator] + "</option>";
             }
         }
         str += "</select>";
@@ -417,6 +417,7 @@ jQuery(document).ready(function () {
             gresultsFilterLeft = resultsDiv.width() + resultsDiv.offset().left + gresultsFilterLeftMargin;
             filter.offset({left: gresultsFilterLeft});
             gresultsFilterRelativeLeft = resultsDiv.width() + gresultsFilterLeftMargin;
+            jQuery("#gresults-results-filter").css('visibility', 'visible');
         }
 
         $window.scroll(function (e) {

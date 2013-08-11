@@ -1,7 +1,7 @@
 <?php
 class GFCommon{
 
-    public static $version = "1.7.6";
+    public static $version = "1.7.7";
     public static $tab_index = 1;
     public static $errors = array();
 
@@ -2097,7 +2097,7 @@ class GFCommon{
                 $tabindex = self::get_tabindex();
                 $choice_value = $choice["value"];
                 if(rgget("enablePrice", $field))
-                    $choice_value .= "|" . GFCommon::to_number($choice["price"]);
+                    $choice_value .= "|" . GFCommon::to_number(rgar($choice,"price"));
 
                 $choices.= sprintf("<li class='gchoice_$id'><input name='input_%s' type='checkbox' $logic_event value='%s' %s id='choice_%s' $tabindex %s /><label for='choice_%s'>%s</label></li>", $input_id, esc_attr($choice_value), $checked, $id, $disabled_text, $id, $choice["text"]);
 
@@ -5048,8 +5048,6 @@ class GFCommon{
              'value' => ''
           ), $attributes));
 
-        $result = RGFormsModel::matches_operation($merge_tag, $value, $condition);
-
         return RGFormsModel::matches_operation($merge_tag, $value, $condition) ? do_shortcode($content) : '';
 
     }
@@ -5235,10 +5233,9 @@ class GFCommon{
 
     }
 
-    private function requires_gf_vars() {
+    private static function requires_gf_vars() {
         $dependent_scripts = array( 'gform_form_admin', 'gform_gravityforms', 'gform_form_editor' );
         foreach( $dependent_scripts as $script ) {
-            $value = wp_script_is( $script );
             if( wp_script_is( $script ) )
                 return true;
         }
@@ -5278,10 +5275,10 @@ class GFCategoryWalker extends Walker {
      * @param int $depth Depth of category. Used for padding.
      * @param array $args Uses 'selected' and 'show_count' keys, if they exist.
      */
-    function start_el( &$output, $term, $depth) {
+    function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0) {
         $pad = str_repeat('&nbsp;', $depth * 3);
-        $term->name = "{$pad}{$term->name}";
-        $output[] = $term;
+        $object->name = "{$pad}{$object->name}";
+        $output[] = $object;
     }
 }
 
@@ -5423,6 +5420,3 @@ class GFCache {
     }
 
 }
-
-
-?>

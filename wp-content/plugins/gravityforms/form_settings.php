@@ -360,7 +360,7 @@ class GFFormSettings {
                         'above' => __("Above inputs", "gravityforms")
                         );
         foreach($description_options as $value => $label) {
-            $selected = $form['descriptionPlacement'] == $value ? 'selected="selected"' : '';
+            $selected = rgar( $form, 'descriptionPlacement' ) == $value ? 'selected="selected"' : '';
 
             $description_dd .= '<option value="' . $value . '" ' . $selected . '>' . $label . '</option>';
         }

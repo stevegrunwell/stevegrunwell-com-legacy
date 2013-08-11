@@ -179,7 +179,7 @@ function GetRuleFields( objectType, ruleIndex, selectedFieldId ) {
     }
 
     // get entry meta fields and append to existing fields
-    options.concat( GetEntryMetaFields( selectedFieldId ) )
+    jQuery.merge(options, GetEntryMetaFields( selectedFieldId ) );
 
     options = gform.applyFilters( 'gform_conditional_logic_fields', options, form, selectedFieldId );
 
@@ -774,7 +774,7 @@ var gfMergeTagsObj = function(form) {
                 });
 
                 var positionClass = gfMergeTags.getClassProperty(this, 'position');
-                var mergeTagIcon = jQuery('<span class="all-merge-tags ' + positionClass + ' ' + classStr + '"><a class="open-list tooltip-merge-tag" tooltip="' + gf_vars.mergeTagsTooltip + '">All Merge Tags</a></span>');
+                var mergeTagIcon = jQuery('<span class="all-merge-tags ' + positionClass + ' ' + classStr + '"><a class="open-list tooltip-merge-tag" title="' + gf_vars.mergeTagsTooltip + '"></a></span>');
 
                 // add the target element to the merge tag icon data for reference later when determining where the selected merge tag should be inserted
                 mergeTagIcon.data('targetElement', elem.attr('id') );
@@ -789,11 +789,12 @@ var gfMergeTagsObj = function(form) {
 
             });
 
-        jQuery('.tooltip-merge-tag').each(function() {
-            var options = gform_get_tooltip_options( this, "gformsstyle_left", "topLeft", "bottomRight" );
-            options.show.delay = 1250;
-            gform_apply_tooltip( this, options );
-        });
+        jQuery('.tooltip-merge-tag').tooltip({
+                show: {delay:1250},
+                content: function () {
+                    return jQuery(this).prop('title');
+                }
+         });
 
         jQuery('.all-merge-tags a.open-list').click(function() {
 

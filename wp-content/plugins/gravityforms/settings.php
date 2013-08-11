@@ -256,7 +256,7 @@ class GFSettings{
                 <br/><br/>
                 <p class="submit" style="text-align: left;">
                 <?php
-                $save_button = '<input type="submit" name="submit" value="' . __("Save Settings", "gravityforms"). '" class="button-primary gf_settings_savebutton"/>';
+                $save_button = '<input type="submit" name="submit" value="' . __("Save Settings", "gravityforms"). '" class="button-primary gfbutton"/>';
                 echo apply_filters("gform_settings_save_button", $save_button);
                 ?>
                 </p>

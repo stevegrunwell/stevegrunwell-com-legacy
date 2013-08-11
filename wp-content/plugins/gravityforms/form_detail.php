@@ -544,8 +544,7 @@ class GFFormDetail{
                                         <?php _e("Content", "gravityforms"); ?>
                                         <?php gform_tooltip("form_field_content") ?>
                                     </label>
-                                    <?php self::insert_variable_prepopulate("field_content", "HtmlContentCallback") ?>
-                                    <textarea id="field_content" class="fieldwidth-3 fieldheight-1 merge-tag-support mt-position-right mt-prepopulate" onkeyup="SetFieldProperty('content', this.value);"></textarea>
+                                    <textarea id="field_content" class="fieldwidth-3 fieldheight-1 merge-tag-support mt-position-right mt-prepopulate" onkeyup="SetFieldProperty('content', this.value);" onchange="SetFieldProperty('content', this.value);"></textarea>
 
                                 </li>
 
