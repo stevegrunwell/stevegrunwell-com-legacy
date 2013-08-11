@@ -1,9 +1,14 @@
-# Don't allow directory navigation
-Options -Indexes -Multiviews +FollowSymlinks
-
 # Rediect requests to .git to the public Github repo for this site
 RewriteEngine On
 RewriteRule ^\.git(/.*)?$  https://github.com/stevegrunwell/stevegrunwell-com [L]
+
+# Attempt to load files from production if they're not in our local version
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule wp-content/uploads/(.*) http://{PRODUCTION_URL}/wp-content/uploads/$1 [NC,L]
+</IfModule>
 
 # BEGIN WordPress
 <IfModule mod_rewrite.c>

@@ -1,2 +1,0 @@
-# These never need to be accessible via the web server
-deny from all
