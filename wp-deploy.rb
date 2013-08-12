@@ -38,8 +38,8 @@ namespace :deploy do
       run "ln -s #{shared_path}/wp-config.php #{release_path}/wp-config.php"
       
       # Grunwell 2012 actions
-      run "sass #{release_path}/wp-content/themes/grunwell2012/css/style.scss:#{release_path}/wp-content/themes/grunwell2012/css/style.css"
-      run "sass #{release_path}/wp-content/themes/grunwell2012/css/ie8.scss:#{release_path}/wp-content/themes/grunwell2012/css/ie8.css"
+      run "sass #{release_path}/wp-content/themes/grunwell2012/css/style.scss:#{release_path}/wp-content/themes/grunwell2012/css/style.css --style=compressed"
+      run "sass #{release_path}/wp-content/themes/grunwell2012/css/ie8.scss:#{release_path}/wp-content/themes/grunwell2012/css/ie8.css --style=compressed"
     end
   end
 
