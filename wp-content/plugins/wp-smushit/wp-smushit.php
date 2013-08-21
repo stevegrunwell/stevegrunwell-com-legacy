@@ -4,7 +4,7 @@ Plugin Name: WP Smush.it
 Plugin URI: http://wordpress.org/extend/plugins/wp-smushit/
 Description: Reduce image file sizes and improve performance using the <a href="http://smush.it/">Smush.it</a> API within WordPress.
 Author: WPMU DEV
-Version: 1.6.5
+Version: 1.6.5.1
 Author URI: http://premium.wpmudev.org/
 Textdomain: wp_smushit
 */
@@ -35,7 +35,7 @@ if ( !class_exists( 'WpSmushit' ) ) {
 
 class WpSmushit {
 
-	var $version = "1.6.5";
+	var $version = "1.6.5.1";
 
 	/**
      * Constructor
@@ -100,10 +100,14 @@ class WpSmushit {
 	 */
 	function register_settings( ) {
 		add_settings_section( 'wp_smushit_settings', 'WP Smush.it', array( &$this, 'settings_cb' ), 'media' );
-		add_settings_field( 'wp_smushit_smushit_auto', __( 'Use Smush.it on upload?', WP_SMUSHIT_DOMAIN ), array( &$this, 'render_auto_opts' ),  'media', 'wp_smushit_settings' );
-		add_settings_field( 'wp_smushit_smushit_timeout', __( 'How many seconds should we wait for a response from Smush.it?', WP_SMUSHIT_DOMAIN ), array( &$this, 'render_timeout_opts' ), 'media', 'wp_smushit_settings' );
-		register_setting( 'media', array( &$this, 'smushit_auto' ) );
-		register_setting( 'media', array( &$this, 'smushit_timeout' ) );
+
+		add_settings_field( 'wp_smushit_smushit_auto', __( 'Use Smush.it on upload?', WP_SMUSHIT_DOMAIN ), array( &$this, 'render_auto_opts' ),  
+			'media', 'wp_smushit_settings' );
+		add_settings_field( 'wp_smushit_smushit_timeout', __( 'How many seconds should we wait for a response from Smush.it?', WP_SMUSHIT_DOMAIN ), 
+			array( &$this, 'render_timeout_opts' ), 'media', 'wp_smushit_settings' );
+
+		register_setting( 'media', 'wp_smushit_smushit_auto' );
+		register_setting( 'media', 'wp_smushit_smushit_timeout' );
 	}
 
 	function settings_cb( ) {
@@ -135,7 +139,7 @@ class WpSmushit {
 	}	
 	
 	function admin_init( ) {
-		load_plugin_textdomain( WP_SMUSHIT_DOMAIN );
+		load_plugin_textdomain(WP_SMUSHIT_DOMAIN, false, dirname(plugin_basename(__FILE__)).'/languages/');
 		wp_enqueue_script( 'common' );
 	}
 
@@ -175,13 +179,13 @@ class WpSmushit {
 		<?php 
 
 		if ( sizeof($attachments) < 1 ):
-			_e( '<p>You don’t appear to have uploaded any images yet.</p>', WP_SMUSHIT_DOMAIN );
+			_e( "<p>You don't appear to have uploaded any images yet.</p>", WP_SMUSHIT_DOMAIN );
 		else: 
 			if ( empty($_POST) && !$auto_start ): // instructions page
 		
 			_e( "<p>This tool will run all of the images in your media library through the WP Smush.it web service.  It won't re-smush images that were successfully smushed before. It will retry images that were not successfully smushed.</p>", WP_SMUSHIT_DOMAIN );
 
-			_e( "<p>It uploads each and every file to Yahoo! and then downloads the resulting file. It can take a long time.</p>", WP_SMUSHIT_DOMAIN );
+			_e( "<p>It uploads each and every file to Yahoo! and then downloads the resulting file. Note: the Yahoo! Smush.it service does not support https:// urls. So the image MUST be accessible via the public internet over a non-SSL URL. It can take a long time.</p>", WP_SMUSHIT_DOMAIN );
 
 			printf( __( "<p>We found %d images in your media library. Be forewarned, <strong>it will take <em>at least</em> %d minutes</strong> to process all these images if they have never been smushed before.</p>", WP_SMUSHIT_DOMAIN ), sizeof($attachments), sizeof($attachments) * 3 / 60 );
 
@@ -205,29 +209,39 @@ class WpSmushit {
 				@ob_implicit_flush( true );
 				@ob_end_flush();
 				foreach( $attachments as $attachment ) {
-					printf( "<p>Processing <strong>%s</strong>&hellip;<br>", esc_html( $attachment->post_name ) );
+					printf( __("<p>Processing <strong>%s</strong>&hellip;<br />", WP_SMUSHIT_DOMAIN), esc_html( $attachment->post_name ) );
 					$original_meta = wp_get_attachment_metadata( $attachment->ID, true );
-						
+					//if (isset($original_meta['wp_smushit']))
+					//	unset($original_meta['wp_smushit']);
+					
 					$meta = $this->resize_from_meta_data( $original_meta, $attachment->ID, false );
+					//echo "meta<pre>"; print_r($meta); echo "</pre>";
+					//die();
+					
+					printf( "&mdash; [original] %d x %d: ", intval($meta['width']), intval($meta['height']) );
 
-					printf( "– %dx%d: ", intval($meta['width']), intval($meta['height']) );
-
-					if ( $original_meta['wp_smushit'] == $meta['wp_smushit'] && stripos( $meta['wp_smushit'], 'Smush.it error' ) === false ) {
-						echo 'already smushed' . $meta['wp_smushit'];
+					if ((isset( $original_meta['wp_smushit'] )) 
+					 && ( $original_meta['wp_smushit'] == $meta['wp_smushit']) 
+					 && (stripos( $meta['wp_smushit'], 'Smush.it error' ) === false ) ) {
+					 	if ((stripos( $meta['wp_smushit'], '<a' ) === false)
+					 	 && (stripos( $meta['wp_smushit'], __('No savings', WP_SMUSHIT_DOMAIN )) === false))
+							echo $meta['wp_smushit'] .' '. __('<strong>already smushed</strong>', WP_SMUSHIT_DOMAIN);
+						else	
+							echo $meta['wp_smushit'];
 					} else {
 						echo $meta['wp_smushit'];
 					}
-					echo '<br>';
+					echo '<br />';
 
 					if ( isset( $meta['sizes'] ) && is_array( $meta['sizes'] ) ) {
 						foreach( $meta['sizes'] as $size_name => $size  ) {
-							printf( "– %dx%d: ", intval($size['width']), intval($size['height']) );
+							printf( "&mdash; [%s] %d x %d: ", $size_name, intval($size['width']), intval($size['height']) );
 							if ( $original_meta['sizes'][$size_name]['wp_smushit'] == $size['wp_smushit'] && stripos( $meta['sizes'][$size_name]['wp_smushit'], 'Smush.it error' ) === false ) {
-								echo 'already smushed';
+								echo $size['wp_smushit'] .' '. __('<strong>already smushed</strong>', WP_SMUSHIT_DOMAIN);
 							} else {
 								echo $size['wp_smushit'];
 							}
-							echo '<br>';
+							echo '<br />';
 						}
 					}
 					echo "</p>";
@@ -239,6 +253,7 @@ class WpSmushit {
 					@ob_flush();
 					flush();
 				}
+				_e('<hr /></p>Smush.it finished processing.</p>', WP_SMUSHIT_DOMAIN);
 			endif; 
 		  endif; 
 		?>
@@ -251,7 +266,7 @@ class WpSmushit {
 	 */
 	function smushit_manual( ) {
 		if ( !current_user_can('upload_files') ) {
-			wp_die( __( 'You don\'t have permission to work with uploaded files.', WP_SMUSHIT_DOMAIN ) );
+			wp_die( __( "You don't have permission to work with uploaded files.", WP_SMUSHIT_DOMAIN ) );
 		}
 
 		if ( !isset( $_GET['attachment_ID'] ) ) {
@@ -278,7 +293,7 @@ class WpSmushit {
 	 * @param   string $file_url        Optional full URL to the image file
 	 * @returns array
 	 */
-	function do_smushit( $file, $file_url = null ) {
+	function do_smushit( $file_path = '', $file_url = '' ) {
 		// don't run on localhost, IPv4 and IPv6 checks
 		// if( in_array($_SERVER['SERVER_ADDR'], array('127.0.0.1', '::1')) )
 		//	return array($file, __('Not processed (local file)', WP_SMUSHIT_DOMAIN));
@@ -288,59 +303,66 @@ class WpSmushit {
 		// all directories in the hierarchy, otherwise realpath() will return false."
 		// $file_path = realpath($file);
 
+		if (empty($file_path)) {
+			return __( "File path is empty", WP_SMUSHIT_DOMAIN );
+		}
+
+		if (empty($file_url)) {
+			return __( "File URL is empty", WP_SMUSHIT_DOMAIN );
+		}
+		
 		static $error_count = 0;
 
 		if ( $error_count >= WP_SMUSHIT_ERRORS_BEFORE_QUITTING ) {
-			$msg = __( "Did not smush due to previous errors", WP_SMUSHIT_DOMAIN );
-			return array( $file, $msg );
+			return __( "Did not smush due to previous errors", WP_SMUSHIT_DOMAIN );
 		}
 
-		$file_path = $file;
 		// check that the file exists
 		if ( !file_exists( $file_path ) || !is_file( $file_path ) ) {
-			$msg = sprintf( __( "Could not find <span class='code'>%s</span>", WP_SMUSHIT_DOMAIN ), $file_path );
-			return array( $file, $msg );
+			return sprintf( __( "Could not find <span class='code'>%s</span>", WP_SMUSHIT_DOMAIN ), $file_path );
 		}
 
 		// check that the file is writable
-		if ( !is_writable( $file_path ) ) {
-			$msg = sprintf( __("<span class='code'>%s</span> is not writable", WP_SMUSHIT_DOMAIN ), $file_path );
-			return array( $file, $msg );
+		if ( !is_writable( dirname( $file_path)) ) {
+			return sprintf( __("<span class='code'>%s</span> is not writable", WP_SMUSHIT_DOMAIN ), dirname($file_path) );
 		}
 
 		$file_size = filesize( $file_path );
 		if ( $file_size > WP_SMUSHIT_MAX_BYTES ) {
-			$msg = sprintf(__("<a href='http://developer.yahoo.com/yslow/smushit/faq.html#faq_restrict'>Too big</a> for Smush.it (%s)", WP_SMUSHIT_DOMAIN), $this->format_bytes($file_size));
-			return array( $file, $msg );
+			//return sprintf(__("<a href='http://developer.yahoo.com/yslow/smushit/faq.html#faq_restrict'>Too big</a> for Smush.it (%s)", WP_SMUSHIT_DOMAIN), $this->format_bytes($file_size));
+			return sprintf(__('<span style="color:#FF0000;">Skipped (%s) Unable to Smush due to Yahoo 1mb size limits. See <a href="http://developer.yahoo.com/yslow/smushit/faq.html#faq_restrict">FAQ</a></span>', WP_SMUSHIT_DOMAIN), $this->format_bytes($file_size));
 		}
 
 		// check that the file is within the WP_CONTENT_DIR
-		$upload_dir = wp_upload_dir();
-		$wp_upload_dir = $upload_dir['basedir'];
-		$wp_upload_url = $upload_dir['baseurl'];
-		if ( 0 !== stripos(realpath($file_path), realpath(ABSPATH)) ) {
-			$msg = sprintf( __( "<span class='code'>%s</span> must be within the content directory (<span class='code'>%s</span>)", 
-				WP_SMUSHIT_DOMAIN ), htmlentities( $file_path ), $wp_upload_dir);
-
-			return array($file, $msg);
+		if (stripos(realpath($file_path), realpath(ABSPATH)) !== 0) {
+			return sprintf( __( "<span class='code'>%s</span> must be within the website directory (<span class='code'>%s</span>)", WP_SMUSHIT_DOMAIN ), 
+				htmlentities( $file_path ), ABSPATH);
 		}
 
-		if ( !$file_url ) {
-			// determine the public URL
-			$file_url = str_replace( $wp_upload_dir, $wp_upload_url, $file );
+		// The Yahoo! Smush.it service does not working with https images. 
+		$file_url = str_replace('https://', 'http://', $file_url);
+
+		$home_url = get_option('home');
+		$home_url = str_replace('https://', 'http://', $home_url);
+
+		if (stripos($file_url, $home_url) !== 0) {
+			return sprintf( __( "<span class='code'>%s</span> must be within the website home URL (<span class='code'>%s</span>)", WP_SMUSHIT_DOMAIN ), 
+				htmlentities( $file_url ), $home_url);
 		}
 
+		//echo "calling _post(". $file_url .")<br />";
 		$data = $this->_post( $file_url );
-
+		//echo "returned from _post data<pre>"; print_r($data); echo "</pre>";
+		
 		if ( false === $data ) {
 			$error_count++;
-			return array( $file, __( 'Error posting to Smush.it', WP_SMUSHIT_DOMAIN ) );
+			return __( 'Error posting to Smush.it', WP_SMUSHIT_DOMAIN );
 		}
 
 		// make sure the response looks like JSON -- added 2008-12-19 when
 		// Smush.it was returning PHP warnings before the JSON output
 		if ( strpos( trim($data), '{' ) != 0 ) {
-			return array( $file, __('Bad response from Smush.it', WP_SMUSHIT_DOMAIN ) );
+			return __('Bad response from Smush.it', WP_SMUSHIT_DOMAIN );
 		}
 
 		// read the JSON response
@@ -351,17 +373,18 @@ class WpSmushit {
 			$json = new Services_JSON( );
 			$data = $json->decode( $data );
 		}
-		
+		//echo "returned from _post data<pre>"; print_r($data); echo "</pre>";
+
 		if ( !isset( $data->dest_size ) )
-			return array( $file, __('Bad response from Smush.it', WP_SMUSHIT_DOMAIN ) );
+			return __('Bad response from Smush.it', WP_SMUSHIT_DOMAIN );
 
 		if ( -1 === intval( $data->dest_size ) )
-			return array( $file, __('No savings', WP_SMUSHIT_DOMAIN ) );
+			return __('No savings', WP_SMUSHIT_DOMAIN );
 
 		if ( !isset( $data->dest ) ) {
 			$err = ( $data->error ? __( 'Smush.it error: ', WP_SMUSHIT_DOMAIN ) . $data->error : __( 'unknown error', WP_SMUSHIT_DOMAIN ) );
 			$err .= sprintf( __( " while processing <span class='code'>%s</span> (<span class='code'>%s</span>)", WP_SMUSHIT_DOMAIN ), $file_url, $file_path);
-			return array( $file, $err );
+			return $err ;
 		}
 
 		$processed_url = $data->dest;
@@ -375,14 +398,21 @@ class WpSmushit {
 		$temp_file = download_url( $processed_url );
 
 		if ( is_wp_error( $temp_file ) ) {
-			@unlink($tmp);
-			$results_msg = sprintf( __("Error downloading file (%s)", WP_SMUSHIT_DOMAIN ),
-						 $temp_file->get_error_message());
-			return array($file, $results_msg );
+			@unlink($temp_file);
+			return sprintf( __("Error downloading file (%s)", WP_SMUSHIT_DOMAIN ), $temp_file->get_error_message());
 		}
 
-		@rename( $temp_file, $file_path );
-
+		if (!file_exists($temp_file)) {
+			return sprintf( __("Unable to locate Smuch.it downloaded file (%s)", WP_SMUSHIT_DOMAIN ), $temp_file);
+		}
+		
+		@unlink( $file_path );
+		$success = @rename( $temp_file, $file_path );
+		if (!$success) {
+			copy($temp_file, $file_path);
+			unlink($temp_file);
+		}
+		
 		$savings = intval( $data->src_size ) - intval( $data->dest_size );
 		$savings_str = $this->format_bytes( $savings, 1 );
 		$savings_str = str_replace( ' ', '&nbsp;', $savings_str );
@@ -391,7 +421,7 @@ class WpSmushit {
 						 $data->percent,
 						 $savings_str );
 
-		return array( $file, $results_msg );
+		return $results_msg;
 	}
 
 	function should_resmush($previous_status) {
@@ -421,42 +451,57 @@ class WpSmushit {
 			return $meta;
 		}
 
-		$file_path = $meta['file'];
-		$store_absolute_path = true;
-		$upload_dir = wp_upload_dir();
-		$upload_path = trailingslashit( $upload_dir['basedir'] );
+		//$file_path = $meta['file'];
+		//$store_absolute_path = true;
+		//$upload_dir = wp_upload_dir();
+		//$upload_path = trailingslashit( $upload_dir['basedir'] );
 
 		// WordPress >= 2.6.2: determine the absolute $file_path (http://core.trac.wordpress.org/changeset/8796)
-		if ( false === strpos($file_path,  $upload_path) ) {
-			$store_absolute_path = false;
-			$file_path =  $upload_path . $file_path;
-		}
+		//if ( false === strpos($file_path,  $upload_path) ) {
+		//	$store_absolute_path = false;
+		//	$file_path =  $upload_path . $file_path;
+		//}
+
+		$attachment_file_path 	= get_attached_file($ID);
+		//echo "attachment_file_path=[". $attachment_file_path ."]<br />";
+		$attachment_file_url	= wp_get_attachment_url($ID);
+		//echo "attachment_file_url=[". $attachment_file_url ."]<br />";
 
 		if ( $force_resmush || $this->should_resmush(  @$meta['wp_smushit'] ) ) {
-		  list($file, $msg) = $this->do_smushit($file_path);
-			$meta['wp_smushit'] = $msg;
+		  $meta['wp_smushit'] = $this->do_smushit($attachment_file_path, $attachment_file_url);
 		}
 
 		// strip absolute path for Wordpress >= 2.6.2
-		if ( false === $store_absolute_path ) {
-			$meta['file'] = str_replace($upload_path, '', $meta['file']);
-		}
+		//if ( false === $store_absolute_path ) {
+		//	$meta['file'] = str_replace($upload_path, '', $meta['file']);
+		//}
 
 		// no resized versions, so we can exit
 		if ( !isset( $meta['sizes'] ) )
 			return $meta;
 
 		// meta sizes don't contain a path, so we calculate one
-		$base_dir = trailingslashit( dirname($file_path) );
+		//$base_dir = trailingslashit( dirname($file_path) );
 
-		foreach($meta['sizes'] as $size => $data) {
-			if ( !$force_resmush && $this->should_resmush( @$meta['sizes'][$size]['wp_smushit'] ) === false ) {
+		foreach($meta['sizes'] as $size_key => $size_data) {
+			if ( !$force_resmush && $this->should_resmush( @$meta['sizes'][$size_key]['wp_smushit'] ) === false ) {
 				continue;
 			}
 
-			list($smushed_file, $results) = $this->do_smushit( $base_dir . wp_basename( $data['file'] ) );
-			$meta['sizes'][$size]['wp_smushit'] = $results;
+			// We take the original image. The 'sizes' will all match the same URL and 
+			// path. So just get the dirname and rpelace the filename.
+			$attachment_file_path_size 	= trailingslashit(dirname($attachment_file_path)) . $size_data['file'];
+			//echo "attachment_file_path_size=[". $attachment_file_path_size ."]<br />";
+
+			$attachment_file_url_size 	= trailingslashit(dirname($attachment_file_url)) . $size_data['file'];
+			//echo "attachment_file_url_size=[". $attachment_file_url_size ."]<br />";
+
+			$meta['sizes'][$size_key]['wp_smushit'] = $this->do_smushit( $attachment_file_path_size, $attachment_file_url_size ) ;
+			
+			//echo "size_key[". $size_key ."] wp_smushit<pre>"; print_r($meta['sizes'][$size_key]['wp_smushit']); echo "</pre>";
 		}
+		
+		//echo "meta<pre>"; print_r($meta); echo "</pre>";
 		return $meta;
 	}
 
