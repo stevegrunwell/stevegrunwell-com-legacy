@@ -36,6 +36,7 @@ namespace :deploy do
       run "chmod -R g+w #{releases_path}/#{release_name}"
       run "ln -s #{shared_path}/uploads #{release_path}/wp-content/uploads"
       run "ln -s #{shared_path}/wp-config.php #{release_path}/wp-config.php"
+      run "ln -s #{shared_path}/backups #{release_path}/wp-content/backups"
       
       # Grunwell 2012 actions
       run "sass #{release_path}/wp-content/themes/grunwell2012/css/style.scss:#{release_path}/wp-content/themes/grunwell2012/css/style.css --style=compressed"
