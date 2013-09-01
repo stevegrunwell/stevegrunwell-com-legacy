@@ -3,7 +3,7 @@
 /*
 Plugin Name: WP Remote
 Description: Manage your WordPress site with <a href="https://wpremote.com/">WP Remote</a>. <strong>Deactivate to clear your API Key.</strong>
-Version: 2.6
+Version: 2.6.1
 Author: Human Made Limited
 Author URI: http://hmn.md/
 */
@@ -28,8 +28,14 @@ Author URI: http://hmn.md/
 define( 'WPRP_PLUGIN_SLUG', 'wpremote' );
 define( 'WPRP_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 
+if ( ! defined( 'WPR_URL' ) )
+	define( 'WPR_URL', 'https://wpremote.com/' );
+
 if ( ! defined( 'WPR_API_URL' ) )
 	define( 'WPR_API_URL', 'https://wpremote.com/api/json/' );
+
+if ( ! defined( 'WPR_LANG_DIR' ) )
+	define( 'WPR_LANG_DIR', apply_filters( 'wpr_filter_lang_dir', trailingslashit( WPRP_PLUGIN_PATH ) . trailingslashit( 'languages' ) ) );
 
 // Don't activate on anything less than PHP 5.2.4
 if ( version_compare( phpversion(), '5.2.4', '<' ) ) {
@@ -58,76 +64,28 @@ if ( empty( $_GET['action'] ) || $_GET['action'] != 'do-core-upgrade' ) :
 
 	require_once ( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
 
-	class WPRP_Plugin_Upgrader_Skin extends Plugin_Installer_Skin {
-
-		var $feedback;
-		var $error;
-
-		function error( $error ) {
-			$this->error = $error;
-		}
-
-		function feedback( $feedback ) {
-			$this->feedback = $feedback;
-		}
-
-		function before() { }
-
-		function after() { }
-
-		function header() { }
-
-		function footer() { }
-
-	}
-
-	class WPRP_Theme_Upgrader_Skin extends Theme_Installer_Skin {
-
-		var $feedback;
-		var $error;
-
-		function error( $error ) {
-			$this->error = $error;
-		}
-
-		function feedback( $feedback ) {
-			$this->feedback = $feedback;
-		}
-
-		function before() { }
-
-		function after() { }
-
-		function header() { }
-
-		function footer() { }
-
-	}
-
-	class WPRP_Core_Upgrader_Skin extends WP_Upgrader_Skin {
-
-		var $feedback;
-		var $error;
-
-		function error( $error ) {
-			$this->error = $error;
-		}
-
-		function feedback( $feedback ) {
-			$this->feedback = $feedback;
-		}
-
-		function before() { }
-
-		function after() { }
-
-		function header() { }
-
-		function footer() { }
-
-	}
+	// Custom upgrader skins
+	require_once WPRP_PLUGIN_PATH . 'inc/class-wprp-plugin-upgrader-skin.php';
+	require_once WPRP_PLUGIN_PATH . 'inc/class-wprp-theme-upgrader-skin.php';
+	require_once WPRP_PLUGIN_PATH . 'inc/class-wprp-core-upgrader-skin.php';
 
 endif;
+
+/**
+ * Get a needed URL on the WP Remote site
+ *
+ * @param string      $uri     URI for the URL (optional)
+ * @return string     $url     Fully-qualified URL to WP Remote
+ */
+function wprp_get_wpr_url( $uri = '' ) {
+
+	if ( empty( $uri ) )
+		return WPR_URL;
+
+	$url = rtrim( WPR_URL, '/' );
+	$uri = trim( $uri, '/' );
+	return $url . '/' . $uri . '/';
+}
 
 /**
  * Catch the API calls and load the API
@@ -148,6 +106,19 @@ function wprp_catch_api_call() {
 
 }
 add_action( 'init', 'wprp_catch_api_call', 1 );
+
+/**
+ * Get the stored WPR API key
+ *
+ * @return mixed
+ */
+function wprp_get_api_keys() {
+	$keys = apply_filters( 'wpr_api_keys', get_option( 'wpr_api_key' ) );
+	if ( ! empty( $keys ) )
+		return (array)$keys;
+	else
+		return array();
+}
 
 function wprp_plugin_update_check() {
 
@@ -206,7 +177,7 @@ function _wprp_upgrade_core()  {
 
 	// check for filesystem access
 	if ( ! _wpr_check_filesystem_access() )
-		return array( 'status' => 'error', 'error' => 'The filesystem is not writable with the supplied credentials' );
+		return array( 'status' => 'error', 'error' => __( 'The filesystem is not writable with the supplied credentials', 'wpremote' ) );
 
 	// force refresh
 	wp_version_check();
@@ -269,3 +240,31 @@ function _wpr_set_filesystem_credentials( $credentials ) {
 	return $_credentials;
 }
 add_filter( 'request_filesystem_credentials', '_wpr_set_filesystem_credentials' );
+
+/**
+ *
+ */
+function wprp_translations_init() {
+
+	if ( is_admin() ) {
+
+		/** Set unique textdomain string */
+		$wprp_textdomain = 'wpremote';
+
+		/** The 'plugin_locale' filter is also used by default in load_plugin_textdomain() */
+		$plugin_locale = apply_filters( 'plugin_locale', get_locale(), $wprp_textdomain );
+
+		/** Set filter for WordPress languages directory */
+		$wprp_wp_lang_dir = apply_filters(
+			'wprp_filter_wp_lang_dir',
+				trailingslashit( WP_LANG_DIR ) . trailingslashit( 'genesis-layout-extras' ) . $wprp_textdomain . '-' . $plugin_locale . '.mo'
+		);
+
+		/** Translations: First, look in WordPress' "languages" folder = custom & update-secure! */
+		load_textdomain( $wprp_textdomain, $wprp_wp_lang_dir );
+
+		/** Translations: Secondly, look in plugin's "languages" folder = default */
+		load_plugin_textdomain( $wprp_textdomain, FALSE, WPR_LANG_DIR );
+	}
+}
+add_action( 'plugins_loaded', 'wprp_translations_init' );

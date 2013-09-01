@@ -1,9 +1,9 @@
 === The WP Remote WordPress Plugin ===
-Contributors: humanmade, joehoyle, mattheu, tcrsavage, willmot
+Contributors: humanmade, willmot, joehoyle, danielbachhuber, mattheu, pauldewouters, cuvelier, tcrsavage
 Tags: wpremote, remote administration, multiple wordpress
-Requires at least: 2.9
-Tested up to: 3.5
-Stable tag: 2.6
+Requires at least: 3.0
+Tested up to: 3.6
+Stable tag: 2.6.1
 
 WP Remote is a free web app that enables you to easily manage all of your WordPress powered sites from one place.
 
@@ -30,6 +30,14 @@ You can email us at support@wpremote.com for support.
 3. Sign up for an account at wpremote.com and add your site.
 
 == Changelog ==
+
+#### 2.6.1 (26 August 2013)
+
+* Add multiple API keys to your WP Remote plugin with a `wpr_api_keys` filter if you'd like to use more than WP Remote account with the site.
+* Plugin now supports localization. Please feel free to [submit your translation](http://translate.hmn.md/projects).
+* Update `HM Backup` to v2.3
+* Bug fix: Properly handle timestamp values in database backups.
+* Bug fix: Use super randomized backup directories.
 
 #### 2.6
 

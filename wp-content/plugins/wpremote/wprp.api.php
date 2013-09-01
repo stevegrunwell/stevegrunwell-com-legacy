@@ -8,7 +8,7 @@ class WPR_API_Request {
 	static function verify_request() {
 
 		// Check the API Key
-		if ( ! get_option( 'wpr_api_key' ) ) {
+		if ( ! wprp_get_api_keys() ) {
 
 			echo json_encode( 'blank-api-key' );
 			exit;
@@ -18,9 +18,9 @@ class WPR_API_Request {
 			$verify = $_POST['wpr_verify_key'];
 			unset( $_POST['wpr_verify_key'] );
 
-			$hash = self::generate_hash( $_POST );
+			$hash = self::generate_hashes( $_POST );
 
-			if ( $hash !== $verify ) {
+			if ( ! in_array( $verify, $hash, true ) ) {
 				echo json_encode( 'bad-verify-key' );
 				exit;
 			}
@@ -42,10 +42,17 @@ class WPR_API_Request {
 
 	}
 
-	static function generate_hash( $vars ) {
+	static function generate_hashes( $vars ) {
 
-		$hash = hash_hmac( 'sha256', serialize( $vars ), get_option( 'wpr_api_key' ) );
-		return $hash;
+		$api_key = wprp_get_api_keys();
+		if ( ! $api_key )
+			return array();
+
+		$hashes = array();
+		foreach( $api_key as $key ) {
+			$hashes[] = hash_hmac( 'sha256', serialize( $vars ), $key );			
+		}
+		return $hashes;
 
 	}
 
@@ -58,7 +65,7 @@ class WPR_API_Request {
 	}
 
 	static function get_arg( $arg ) {
-		return self::$args[$arg];
+		return ( isset( self::$args[$arg] ) ) ? self::$args[$arg] : '';
 	}
 }
 
@@ -128,9 +135,19 @@ foreach( WPR_API_Request::get_actions() as $action ) {
 
 		break;
 
+		case 'update_plugin' :
 		case 'upgrade_plugin' :
 
-			$actions[$action] = _wprp_upgrade_plugin( (string) sanitize_text_field( WPR_API_Request::get_arg( 'plugin' ) ) );
+			$actions[$action] = _wprp_update_plugin( (string) sanitize_text_field( WPR_API_Request::get_arg( 'plugin' ) ) );
+
+		break;
+
+		case 'install_plugin' :
+
+			$api_args = array(
+					'version'      => sanitize_text_field( (string)WPR_API_Request::get_arg( 'version' ) ),
+				);
+			$actions[$action] = _wprp_install_plugin( (string) sanitize_text_field( WPR_API_Request::get_arg( 'plugin' ) ), $api_args );
 
 		break;
 
@@ -140,15 +157,49 @@ foreach( WPR_API_Request::get_actions() as $action ) {
 
 		break;
 
+		case 'deactivate_plugin' :
+
+			$actions[$action] = _wprp_deactivate_plugin( (string) sanitize_text_field( WPR_API_Request::get_arg( 'plugin' ) ) );
+
+		break;
+
+		case 'uninstall_plugin' :
+
+			$actions[$action] = _wprp_uninstall_plugin( (string) sanitize_text_field( WPR_API_Request::get_arg( 'plugin' ) ) );
+
+		break;
+
 		case 'get_themes' :
 
 			$actions[$action] = _wprp_supports_theme_upgrade() ? _wprp_get_themes() : 'not-implemented';
 
 		break;
 
-		case 'upgrade_theme' :
+		case 'install_theme':
 
-			$actions[$action] = _wprp_upgrade_theme( (string) sanitize_text_field( WPR_API_Request::get_arg( 'theme' ) ) );
+			$api_args = array(
+					'version'      => sanitize_text_field( (string)WPR_API_Request::get_arg( 'version' ) ),
+				);
+			$actions[$action] = _wprp_install_theme( (string) sanitize_text_field( WPR_API_Request::get_arg( 'theme' ) ), $api_args );
+
+		break;
+
+		case 'activate_theme':
+
+			$actions[$action] = _wprp_activate_theme( (string) sanitize_text_field( WPR_API_Request::get_arg( 'theme' ) ), $api_args );
+
+		break;
+
+		case 'update_theme' :
+		case 'upgrade_theme' : // 'upgrade' is deprecated
+
+			$actions[$action] = _wprp_update_theme( (string) sanitize_text_field( WPR_API_Request::get_arg( 'theme' ) ) );
+
+		break;
+
+		case 'delete_theme':
+
+			$actions[$action] = _wprp_delete_theme( (string) sanitize_text_field( WPR_API_Request::get_arg( 'theme' ) ) );
 
 		break;
 

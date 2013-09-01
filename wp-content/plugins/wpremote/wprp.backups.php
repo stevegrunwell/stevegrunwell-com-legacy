@@ -85,8 +85,7 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 	/**
 	 * Perform a backup of the site
-	 *
-	 * @return true|WP_Error
+	 * @return bool|WP_Error
 	 */
 	public function do_backup() {
 
@@ -133,11 +132,11 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 			}
 
-			return str_replace( WP_CONTENT_DIR, WP_CONTENT_URL, $backup );
+			return str_replace( parent::conform_dir( WP_CONTENT_DIR ), WP_CONTENT_URL, $backup );
 
 		}
 
-		return new WP_Error( 'backup-failed', 'No backup was found' );
+		return new WP_Error( 'backup-failed', __( 'No backup was found', 'wpremote' ) );
 
 	}
 
@@ -187,7 +186,7 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 			// Otherwise the filesize must still be calculating
 			else
-				return 'Calculating';
+				return __( 'Calculating', 'wpremote' );
 
 		}
 
@@ -195,14 +194,14 @@ class WPRP_Backups extends WPRP_HM_Backup {
 		// it can take some time so we have a small timeout then return "Calculating"
 		wp_remote_get( add_query_arg( array( 'action' => 'wprp_calculate_backup_size', 'backup_excludes' => $this->get_excludes() ), admin_url( 'admin-ajax.php' ) ), array( 'timeout' => 0.1, 'sslverify' => false ) );
 
-		return 'Calculating';
+		return __( 'Calculating', 'wpremote' );
 
 	}
 
 	/**
 	 * Hook into the actions fired in HM Backup and set the status
 	 *
-	 * @return null
+	 * @param $action
 	 */
 	protected function do_action( $action ) {
 
@@ -210,25 +209,25 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 	    	case 'hmbkp_mysqldump_started' :
 
-	    		$this->set_status( sprintf( 'Dumping Database %s', '(<code>' . $this->get_mysqldump_method() . '</code>)' ) );
+	    		$this->set_status( sprintf( __( 'Dumping Database %s', 'wpremote' ), '(<code>' . $this->get_mysqldump_method() . '</code>)' ) );
 
 	    	break;
 
 	    	case 'hmbkp_mysqldump_verify_started' :
 
-	    		$this->set_status( sprintf( 'Verifying Database Dump %s', '(<code>' . $this->get_mysqldump_method() . '</code>)' ) );
+	    		$this->set_status( sprintf( __( 'Verifying Database Dump %s', 'wpremote' ), '(<code>' . $this->get_mysqldump_method() . '</code>)' ) );
 
 	    	break;
 
 			case 'hmbkp_archive_started' :
 
-	    		$this->set_status( sprintf( 'Creating zip archive %s', '(<code>' . $this->get_archive_method() . '</code>)' ) );
+	    		$this->set_status( sprintf( __( 'Creating zip archive %s', 'wpremote' ), '(<code>' . $this->get_archive_method() . '</code>)' ) );
 
 	    	break;
 
 	    	case 'hmbkp_archive_verify_started' :
 
-	    		$this->set_status( sprintf( 'Verifying Zip Archive %s', '(<code>' . $this->get_archive_method() . '</code>)' ) );
+	    		$this->set_status( sprintf( __( 'Verifying Zip Archive %s', 'wpremote' ), '(<code>' . $this->get_archive_method() . '</code>)' ) );
 
 	    	break;
 
@@ -323,7 +322,7 @@ class WPRP_Backups extends WPRP_HM_Backup {
 		// Protect the directory with a .htaccess file on Apache servers
 		if ( $is_apache && function_exists( 'insert_with_markers' ) && ! file_exists( $htaccess ) && is_writable( $path ) ) {
 
-			$contents[]	= '# ' . sprintf( __( 'This %s file ensures that other people cannot download your backup files.', 'wprp' ), '.htaccess' );
+			$contents[]	= '# ' . sprintf( __( 'This %s file ensures that other people cannot download your backup files.', 'wpremote' ), '.htaccess' );
 			$contents[] = '';
 			$contents[] = '<IfModule mod_rewrite.c>';
 			$contents[] = 'RewriteEngine On';
@@ -332,7 +331,7 @@ class WPRP_Backups extends WPRP_HM_Backup {
 			$contents[] = '</IfModule>';
 			$contents[] = '';
 
-			insert_with_markers( $htaccess, 'WP Remote Backup', $contents );
+			insert_with_markers( $htaccess, __( 'WP Remote Backup', 'wpremote' ), $contents );
 
 		}
 
@@ -375,9 +374,11 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 		foreach ( array( 'AUTH_KEY', 'SECURE_AUTH_KEY', 'LOGGED_IN_KEY', 'NONCE_KEY', 'AUTH_SALT', 'SECURE_AUTH_SALT', 'LOGGED_IN_SALT', 'NONCE_SALT', 'SECRET_KEY' ) as $constant )
 			if ( defined( $constant ) )
-				$key[] = $constant;
+				$key[] = constant( $constant );
 
- 		return md5( shuffle( $key ) );
+		shuffle( $key );
+
+ 		return md5( serialize( $key ) );
 
 	}
 
@@ -490,8 +491,8 @@ class WPRP_Backups extends WPRP_HM_Backup {
 /**
  * Handle the backups API calls
  *
- * @param string $call
- * @return mixed
+ * @param string $action
+ * @return bool|string|true|void|WP_Error
  */
 function _wprp_backups_api_call( $action ) {
 

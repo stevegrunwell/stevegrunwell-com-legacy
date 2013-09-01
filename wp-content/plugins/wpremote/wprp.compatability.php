@@ -7,16 +7,14 @@ function wprp_get_incompatible_plugins() {
 
 	// Plugins to check for.
 	$security_plugins = array(
-		'BulletProof Security',
-		'Wordfence Security',
-		'Better WP Security',
-		'Wordpress Firewall 2'
+		__( 'BulletProof Security', 'wpremote' ),
+		__( 'Wordfence Security', 'wpremote' ),
+		__( 'Better WP Security', 'wpremote' ),
+		__( 'Wordpress Firewall 2', 'wpremote' )
 	);
 
 	$active_plugins = get_option( 'active_plugins', array() );
 	$dismissed_plugins = get_option( 'dismissed-plugins', array() );
-
-	//update_option( 'dismissed-plugins', array() );
 
 	$plugin_matches = array();
 
@@ -38,19 +36,22 @@ function wprp_get_incompatible_plugins() {
  */
 function wprp_security_admin_notice() {
 
+	if ( ! current_user_can( 'install_plugins' ) )
+		return;
+
 	foreach ( wprp_get_incompatible_plugins() as $plugin_path => $plugin_name ) :
 
 		?>
 
 		<div class="error">
 
-			<a class="close-button button" style="float: right; margin-top: 4px; color: inherit; text-decoration: none; " href="<?php echo add_query_arg( 'wpr_dismiss_plugin_warning', $plugin_path ); ?>">Don't show again</a>
+			<a class="close-button button" style="float: right; margin-top: 4px; color: inherit; text-decoration: none; " href="<?php echo add_query_arg( 'wpr_dismiss_plugin_warning', $plugin_path ); ?>"><?php _e( 'Don\'t show again','wpremote' ); ?></a>
 
 			<p>
 
-				The plugin <strong><?php echo esc_attr( $plugin_name ); ?></strong> may cause issues with WP Remote.
+				<?php _e( 'The plugin', 'wpremote' );?> <strong><?php echo esc_attr( $plugin_name ); ?></strong> <?php _e( 'may cause issues with WP Remote.', 'wpremote' ); ?>
 
-				<a href="https://wpremote.com/support-center/troubleshooting/my-site-is-showing-up-as-red/#<?php echo esc_attr( $plugin_name ); ?>" alt="WPRemote Support Center"> Click here for instructions on how to resolve this issue </a>
+				<a href="https://wpremote.com/support-center/troubleshooting/my-site-is-showing-up-as-red/#<?php echo esc_attr( $plugin_name ); ?>" alt="WPRemote Support Center"> <?php _e( 'Click here for instructions on how to resolve this issue', 'wpremote' ); ?> </a>
 
 			</p>
 
@@ -67,16 +68,16 @@ add_action( 'admin_notices', 'wprp_security_admin_notice' );
  */
 function wprp_dismissed_plugin_notice_check() {
 
-	if ( ! empty( $_GET['wpr_dismiss_plugin_warning'] ) ) {
+	if ( current_user_can( 'install_plugins' ) && ! empty( $_GET['wpr_dismiss_plugin_warning'] ) ) {
 
 		$dismissed = get_option( 'dismissed-plugins', array() );
-		$dismissed[] = $_GET['wpr_dismiss_plugin_warning'];
+		$dismissed[] = sanitize_text_field( $_GET['wpr_dismiss_plugin_warning'] );
 
 		update_option( 'dismissed-plugins', $dismissed );
 
-		wp_redirect( remove_query_arg( 'wpr_dismiss_plugin_warning' ) );
+		wp_safe_redirect( remove_query_arg( 'wpr_dismiss_plugin_warning' ) );
 		exit;
 
 	}
 }
-add_action( 'init', 'wprp_dismissed_plugin_notice_check' );
+add_action( 'admin_init', 'wprp_dismissed_plugin_notice_check' );
