@@ -2,8 +2,8 @@
 Contributors: humanmade, willmot, joehoyle, danielbachhuber, mattheu, pauldewouters, cuvelier, tcrsavage
 Tags: wpremote, remote administration, multiple wordpress
 Requires at least: 3.0
-Tested up to: 3.6
-Stable tag: 2.6.1
+Tested up to: 3.6.1
+Stable tag: 2.6.4
 
 WP Remote is a free web app that enables you to easily manage all of your WordPress powered sites from one place.
 
@@ -30,6 +30,20 @@ You can email us at support@wpremote.com for support.
 3. Sign up for an account at wpremote.com and add your site.
 
 == Changelog ==
+
+#### 2.6.4 (2 October 2013)
+
+* Misc API improvements for Premium.
+* Bug fix: Disable all premium plugin and theme updates. Causing fatals too often.
+* Bug fix: Restore FTP-based core, theme, and plugin updates by properly accessing the passed credentials.
+
+#### 2.6.3 (10 September 2013)
+
+* Bug fix: Disabled updating BackupBuddy through WP Remote for BackupBuddy v4.1.1 and greater. BackupBuddy changed its custom update mechanism (as it's a premium plugin), which caused the WP Remote plugin not to function properly.
+
+#### 2.6.2 (2 September 2013)
+
+* Bug fix: Reactivating plugin after plugin upgrade.
 
 #### 2.6.1 (26 August 2013)
 

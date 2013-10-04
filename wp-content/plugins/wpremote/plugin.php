@@ -3,7 +3,7 @@
 /*
 Plugin Name: WP Remote
 Description: Manage your WordPress site with <a href="https://wpremote.com/">WP Remote</a>. <strong>Deactivate to clear your API Key.</strong>
-Version: 2.6.1
+Version: 2.6.4
 Author: Human Made Limited
 Author URI: http://hmn.md/
 */
@@ -50,6 +50,9 @@ if ( version_compare( phpversion(), '5.2.4', '<' ) ) {
 
 require_once( WPRP_PLUGIN_PATH . '/wprp.admin.php' );
 require_once( WPRP_PLUGIN_PATH . '/wprp.compatability.php' );
+
+if ( get_option( 'wprp_enable_log' ) )
+	require_once( WPRP_PLUGIN_PATH . '/wprp.log.php' );
 
 // Backups require 3.1
 if ( version_compare( get_bloginfo( 'version' ), '3.1', '>=' ) ) {
@@ -222,14 +225,14 @@ function _wpr_check_filesystem_access() {
 
 function _wpr_set_filesystem_credentials( $credentials ) {
 
-	if ( empty( $_GET['filesystem_details'] ) )
+	if ( empty( $_POST['filesystem_details'] ) )
 		return $credentials;
 
 	$_credentials = array(
-		'username' => $_GET['filesystem_details']['credentials']['username'],
-		'password' => $_GET['filesystem_details']['credentials']['password'],
-		'hostname' => $_GET['filesystem_details']['credentials']['hostname'],
-		'connection_type' => $_GET['filesystem_details']['method']
+		'username' => $_POST['filesystem_details']['credentials']['username'],
+		'password' => $_POST['filesystem_details']['credentials']['password'],
+		'hostname' => $_POST['filesystem_details']['credentials']['hostname'],
+		'connection_type' => $_POST['filesystem_details']['method']
 	);
 
 	// check whether the credentials can be used
@@ -257,7 +260,7 @@ function wprp_translations_init() {
 		/** Set filter for WordPress languages directory */
 		$wprp_wp_lang_dir = apply_filters(
 			'wprp_filter_wp_lang_dir',
-				trailingslashit( WP_LANG_DIR ) . trailingslashit( 'genesis-layout-extras' ) . $wprp_textdomain . '-' . $plugin_locale . '.mo'
+				trailingslashit( WP_LANG_DIR ) . trailingslashit( 'wp-remote' ) . $wprp_textdomain . '-' . $plugin_locale . '.mo'
 		);
 
 		/** Translations: First, look in WordPress' "languages" folder = custom & update-secure! */
@@ -268,3 +271,20 @@ function wprp_translations_init() {
 	}
 }
 add_action( 'plugins_loaded', 'wprp_translations_init' );
+
+/**
+ * Format a WP User object into a better
+ * object for the API
+ */
+function wprp_format_user_obj( $user_obj ) {
+	$new_user_obj = new stdClass;
+
+	foreach( $user_obj->data as $key => $value ) {
+		$new_user_obj->$key = $value;
+	}
+
+	$new_user_obj->roles = $user_obj->roles;
+	$new_user_obj->caps = $user_obj->caps;
+
+	return $new_user_obj;
+}
