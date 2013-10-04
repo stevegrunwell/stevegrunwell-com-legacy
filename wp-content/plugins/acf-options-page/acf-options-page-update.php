@@ -9,11 +9,9 @@
 *  				to read more about the terms & conditions regarding add-ons, please refer to the documentation here:
 *				http://www.advancedcustomfields.com/terms-conditions/
 *
-*  @type	function
+*  @type	class
 *  @date	13/07/13
 *
-*  @param	{int}	$post_id
-*  @return	{int}	$post_id
 */
 
 class acf_options_page_plugin_update
@@ -41,7 +39,7 @@ class acf_options_page_plugin_update
 		
 		
 		// actions
-		add_action('admin_menu', array($this,'admin_menu'), 11);
+		add_action('in_plugin_update_message-' . $this->settings['basename'], array($this, 'in_plugin_update_message'), 10, 2 );
 		
 		
 		// filters
@@ -49,37 +47,6 @@ class acf_options_page_plugin_update
 		add_filter('plugins_api', array($this, 'check_info'), 10, 3);
 	}
 	
-	
-	/*
-	*  admin_menu
-	*
-	*  description
-	*
-	*  @type	function
-	*  @date	13/07/13
-	*
-	*  @param	{int}	$post_id
-	*  @return	{int}	$post_id
-	*/
-	
-	function admin_menu()
-	{
-		// update info
-		global $pagenow;
-
-		if( in_array( $pagenow, array('plugins.php', 'update.php') ) )
-		{
-			// load plugin data
-			$plugin_data = get_plugin_data( str_replace('-update.php', '.php', __FILE__) );
-			
-			
-			// update settings
-			$this->settings['version'] = $plugin_data['Version'];
-			
-			
-			add_action( 'in_plugin_update_message-' . $this->settings['basename'], array($this, 'in_plugin_update_message'), 10, 2 );
-		}
-	}
 	
 	
 	/*
@@ -99,7 +66,7 @@ class acf_options_page_plugin_update
 	{
 		// vars
 		$readme = wp_remote_fopen( str_replace( '/info/' , '/trunk/readme.txt', $this->settings['remote'] ) );
-		$regexp = '/== Changelog ==(.*)= ' . $this->settings['version'] . ' =/sm';
+		$regexp = '/== Changelog ==(.*)= ' . $this->get_version() . ' =/sm';
 		$o = '';
 		
 		
@@ -206,7 +173,7 @@ class acf_options_page_plugin_update
         
         
         // compare versions
-        if( version_compare($info->version, $this->settings['version'], '<=') )
+        if( version_compare($info->version, $this->get_version(), '<=') )
         {
         	return $transient;
         }
@@ -253,6 +220,33 @@ class acf_options_page_plugin_update
     	        
         return $false;
     }
+    
+    
+    /*
+    *  get_version
+    *
+    *  This function will return the current version of this add-on 
+    *
+    *  @type	function
+    *  @date	27/08/13
+    *
+    *  @param	N/A
+    *  @return	(string)
+    */
+    
+    function get_version()
+    {
+    	// populate only once
+    	if( !$this->settings['version'] )
+    	{
+	    	$plugin_data = get_plugin_data( str_replace('-update.php', '.php', __FILE__) );
+	    	
+	    	$this->settings['version'] = $plugin_data['Version'];
+    	}
+    	
+    	// return
+    	return $this->settings['version'];
+	}
 }
 
 

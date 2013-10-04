@@ -4,7 +4,7 @@ Author: Elliot Condon
 Author URI: http://www.elliotcondon.com
 Plugin URI: http://www.advancedcustomfields.com
 Requires at least: 3.0
-Tested up to: 3.5.1
+Tested up to: 3.6.0
 Stable tag: trunk
 Homepage: http://www.advancedcustomfields.com/add-ons/options-page/
 Version: 1.2.0
@@ -25,7 +25,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 = Global Options have never been so easy =
 
-The “options page” addon creates a new menu item called “Options” which can hold advanced custom field groups (just like any other edit page). You can also register multiple options pages
+The “options page” add-on creates a new menu item called “Options” which can hold advanced custom field groups (just like any other edit page). You can also register multiple options pages
 
 http://www.advancedcustomfields.com/add-ons/options-page/
 
