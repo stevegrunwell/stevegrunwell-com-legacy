@@ -3,8 +3,8 @@ Contributors: eskapism, MarsApril
 Donate link: http://eskapism.se/sida/donate/
 Tags: page, pages, posts, custom posts, tree, cms, dashboard, overview, drag-and-drop, rearrange, management, manage, admin
 Requires at least: 3.5.1
-Tested up to: 3.5.1
-Stable tag: 1.2.13
+Tested up to: 3.6.1
+Stable tag: 1.2.14
 
 Adds a tree view of all pages & custom posts. Get a great overview + options to drag & drop to reorder & option to add multiple pages.
 
@@ -110,6 +110,14 @@ Now the tree with the pages will be visible both on the dashboard and in the men
 7. Quickly switch between regular list view and tree view using the switch icon
 
 == Changelog ==
+
+= 1.2.14 =
+- Now the tree view is enabled by default for hiearchical post types. Should make it easier for new users to get started.
+- Removed some annoying calls to console.log().
+- Fixed bulk edit and quick edit not working for posts. Fixes http://wordpress.org/support/topic/breaks-bulk-edit-feature.
+- Fixed error with removed users. Fixes http://wordpress.org/support/topic/better-wp-security-conflict-1.
+- Order now also includes post_title instead of just menu_order. Fixes http://wordpress.org/support/topic/orderby-should-include-post_title.
+- Updated norwegian translation.
 
 = 1.2.13 =
 - Added Serbo-Croatian translation by Andrijana Nikolic from [webhostinggeeks](http://webhostinggeeks.com/)
