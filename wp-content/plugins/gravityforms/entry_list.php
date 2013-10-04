@@ -313,7 +313,8 @@ class GFEntryList{
 
             function getLeadIds(){
                 var all = jQuery("#all_entries").val();
-                if(all)
+                //compare string, the boolean isn't correct, even when casting to a boolean the 0 is set to true
+                if(all == "1")
                     return 0;
 
                 var leads = jQuery(".check-column input[name='lead[]']:checked");
@@ -618,7 +619,7 @@ class GFEntryList{
 						}
                     }
 
-                });;
+                });
 
                 SetUpSelectAllEntries();
             });
@@ -733,43 +734,50 @@ class GFEntryList{
                             <?php
                         }
                         ?>
+
                         <div id="notifications_modal_container" style="display:none;">
                             <div id="notifications_container">
 
                                 <div id="post_tag" class="tagsdiv">
                                     <div id="resend_notifications_options">
 
-                                        <p class="description"><?php _e("Specify which notifications you would like to resend for the selected entries.", "gravityforms"); ?></p>
-
                                         <?php
+
                                         if(!is_array($form["notifications"]) || count($form["notifications"]) <=0){
                                             ?>
-                                            <div class="error" style="padding: 20px;"><?php _e("This form does not have any notifications configured", "gravityforms") ?></div>
-                                            <?php
+                                            <p class="description"><?php _e("You cannot resend notifications for these entries because this form does not currently have any notifications configured.", "gravityforms"); ?></p>
+
+                                            <a href="<?php echo admin_url("admin.php?page=gf_edit_forms&view=settings&subview=notification&id={$form["id"]}") ?>" class="button"><?php _e("Configure Notifications", "gravityforms") ?></a>
+                                        <?php
                                         }
                                         else{
+                                            ?>
+                                            <p class="description"><?php _e("Specify which notifications you would like to resend for the selected entries.", "gravityforms"); ?></p>
+                                            <?php
                                             foreach($form["notifications"] as $notification){
                                                 ?>
                                                 <input type="checkbox" class="gform_notifications" value="<?php echo $notification["id"] ?>" id="notification_<?php echo $notification["id"]?>" onclick="toggleNotificationOverride();" />
                                                 <label for="notification_<?php echo $notification["id"]?>"><?php echo $notification["name"] ?></label> <br /><br />
-                                                <?php
+                                            <?php
                                             }
+
+                                            ?>
+                                            <div id="notifications_override_settings" style="display:none;">
+
+                                                <p class="description" style="padding-top:0; margin-top:0;">You may override the default notification settings
+                                                    by entering a comma delimited list of emails to which the selected notifications should be sent.</p>
+                                                <label for="notification_override_email"><?php _e("Send To", "gravityforms"); ?> <?php gform_tooltip("notification_override_email") ?></label><br />
+                                                <input type="text" name="notification_override_email" id="notification_override_email" style="width:99%;" /><br /><br />
+
+                                            </div>
+
+                                            <input type="button" name="notification_resend" id="notification_resend" value="<?php _e("Resend Notifications", "gravityforms") ?>" class="button" style="" onclick="BulkResendNotifications();"/>
+                                            <span id="please_wait_container" style="display:none; margin-left: 5px;">
+                                                <img src="<?php echo GFCommon::get_base_url()?>/images/loading.gif"> <?php _e("Resending...", "gravityforms"); ?>
+                                            </span>
+                                        <?php
                                         }
                                         ?>
-
-                                        <div id="notifications_override_settings" style="display:none;">
-
-                                            <p class="description" style="padding-top:0; margin-top:0;">You may override the default notification settings
-                                             by entering a comma delimited list of emails to which the selected notifications should be sent.</p>
-                                            <label for="notification_override_email"><?php _e("Send To", "gravityforms"); ?> <?php gform_tooltip("notification_override_email") ?></label><br />
-                                            <input type="text" name="notification_override_email" id="notification_override_email" style="width:99%;" /><br /><br />
-
-                                        </div>
-
-                                        <input type="button" name="notification_resend" id="notification_resend" value="<?php _e("Resend Notifications", "gravityforms") ?>" class="button" style="" onclick="BulkResendNotifications();"/>
-                                        <span id="please_wait_container" style="display:none; margin-left: 5px;">
-                                            <img src="<?php echo GFCommon::get_base_url()?>/images/loading.gif"> <?php _e("Resending...", "gravityforms"); ?>
-                                        </span>
 
                                     </div>
 
@@ -942,7 +950,7 @@ class GFEntryList{
                                                                         $value = "<img src='" . GFCommon::get_base_url() . "/images/tick.png'/>";
                                                                         break;
                                                                     }
-                                                                    else if($field["enablePrice"]){
+                                                                    else if(rgar($field,"enablePrice")){
                                                                         $ary = explode("|", $lead[$field_id]);
                                                                         $val = count($ary) > 0 ? $ary[0] : "";
                                                                         $price = count($ary) > 1 ? $ary[1] : "";

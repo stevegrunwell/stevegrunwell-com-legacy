@@ -9,11 +9,13 @@ jQuery.fn.prop = function() {
     }
 }
 
+
 //Formatting free form currency fields to currency
-jQuery(document).bind('gform_post_render', gformBindFormatPricingFields);
+jQuery(document).ready(function(){
+    jQuery(document).bind('gform_post_render', gformBindFormatPricingFields);
+});
 
 function gformBindFormatPricingFields(){
-
     jQuery(".ginput_amount, .ginput_donation_amount").bind("change", function(){
         gformFormatPricingField(this);
     });
@@ -22,6 +24,7 @@ function gformBindFormatPricingFields(){
         gformFormatPricingField(this);
     });
 }
+
 
 
 //------------------------------------------------
@@ -715,7 +718,7 @@ var GFCalc = function(formId, formulaFields){
         formulaInput = jQuery('#input_' + formId + '_' + formulaField.field_id);
         var previous_val = formulaInput.val();
 
-        expr = calcObj.replaceFieldTags(formId, formulaField.formula, formulaField.numberFormat);
+        expr = calcObj.replaceFieldTags( formId, formulaField.formula, formulaField.numberFormat );
         result = '';
 
         if(calcObj.exprPatt.test(expr)) {
@@ -726,7 +729,7 @@ var GFCalc = function(formId, formulaFields){
 
             } catch (e) {}
         }
-
+        
         // allow users to modify result with their own function
         if(window["gform_calculation_result"])
             result = window["gform_calculation_result"](result, formulaField, formId, calcObj);
@@ -817,7 +820,7 @@ var GFCalc = function(formId, formulaFields){
 
     }
 
-    this.replaceFieldTags = function(formId, expr, numberFormat) {
+    this.replaceFieldTags = function( formId, expr, parentNumberFormat ) {
 
         var matches = getMatchGroups(expr, this.patt);
         var origExpr = expr;
@@ -832,50 +835,37 @@ var GFCalc = function(formId, formulaFields){
             var input = jQuery('#field_' + formId + '_' + fieldId).find('input[name="input_' + inputId + '"], select[name="input_' + inputId + '"]');
 
             // radio buttons will return multiple inputs, checkboxes will only return one but it may not be selected, filter out unselected inputs
-            if(input.length > 1 || input.prop('type') == 'checkbox')
+            if( input.length > 1 || input.prop('type') == 'checkbox' )
                 input = input.filter(':checked');
 
-            var isVisible = window["gf_check_field_rule"] ? gf_check_field_rule(formId, fieldId, true, "") == "show" : true;
+            var isVisible = window['gf_check_field_rule'] ? gf_check_field_rule( formId, fieldId, true, '' ) == 'show' : true;
 
-            if(input.length > 0 && isVisible) {
+            if( input.length > 0 && isVisible ) {
 
                 var val = input.val();
-                val = val.split('|');
+                val = val.split( '|' );
 
-                if(val.length > 1) {
+                if( val.length > 1 ) {
                     value = val[1];
                 } else {
                     value = input.val();
                 }
+                
             }
-
-            var decimalSeparator = ".";
-            if(numberFormat == "decimal_comma"){
-                decimalSeparator = ",";
-            }
-            else if(numberFormat == "decimal_dot"){
-                decimalSeparator = ".";
-            }
-            else if(window['gf_global']){
-                var inputType = input.attr("type");
-                var isDropDown = jQuery('#field_' + formId + '_' + fieldId).find('select[name="input_' + inputId + '"]').length > 0;
-
-                var isNumericFormat = inputType == "checkbox" || inputType == "radio" || isDropDown;
-
-                //checkboxes, radio buttons and drop downs use the standard number notation and not the currency format
-                if(!isNumericFormat){
-                    var currency = new Currency(gf_global.gf_currency_config);
-                    decimalSeparator = currency.currency["decimal_separator"];
-                }
-            }
-
-            value = gformCleanNumber(value, "", "", decimalSeparator);
-            if(!value)
+            
+            var numberFormat = gf_global.number_formats[formId][fieldId];
+            if( ! numberFormat )
+                numberFormat = parentNumberFormat;
+            
+            var decimalSeparator = numberFormat == 'decimal_dot' ? '.' : ',';
+            
+            value = gformCleanNumber( value, '', '', decimalSeparator );
+            if( ! value )
                 value = 0;
 
-            expr = expr.replace(matches[i][0], value);
+            expr = expr.replace( matches[i][0], value );
         }
-
+        
         return expr;
     }
 

@@ -1303,7 +1303,7 @@ class GFFormDetail{
                                             <br style="clear:both;"/>
                                             <div class="panel-buttons" style="">
                                                 <input type="button" onclick="InsertBulkChoices(jQuery('#gfield_bulk_add_input').val().split('\n')); tb_remove();" class="button-primary" value="<?php _e("Insert Choices", "gravityforms") ?>" />&nbsp;
-                                                <input type="button" onclick="tb_remove();" class="button" value="Cancel" />
+                                                <input type="button" onclick="tb_remove();" class="button" value="<?php _e("Cancel", "gravityforms") ?>" />
                                             </div>
 
                                             <div class="panel-custom" style="">

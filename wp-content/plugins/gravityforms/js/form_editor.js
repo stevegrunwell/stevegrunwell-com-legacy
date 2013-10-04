@@ -497,6 +497,8 @@ function LoadFieldSettings(){
 
     ShowSettings("field_settings");
 
+    gform.doAction('gform_post_load_field_settings', [field, form]);
+
     SetProductField(field);
 }
 

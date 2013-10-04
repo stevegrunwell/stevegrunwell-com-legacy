@@ -32,7 +32,7 @@ abstract class GFAddOn {
      */
     protected $_slug;
     /**
-     * @var string Relative path to the plugin from the plugins folder. Example "gravityformsmailchimp/mailchimp.php"
+     * @var string Relative path to the plugin from the plugins folder. Example "gravityforms/gravityforms.php"
      */
     protected $_path;
     /**
@@ -194,9 +194,12 @@ abstract class GFAddOn {
             add_filter('members_get_capabilities', array($this, 'members_get_capabilities'));
 
         // Results page
-        $results_page_config = $this->get_results_page_config();
-        if (false !== $results_page_config) {
-            $this->results_page_init($results_page_config);
+
+        if ($this->method_is_overridden('get_results_page_config')) {
+            $results_page_config = $this->get_results_page_config();
+            $results_capabilities = rgar($results_page_config, "capabilities");
+            if($this->current_user_can_any($results_capabilities))
+                $this->results_page_init($results_page_config);
         }
 
         // No conflict scripts
@@ -1318,31 +1321,31 @@ abstract class GFAddOn {
                                     "choices" => array(
                                         array(
                                             "value" => "is",
-                                            "label" => __("is", "gravityformsmailchimp")
+                                            "label" => __("is", "gravityforms")
                                             ),
                                         array(
                                             "value" => "isnot",
-                                            "label" => __("is not", "gravityformsmailchimp")
+                                            "label" => __("is not", "gravityforms")
                                             ),
                                         array(
                                             "value" => ">",
-                                            "label" => __("greater than", "gravityformsmailchimp")
+                                            "label" => __("greater than", "gravityforms")
                                             ),
                                         array(
                                             "value" => "<",
-                                            "label" => __("less than", "gravityformsmailchimp")
+                                            "label" => __("less than", "gravityforms")
                                             ),
                                         array(
                                             "value" => "contains",
-                                            "label" => __("contains", "gravityformsmailchimp")
+                                            "label" => __("contains", "gravityforms")
                                             ),
                                         array(
                                             "value" => "starts_with",
-                                            "label" => __("starts with", "gravityformsmailchimp")
+                                            "label" => __("starts with", "gravityforms")
                                             ),
                                         array(
                                             "value" => "ends_with",
-                                            "label" => __("ends with", "gravityformsmailchimp")
+                                            "label" => __("ends with", "gravityforms")
                                             )
                                         )
                                 ), false);
@@ -1673,7 +1676,7 @@ abstract class GFAddOn {
      * Override this function to implement a complete custom form settings page.
      * Before overriding this function, consider using the form_settings_fields() and specifying your field meta.
      */
-    protected function form_settings(){}
+    protected function form_settings($form){}
 
     /**
      * Checks whether the current Add-On has a plugin page.
@@ -1974,7 +1977,7 @@ abstract class GFAddOn {
      * Override this method to display a custom message.
      */
     public function plugin_message() {
-        $message = sprintf(__("Gravity Forms " . $this->_min_gravityforms_version . " is required. Activate it now or %spurchase it today!%s", "gravityformsaddon"), "<a href='http://www.gravityforms.com'>", "</a>");
+        $message = sprintf(__("Gravity Forms " . $this->_min_gravityforms_version . " is required. Activate it now or %spurchase it today!%s", "gravityforms"), "<a href='http://www.gravityforms.com'>", "</a>");
 
         return $message;
     }
@@ -2262,7 +2265,7 @@ abstract class GFAddOn {
      * Returns TRUE if the current page is the results page. Otherwise, returns FALSE
      */
     protected function is_results(){
-        if(rgget("page") == "gf_edit_forms" && rgget("view") == "gf_results_" . $this->_slug)
+        if(rgget("page") == "gf_entries" && rgget("view") == "gf_results_" . $this->_slug)
             return true;
 
         return false;

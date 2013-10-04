@@ -306,7 +306,7 @@ class GFFormSettings {
                 '
             </th>
             <td>
-                <input type="text" id="form_title_input" name="form_title_input" class="fieldwidth-3" value="' . $form['title'] . '" />
+                <input type="text" id="form_title_input" name="form_title_input" class="fieldwidth-3" value="' . esc_attr($form['title']) . '" />
             </td>
         </tr>';
 
@@ -320,7 +320,7 @@ class GFFormSettings {
                 '
             </th>
             <td>
-                <textarea id="form_description_input" name="form_description_input" class="fieldwidth-3 fieldheight-2">' . $form['description'] . '</textarea>
+                <textarea id="form_description_input" name="form_description_input" class="fieldwidth-3 fieldheight-2">' . esc_html($form['description']) . '</textarea>
             </td>
         </tr>';
 
@@ -335,7 +335,7 @@ class GFFormSettings {
         foreach($alignment_options as $value => $label) {
             $selected = $form['labelPlacement'] == $value ? 'selected="selected"' : '';
 
-            $label_dd .= '<option value="' . $value . '" ' . $selected . '>' . $label . '</option>';
+            $label_dd .= '<option value="' . esc_attr($value) . '" ' . $selected . '>' . esc_html($label) . '</option>';
         }
         $tr_form_label_placement = '
         <tr>
@@ -391,7 +391,7 @@ class GFFormSettings {
                 '</label>
             </th>
             <td>
-                <input type="text" id="form_css_class" name="form_css_class" class="fieldwidth-3" value="' . rgar($form, 'cssClass') . '" />
+                <input type="text" id="form_css_class" name="form_css_class" class="fieldwidth-3" value="' . esc_attr(rgar($form, 'cssClass')) . '" />
             </td>
         </tr>';
 
@@ -437,7 +437,7 @@ class GFFormSettings {
 
         //form button text
         $tr_form_button_text = $subsetting_open . '
-        <tr id="form_button_text_setting" class="child_setting_row" style="' . $text_style_display . '">
+        <tr id="form_button_text_setting" class="child_setting_row" style="' . esc_attr($text_style_display) . '">
             <th>
                 ' .
                     __("Button text", "gravityforms") . ' ' .
@@ -445,13 +445,13 @@ class GFFormSettings {
                 '
             </th>
             <td>
-                <input type="text" id="form_button_text_input" name="form_button_text_input" class="fieldwidth-3" value="' . rgars($form, 'button/text') . '" />
+                <input type="text" id="form_button_text_input" name="form_button_text_input" class="fieldwidth-3" value="' . esc_attr(rgars($form, 'button/text')) . '" />
             </td>
         </tr>';
 
         //form button image path
         $tr_form_button_image_path = '
-        <tr id="form_button_image_path_setting" class="child_setting_row" style="' . $image_style_display . '">
+        <tr id="form_button_image_path_setting" class="child_setting_row" style="' . esc_attr($image_style_display) . '">
             <th>
                 ' .
                     __("Button image path", "gravityforms") . '  ' .
@@ -459,7 +459,7 @@ class GFFormSettings {
                 '
             </th>
             <td>
-                <input type="text" id="form_button_image_url" name="form_button_image_url" class="fieldwidth-3" value="' . rgars($form, 'button/imageUrl') . '" />
+                <input type="text" id="form_button_image_url" name="form_button_image_url" class="fieldwidth-3" value="' . esc_attr(rgars($form, 'button/imageUrl')) . '" />
             </td>
         </tr>' . $subsetting_close;
 
@@ -526,7 +526,7 @@ class GFFormSettings {
 
         //limit entries count
         $tr_limit_entries_count = '
-        <tr id="limit_entries_count_setting" class="child_setting_row" style="' . $limit_entry_style .'">
+        <tr id="limit_entries_count_setting" class="child_setting_row" style="' . esc_attr($limit_entry_style) .'">
             ' . $subsetting_open . '
             <th>
                 ' .
@@ -534,7 +534,7 @@ class GFFormSettings {
                 '
             </th>
             <td>
-                <input type="text" id="gform_limit_entries_count" name="form_limit_entries_count" style="width:70px;" value="' . rgar($form, 'limitEntriesCount') . '" />
+                <input type="text" id="gform_limit_entries_count" name="form_limit_entries_count" style="width:70px;" value="' . esc_attr(rgar($form, 'limitEntriesCount')) . '" />
                 &nbsp;
                 <select id="gform_limit_entries_period" name="form_limit_entries_period" style="height:22px;">' .
                     $limit_entries_dd .
@@ -545,7 +545,7 @@ class GFFormSettings {
 
         //limit entries message
         $tr_limit_entries_message = '
-        <tr id="limit_entries_message_setting" class="child_setting_row" style="' . $limit_entry_style . '">
+        <tr id="limit_entries_message_setting" class="child_setting_row" style="' . esc_attr($limit_entry_style) . '">
             ' . $subsetting_open . '
             <th>
                 <label for="form_limit_entries_message">' .
@@ -553,7 +553,7 @@ class GFFormSettings {
                 '</label>
             </th>
             <td>
-                <textarea id="form_limit_entries_message" name="form_limit_entries_message" class="fieldwidth-3">' . rgar($form, 'limitEntriesMessage') . '</textarea>
+                <textarea id="form_limit_entries_message" name="form_limit_entries_message" class="fieldwidth-3">' . esc_html(rgar($form, 'limitEntriesMessage')) . '</textarea>
             </td>
             ' . $subsetting_close . '
 		</tr>
@@ -632,7 +632,7 @@ class GFFormSettings {
                 <label for="gform_schedule_start">' . __("Schedule Start Date/Time", "gravityforms") . '</label>
             </th>
             <td>
-                <input type="text" id="gform_schedule_start" name="gform_schedule_start" class="datepicker" value="' . rgar($form, 'scheduleStart') . '" />
+                <input type="text" id="gform_schedule_start" name="gform_schedule_start" class="datepicker" value="' . esc_attr(rgar($form, 'scheduleStart')) . '" />
                 &nbsp;&nbsp;
                 <select id="gform_schedule_start_hour" name="form_schedule_start_hour">' .
                    $start_hour_dd .
@@ -657,7 +657,7 @@ class GFFormSettings {
                 ' . __("Schedule Form End Date/Time", "gravityforms") . '
             </th>
             <td>
-                <input type="text" id="gform_schedule_end" name="form_schedule_end" class="datepicker" value="' . rgar($form, 'scheduleEnd') . '" />
+                <input type="text" id="gform_schedule_end" name="form_schedule_end" class="datepicker" value="' . esc_attr(rgar($form, 'scheduleEnd')) . '" />
                 &nbsp;&nbsp;
                 <select id="gform_schedule_end_hour" name="form_schedule_end_hour">' .
                     $end_hour_dd .
@@ -676,13 +676,13 @@ class GFFormSettings {
 
         //schedule message
         $tr_schedule_message = '
-        <tr id="schedule_message_setting" class="child_setting_row" style="' . $schedule_form_style . '">
+        <tr id="schedule_message_setting" class="child_setting_row" style="' . esc_attr($schedule_form_style) . '">
             ' . $subsetting_open . '
             <th>
                 ' . __("Form Expired Message", "gravityforms") . '
             </th>
             <td>
-                <textarea id="gform_schedule_message" name="form_schedule_message" class="fieldwidth-3">' . rgar($form, 'scheduleMessage') . '</textarea>
+                <textarea id="gform_schedule_message" name="form_schedule_message" class="fieldwidth-3">' . esc_html(rgar($form, 'scheduleMessage')) . '</textarea>
             </td>
             ' . $subsetting_close . '
         </td>';
@@ -741,13 +741,13 @@ class GFFormSettings {
 
         //require login message
         $tr_requires_login_message = '
-        <tr id="require_login_message_setting" class="child_setting_row" style="' . $require_login_style . '">
+        <tr id="require_login_message_setting" class="child_setting_row" style="' . esc_attr($require_login_style) . '">
             ' . $subsetting_open . '
             <th>
                 ' . __("Require Login Message", "gravityforms") . ' ' . gform_tooltip("form_require_login_message", "", true) . '
             </th>
             <td>
-                <textarea id="gform_require_login_message" name="form_require_login_message" class="fieldwidth-3">' . rgar($form, 'requireLoginMessage') . '</textarea>
+                <textarea id="gform_require_login_message" name="form_require_login_message" class="fieldwidth-3">' . esc_html(rgar($form, 'requireLoginMessage')) . '</textarea>
             </td>
             ' . $subsetting_close . '
         </td>';
@@ -1386,7 +1386,8 @@ class GFConfirmationTable extends WP_List_Table {
 
             <?php
             if(is_array($actions) && !empty($actions)) {
-                $last_key = array_pop(array_keys($actions));
+                $keys = array_keys($actions);
+                $last_key = array_pop($keys);
                 foreach($actions as $key => $html) {
                     $divider = $key == $last_key ? '' : " | ";
                     ?>

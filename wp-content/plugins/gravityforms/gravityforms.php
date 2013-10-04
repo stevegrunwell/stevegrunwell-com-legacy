@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms
 Plugin URI: http://www.gravityforms.com
 Description: Easily create web forms and manage form entries within the WordPress admin.
-Version: 1.7.7
+Version: 1.7.10
 Author: rocketgenius
 Author URI: http://www.rocketgenius.com
 
@@ -62,14 +62,12 @@ if(!defined("IS_ADMIN")){
 }
 
 define("RG_CURRENT_VIEW", RGForms::get("view"));
-define("GF_MIN_WP_VERSION", '3.2');
+define("GF_MIN_WP_VERSION", '3.4');
 define("GF_SUPPORTED_WP_VERSION", version_compare(get_bloginfo("version"), GF_MIN_WP_VERSION, '>='));
 
 if(!defined("GRAVITY_MANAGER_URL"))
     define("GRAVITY_MANAGER_URL", "http://www.gravityhelp.com/wp-content/plugins/gravitymanager");
 
-//initializing translations
-load_plugin_textdomain( 'gravityforms', false, '/gravityforms/languages' );
 
 require_once(WP_PLUGIN_DIR . "/" . basename(dirname(__FILE__)) . "/common.php");
 require_once(WP_PLUGIN_DIR . "/" . basename(dirname(__FILE__)) . "/forms_model.php");
@@ -100,11 +98,16 @@ class GFForms {
 
     //Plugin starting point. Will load appropriate files
     public static function init(){
+    	//initializing translations
+		load_plugin_textdomain( 'gravityforms', false, '/gravityforms/languages' );
 
         add_filter("gform_logging_supported", array("RGForms", "set_logging_supported"));
         add_action( 'admin_head', array( 'GFCommon', 'maybe_output_gf_vars' ) );
 
         self::register_scripts();
+
+        //runs the setup when version changes
+        self::setup();
 
         if(IS_ADMIN){
 
@@ -126,8 +129,8 @@ class GFForms {
                 require_once(GFCommon::get_base_path() . "/export.php");
                 GFExport::maybe_export();
 
-                //runs the setup when version changes
-                self::setup();
+                //imports theme forms if configured to be automatic imported
+                self::maybe_import_theme_forms();
 
                 //creates the "Forms" left menu
                 add_action('admin_menu',  array('RGForms', 'create_menu'));
@@ -197,7 +200,7 @@ class GFForms {
 
                     }
 
-                    add_filter("plugins_api", array("RGForms", "get_addon_info"), 10, 3);
+                    add_filter("plugins_api", array("RGForms", "get_addon_info"), 100, 3);
                     add_action('after_plugin_row_gravityforms/gravityforms.php', array('RGForms', 'plugin_row') );
                     add_action('install_plugins_pre_plugin-information', array('RGForms', 'display_changelog'));
                     add_filter('plugin_action_links', array('RGForms', 'plugin_settings_link'),10,2);
@@ -268,80 +271,59 @@ class GFForms {
         return GFCommon::check_update($update_plugins_option, true);
     }
 
-        //Creates or updates database tables. Will only run when version changes
+    //Creates or updates database tables. Will only run when version changes
     public static function setup($force_setup = false){
         global $wpdb;
 
-        if(get_option("rg_form_version") != GFCommon::$version || $force_setup){
-            $blog_str = "Blog " . get_current_blog_id();
-            GFCommon::log_debug("{$blog_str} - Starting Setup.");
-            GFCommon::log_debug("{$blog_str} - Previous GF Version: " . get_option("rg_form_version"));
-            GFCommon::log_debug("{$blog_str} - Current GF Version: " . GFCommon::$version);
-
-            require_once(ABSPATH . '/wp-admin/includes/plugin.php');
-
-            if(is_plugin_active_for_network("gravityforms/gravityforms.php") && is_network_admin() ){
-                //if gravity forms is network activated, run the database setup for every site
-                $blog_ids = $wpdb->get_col( $wpdb->prepare("SELECT blog_id FROM $wpdb->blogs WHERE site_id = %d AND public = '1' AND archived = '0' AND mature = '0' AND spam = '0' AND deleted = '0'", $wpdb->siteid) );
-                foreach($blog_ids as $id){
-                    self::setup_site($id);
-                }
-            }
-            else{
-                self::setup_site();
-            }
+        $has_version_changed = get_option("rg_form_version") != GFCommon::$version;
+        if($has_version_changed){
+            //Making sure version has really changed. Gets around aggressive caching issue on some sites that cause setup to run multiple times.
+            $has_version_changed = self::get_wp_option("rg_form_version") != GFCommon::$version;
         }
 
-        //Import theme specific forms if configured. Will only import forms once per theme.
-        if(defined("GF_THEME_IMPORT_FILE")){
-            $themes = get_option("gf_imported_theme_file");
-            if(!is_array($themes))
-                $themes = array();
+        if($has_version_changed || $force_setup){
 
-            //if current theme has already imported it's forms, don't import again
-            $theme = get_template();
-            if(!isset($themes[$theme])){
-
-                //importing forms
-                GFExport::import_file(get_stylesheet_directory() . "/" . GF_THEME_IMPORT_FILE);
-
-                //adding current theme to the list of imported themes. So that forms are not imported again for it.
-                $themes[$theme] = true;
-                update_option("gf_imported_theme_file", $themes);
-            }
-        }
-
-    }
-
-    public static function setup_site($blog_id=null){
-
-        if(empty($blog_id))
             $blog_id = get_current_blog_id();
 
-        //if a blog id is specified, switch to it
-        if(MULTISITE && !switch_to_blog($blog_id))
-            return;
+            GFCommon::log_debug("Blog {$blog_id} - Beginning of setup. From version " . get_option("rg_form_version") . " to version " . GFCommon::$version);
 
-        GFCommon::log_debug("Blog {$blog_id} - Executing database scripts.");
+            //setting up database structure
+            self::setup_database();
 
+            //auto-setting and auto-validating license key based on value configured via the GF_LICENSE_KEY constant or the gf_license_key variable
+            //auto-populating reCAPTCHA keys base on constant
+            self::maybe_populate_keys();
+
+            //Auto-importing forms based on GF_IMPORT_FILE AND GF_THEME_IMPORT_FILE
+            self::maybe_import_forms();
+
+            update_option("rg_form_version", GFCommon::$version);
+
+            GFCommon::log_debug("Blog {$blog_id} - End of setup.");
+
+        }
+    }
+
+    private static function setup_database()
+    {
         global $wpdb;
 
         $error = "";
-        if(!self::has_database_permission($error)){
+        if (!self::has_database_permission($error)) {
             ?>
-            <div class='error' style="padding:15px;"><?php echo $error?></div>
-            <?php
+            <div class='error' style="padding:15px;"><?php echo $error ?></div>
+        <?php
         }
 
         require_once(ABSPATH . '/wp-admin/includes/upgrade.php');
 
-        if ( ! empty($wpdb->charset) )
+        if (!empty($wpdb->charset))
             $charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
-        if ( ! empty($wpdb->collate) )
+        if (!empty($wpdb->collate))
             $charset_collate .= " COLLATE $wpdb->collate";
 
         //Fixes issue with dbDelta lower-casing table names, which cause problems on case sensitive DB servers.
-        add_filter( 'dbdelta_create_queries', array("RGForms", "dbdelta_fix_case"));
+        add_filter('dbdelta_create_queries', array("RGForms", "dbdelta_fix_case"));
 
         //------ FORM -----------------------------------------------
         $form_table_name = RGFormsModel::get_form_table_name();
@@ -350,6 +332,7 @@ class GFForms {
               title varchar(150) not null,
               date_created datetime not null,
               is_active tinyint(1) not null default 1,
+              is_trash tinyint(1) not null default 0,
               PRIMARY KEY  (id)
             ) $charset_collate;";
         dbDelta($sql);
@@ -410,9 +393,9 @@ class GFForms {
               KEY form_id (form_id),
               KEY status (status)
             ) $charset_collate;";
-       dbDelta($sql);
+        dbDelta($sql);
 
-       //------ LEAD NOTES ------------------------------------------
+        //------ LEAD NOTES ------------------------------------------
         $lead_notes_table_name = RGFormsModel::get_lead_notes_table_name();
         $sql = "CREATE TABLE " . $lead_notes_table_name . " (
               id int(10) unsigned not null auto_increment,
@@ -425,7 +408,7 @@ class GFForms {
               KEY lead_id (lead_id),
               KEY lead_user_key (lead_id,user_id)
             ) $charset_collate;";
-       dbDelta($sql);
+        dbDelta($sql);
 
         //------ LEAD DETAIL -----------------------------------------
         $lead_detail_table_name = RGFormsModel::get_lead_details_table_name();
@@ -434,7 +417,7 @@ class GFForms {
               lead_id int(10) unsigned not null,
               form_id mediumint(8) unsigned not null,
               field_number float not null,
-              value varchar(". GFORMS_MAX_FIELD_LENGTH ."),
+              value varchar(" . GFORMS_MAX_FIELD_LENGTH . "),
               PRIMARY KEY  (id),
               KEY form_id (form_id),
               KEY lead_id (lead_id),
@@ -470,8 +453,6 @@ class GFForms {
             ) $charset_collate;";
         dbDelta($sql);
 
-        GFCommon::log_debug("Blog {$blog_id} - Finished executing database scripts.");
-
         remove_filter('dbdelta_create_queries', array("RGForms", "dbdelta_fix_case"));
 
         //fix form_id value needed to update from version 1.6.11
@@ -479,12 +460,51 @@ class GFForms {
 
         //fix checkbox value. needed for version 1.0 and below but won't hurt for higher versions
         self::fix_checkbox_value();
+    }
 
-        //auto-setting license key based on value configured via the GF_LICENSE_KEY constant or the gf_license_key variable
+    private static function maybe_import_forms()
+    {
+        if (defined("GF_IMPORT_FILE") && !get_option("gf_imported_file")) {
+            require_once(GFCommon::get_base_path() . "/export.php");
+            GFExport::import_file(GF_IMPORT_FILE);
+            update_option("gf_imported_file", true);
+        }
+    }
+
+    private static function maybe_import_theme_forms(){
+
+        //Import theme specific forms if configured. Will only import forms once per theme.
+        if(defined("GF_THEME_IMPORT_FILE")){
+            $themes = get_option("gf_imported_theme_file");
+            if(!is_array($themes))
+                $themes = array();
+
+            //if current theme has already imported it's forms, don't import again
+            $theme = get_template();
+            if(!isset($themes[$theme])){
+
+                require_once(GFCommon::get_base_path() . "/export.php");
+
+                //importing forms
+                GFExport::import_file(get_stylesheet_directory() . "/" . GF_THEME_IMPORT_FILE);
+
+                //adding current theme to the list of imported themes. So that forms are not imported again for it.
+                $themes[$theme] = true;
+                update_option("gf_imported_theme_file", $themes);
+            }
+        }
+
+    }
+
+    private static function maybe_populate_keys(){
+
         global $gf_license_key;
         $license_key = defined("GF_LICENSE_KEY") && empty($gf_license_key) ? GF_LICENSE_KEY : $gf_license_key;
-        if(!empty($license_key))
-            update_option("rg_gforms_key", md5($license_key));
+        if(!empty($license_key)){
+            RGFormsModel::save_key($license_key);
+            GFCommon::cache_remote_message();
+            GFCommon::get_version_info(false);
+        }
 
         //auto-setting recaptcha keys based on value configured via the constant or global variable
         global $gf_recaptcha_public_key, $gf_recaptcha_private_key;
@@ -496,22 +516,11 @@ class GFForms {
         if(!empty($public_key))
             update_option("rg_gforms_captcha_public_key", $public_key);
 
-        //Auto-importing forms based on GF_IMPORT_FILE AND GF_THEME_IMPORT_FILE
-        if(defined("GF_IMPORT_FILE") && !get_option("gf_imported_file")){
-            GFExport::import_file(GF_IMPORT_FILE);
-            update_option("gf_imported_file", true);
-        }
+    }
 
-        //adds empty index.php files to upload folders. only for v1.5.2 and below
-        if(version_compare(get_option("rg_form_version"), "1.6", "<")){
-            self::add_empty_index_files();
-        }
-
-        update_option("rg_form_version", GFCommon::$version);
-
-        //going back to current blog
-        if (MULTISITE)
-            restore_current_blog();
+    public static function get_wp_option($option_name){
+        global $wpdb;
+        return $wpdb->get_var($wpdb->prepare("SELECT option_value FROM {$wpdb->prefix}options WHERE option_name=%s", $option_name));
     }
 
 	//Changes form_id values from default value "0" to the correct value. Neededed when upgrading users from 1.6.11
@@ -574,7 +583,7 @@ class GFForms {
         $wp_required_scripts = array("admin-bar", "common", "jquery-color", "utils");
         $gf_required_scripts = array(
             "common" => array("gf_tooltip_init", "sack"),
-            "gf_edit_forms" => array("backbone", "editor", "gform_forms", "gform_form_admin", "gform_form_editor", "gform_gravityforms", "gform_json", "gform_menu", "gform_placeholder", "jquery-ui-autocomplete", "jquery-ui-core", "jquery-ui-datepicker", "jquery-ui-sortable", "jquery-ui-tabs", "json2", "media-editor", "media-models", "media-upload", "media-views", "plupload", "plupload-flash", "plupload-html4", "plupload-html5", "plupload-silverlight", "quicktags", "rg_currency", "thickbox", "word-count", "wp-plupload", "wpdialogs-popup", "wplink"),
+            "gf_edit_forms" => array("backbone", "editor", "gform_floatmenu", "gform_forms", "gform_form_admin", "gform_form_editor", "gform_gravityforms", "gform_json", "gform_menu", "gform_placeholder", "jquery-ui-autocomplete", "jquery-ui-core", "jquery-ui-datepicker", "jquery-ui-sortable", "jquery-ui-tabs", "json2", "media-editor", "media-models", "media-upload", "media-views", "plupload", "plupload-flash", "plupload-html4", "plupload-html5", "plupload-silverlight", "quicktags", "rg_currency", "thickbox", "word-count", "wp-plupload", "wpdialogs-popup", "wplink"),
             "gf_edit_forms_notification" => array("editor", "word-count", "quicktags", "wpdialogs-popup", "media-upload", "wplink", "backbone", "jquery-ui-sortable", "json2", "media-editor", "media-models", "media-views", "plupload", "plupload-flash", "plupload-html4", "plupload-html5", "plupload-silverlight", "wp-plupload", "gform_placeholder", "gform_json", "jquery-ui-autocomplete"),
             "gf_new_form" => array("thickbox", "jquery-ui-core", "jquery-ui-sortable", "jquery-ui-tabs", "rg_currency", "gform_gravityforms" ),
             "gf_entries" => array("thickbox", "gform_gravityforms", "wp-lists", "gform_json"),
@@ -1629,15 +1638,21 @@ class GFForms {
 
     public static function all_leads_page(){
 
+
+        $view = rgget("view");
+        $lead_id = rgget('lid');
+
+
         //displaying lead detail page if lead id is in the query string
-        if(rgget('lid') || !rgblank(rgget('pos')))
-        {
+        if($view == 'entry' && (rgget('lid') || !rgblank(rgget('pos')))) {
             require_once(GFCommon::get_base_path() . "/entry_detail.php");
             GFEntryDetail::lead_detail_page();
-        }
-        else{
+        } else if ($view == 'entries' || empty($view)){
             require_once(GFCommon::get_base_path() . "/entry_list.php");
             GFEntryList::all_leads_page();
+        } else {
+            $form_id = rgget('id');
+            do_action("gform_entries_view", $view, $form_id, $lead_id);
         }
     }
 
@@ -2217,7 +2232,7 @@ class GFForms {
             case "entries" :
                 if(rgget("page") == "gf_new_form")
                     return "gf_toolbar_disabled";
-                else if(rgget("page") == "gf_entries")
+                else if(rgget("page") == "gf_entries" && rgempty("view", $_GET))
                     return "gf_toolbar_active";
 
             break;

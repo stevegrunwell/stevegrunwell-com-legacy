@@ -617,7 +617,7 @@ abstract class GFFeedAddOn extends GFAddOn {
         // Adding default fields
         $fields[] = array( "value" => "", "label" => "" );
         $fields[] = array( "value" => "date_created" , "label" => __("Entry Date", "gravityforms") );
-        $fields[] = array( "value" => "ip" , "label" => __("User IP", "gravityformsmailchimp") );
+        $fields[] = array( "value" => "ip" , "label" => __("User IP", "gravityforms") );
         $fields[] = array( "value" => "source_url" , "label" => __("Source Url", "gravityforms") );
         $fields[] = array( "value" => "form_title" , "label" => __("Form Title", "gravityforms") );
 
@@ -634,11 +634,11 @@ abstract class GFFeedAddOn extends GFAddOn {
 
                     //If this is an address field, add full name to the list
                     if(RGFormsModel::get_input_type($field) == "address")
-                        $fields[] =  array( 'value' => $field["id"], 'label' => GFCommon::get_label($field) . " (" . __("Full" , "gravityformsmailchimp") . ")" );
+                        $fields[] =  array( 'value' => $field["id"], 'label' => GFCommon::get_label($field) . " (" . __("Full" , "gravityforms") . ")" );
 
                     //If this is a name field, add full name to the list
                     if(RGFormsModel::get_input_type($field) == "name")
-                        $fields[] =  array( 'value' => $field["id"], 'label' => GFCommon::get_label($field) . " (" . __("Full" , "gravityformsmailchimp") . ")" );
+                        $fields[] =  array( 'value' => $field["id"], 'label' => GFCommon::get_label($field) . " (" . __("Full" , "gravityforms") . ")" );
 
                     foreach($field["inputs"] as $input)
                         $fields[] =  array( 'value' => $input["id"], 'label' => GFCommon::get_label($field, $input["id"]) );

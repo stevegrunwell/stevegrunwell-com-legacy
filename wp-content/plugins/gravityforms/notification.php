@@ -1045,7 +1045,8 @@ class GFNotificationTable extends WP_List_Table {
 
             <?php
             if(is_array($actions) && !empty($actions)) {
-                $last_key = array_pop(array_keys($actions));
+                $keys = array_keys($actions);
+                $last_key = array_pop($keys);
                 foreach($actions as $key => $html) {
                     $divider = $key == $last_key ? '' : " | ";
                     ?>

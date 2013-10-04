@@ -44,15 +44,15 @@ class GFAutoUpgrade{
     public function rg_plugin_row() {
 
         if (!$this->_is_gravityforms_supported) {
-            $message = sprintf(__("Gravity Forms " . $this->_min_gravityforms_version . " is required. Activate it now or %spurchase it today!%s", "gravityformsaddon"), "<a href='http://www.gravityforms.com'>", "</a>");
+            $message = sprintf(__("Gravity Forms " . $this->_min_gravityforms_version . " is required. Activate it now or %spurchase it today!%s", "gravityforms"), "<a href='http://www.gravityforms.com'>", "</a>");
             GFAddOn::display_plugin_message($message, true);
         } else {
             $version_info = $this->get_version_info($this->_slug, $this->get_key(), $this->_version);
 
             if (!$version_info["is_valid_key"]) {
                 $title       = $this->_title;
-                $new_version = version_compare($this->_version, $version_info["version"], '<') ? __("There is a new version of {$title} available.", 'gravityformsaddon') . " <a class='thickbox' title='{$title}' href='plugin-install.php?tab=plugin-information&plugin=" . $this->_slug . "&TB_iframe=true&width=640&height=808'>" . sprintf(__('View version %s Details', 'gravityformsaddon'), $version_info["version"]) . '</a>. ' : '';
-                $message     = $new_version . sprintf(__('%sRegister%s your copy of Gravity Forms to receive access to automatic upgrades and support. Need a license key? %sPurchase one now%s.', 'gravityformscontacts'), '<a href="admin.php?page=gf_settings">', '</a>', '<a href="http://www.gravityforms.com">', '</a>') . '</div></td>';
+                $new_version = version_compare($this->_version, $version_info["version"], '<') ? __("There is a new version of {$title} available.", 'gravityforms') . " <a class='thickbox' title='{$title}' href='plugin-install.php?tab=plugin-information&plugin=" . $this->_slug . "&TB_iframe=true&width=640&height=808'>" . sprintf(__('View version %s Details', 'gravityforms'), $version_info["version"]) . '</a>. ' : '';
+                $message     = $new_version . sprintf(__('%sRegister%s your copy of Gravity Forms to receive access to automatic upgrades and support. Need a license key? %sPurchase one now%s.', 'gravityforms'), '<a href="admin.php?page=gf_settings">', '</a>', '<a href="http://www.gravityforms.com">', '</a>') . '</div></td>';
                 GFAddOn::display_plugin_message($message);
             }
         }
@@ -156,7 +156,7 @@ class GFAutoUpgrade{
         $raw_response = wp_remote_request(GRAVITY_MANAGER_URL . "/changelog.php?" . $this->get_remote_request_params($this->_slug, $key, $this->_version), $options);
 
         if ( is_wp_error( $raw_response ) || 200 != $raw_response['response']['code']){
-            $page_text = sprintf(__("Oops!! Something went wrong.%sPlease try again or %scontact us%s.", 'gravityformsaddon'), "<br/>", "<a href='http://www.gravityforms.com'>", "</a>");
+            $page_text = sprintf(__("Oops!! Something went wrong.%sPlease try again or %scontact us%s.", 'gravityforms'), "<br/>", "<a href='http://www.gravityforms.com'>", "</a>");
         }
         else{
             $page_text = $raw_response['body'];

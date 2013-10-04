@@ -1,4 +1,51 @@
 -------------------------------------------------------------------------------------------------------------------
+Version 1.7.10
+    - Added Cayman Islands to country list
+    - Added new Javascript hook (gform_post_load_field_settings)
+	- Updated the button text "Cancel" on the Bulk Add / Predefined Choices so it may be translated into other languages
+	- Updated GFFormsModel::get_ip() function to check for $_SERVER['HTTP_CLIENT_IP'] first
+    - Updated {ip} merge tag to use GFFormsModel::get_ip() function for consistency
+	- Updated code to use functions mb_substr and mb_strlen to truncate large text values before inserting them in the DB to accommodate for Chinese characters and other multi-byte characters
+	- Updated domain in add-on include files to use gravityforms for translations
+	- Updated the location where the load_plugin_textdomain function is loaded so translations by third-party apps are loaded
+    - Updated min required WP version to 3.4 (necessitated by use of wp_is_mobile() function)
+	- Fixed notice thrown in multi-site logging for $is_setup_completed variable
+	- Fixed notice thrown in multi-site install
+    - Fixed issue with calculations where formula choked when calculating single-input products when currency number format was 'decimal_comma'
+    - Fixed issue with merge tags entered in form fields being replaced when sending notifications
+    - Fixed issue where inactive notifications were getting sent
+    - Fixed notice message
+    - Fixed issue with merge tag list and column customizer where some credit card inputs were available as an option when they should not since they aren't stored for security reasons (i.e. cardholder name and expiration date).
+    - Fixed issue with auto import forms during an upgrade
+    - Fixed issues with setting up the database on multi-site installs
+	- Fixed issue with form title not being escaped correctly on the Form Settings page
+	- Fixed issue where form admin fields menu doesn't remain on screen when scrolling and in no conflict mode
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.7.9
+	- Fixed issue with legacy notifications causing emails to be sent using field id instead of email address
+	- Fixed issue where zero amount totals were not being saved to carry over in Total merge tags
+	- Fixed issues between validation and the script to prevent duplicate submissions for AJAX forms.
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.7.8
+    - Added gform_pre_enqueue_scripts hook so that scripts can be added first if a need exists. This was added in order to resolve conflicts caused by new Picatcha's JS.
+    - Added logging statements
+    - Fixed bad markup with the credit card field
+    - Fixed issues with switched parameters on get_parameter_value() call causing issues with pre-populating certain field types.
+    - Fixed conflict between HTML5 validation and the script to prevent duplicate submissions
+    - Fixed issue with notification processing causing form to display "blank" in the admin under certain conditions.
+    - Updated tooltips to optimize performance when using WPML
+    - Updated 'gform_is_value_match' filter to optionally pass rule object being validated
+    - Updated the results page to display as a view of the gf_entries page so the gravityforms_view_entries capability is required instead of gravityforms_edit_forms (in addition to the gravityforms_{add-on}_results capability)
+	- Fixed issue with entry list page where more entries were being used than the ones selected when applying actions
+    - Fixed issue with multisite upgrades preventing tables from being properly updated.
+    - Fixed conflict on Add-On page preventing add-ons from being installed.
+    - Fixed a PHP notice on the Entry list for imported forms
+    - Fixed issue with conditional logic conflict with calculating field
+    - Fixed issue with user defined product field not formatting correctly
+
+-------------------------------------------------------------------------------------------------------------------
 Version 1.7.7
 
     - Added support for touchscreen devices

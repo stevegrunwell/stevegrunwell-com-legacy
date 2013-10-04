@@ -1051,6 +1051,10 @@ var gfMergeTagsObj = function(form) {
 
             for(i in field.inputs) {
                 var input = field.inputs[i];
+
+                if(inputType == "creditcard" && jQuery.inArray(input.id,[parseFloat(field.id + ".2"), parseFloat(field.id + ".3"), parseFloat(field.id + ".5")]) > -1)
+                    continue;
+
                 label = GetLabel(field, input.id).replace("'", "\\'");
                 value = "{" + label + ":" + input.id + tagArgs + "}";
                 mergeTags.push( { tag: value, label: label } );

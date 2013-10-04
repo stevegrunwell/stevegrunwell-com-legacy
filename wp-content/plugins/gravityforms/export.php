@@ -678,7 +678,7 @@ class GFExport{
         return $form;
     }
 
-    private function cleanup(&$forms){
+    private static function cleanup(&$forms){
         unset($forms["version"]);
 
         //adding checkboxes "inputs" property based on "choices". (they were removed from the export

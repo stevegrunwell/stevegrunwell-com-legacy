@@ -167,7 +167,7 @@ class GFFormList{
         </script>
 
         <style type="text/css">
-        body #TB_window { margin-top: -145px !important; }
+       body div#TB_window[style] { width: 405px !important; height:340px !important; margin-left: -202px !important; }
         body #TB_ajaxContent { height: 290px !important; overflow: hidden; }
         .gf_new_form_modal_container { padding: 30px; }
         .gf_new_form_modal_container .setting-row { margin: 0 0 10px; }
@@ -177,7 +177,7 @@ class GFFormList{
         .gf_new_form_modal_container .setting-row textarea { height: 110px; }
         .gf_new_form_modal_container .submit-row { margin-top: 18px; }
         .gf_new_form_modal_container #gf_new_form_error_message { margin: 0 0 18px 5px !important; color: #BC0B0B; }
-        .gf_new_form_modal_container img.gfspinner{ position: relative; top: 5px; left: 5px; }
+        .gf_new_form_modal_container img.gfspinner { position: relative; top: 5px; left: 5px; }
         </style>
 
         <div id="gf_new_form_modal" style="display:none;">

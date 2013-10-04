@@ -319,7 +319,7 @@ class GFFormsModel {
 
     private static function load_notifications_to_legacy($form){
         if(!is_array(rgar($form, "notifications")))
-            return;
+            return $form;
 
         foreach($form["notifications"] as $notification){
             if(!in_array(rgar($notification,"type"), array("user", "admin")))
@@ -988,12 +988,20 @@ class GFFormsModel {
     }
 
     public static function get_ip(){
-        $ip = rgget("HTTP_X_FORWARDED_FOR", $_SERVER);
-        if (!$ip)
-            $ip = rgget("REMOTE_ADDR", $_SERVER);
+        
+        $ip = '';
+        $headers = array( 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR' );
+        
+        foreach( $headers as $header ) {
+            $ip = rgar( $_SERVER, $header );
+            if( $ip )
+                break;
+        }
 
-        $ip_array = explode(",", $ip); //HTTP_X_FORWARDED_FOR can return a comma separated list of IPs. Using the first one.
-        return $ip_array[0];
+        // HTTP_X_FORWARDED_FOR can return a comma separated list of IPs; using the first one
+        $ips = explode( ',', $ip );
+        
+        return $ips[0];
     }
 
     public static function save_lead($form, &$lead){
@@ -1328,7 +1336,7 @@ class GFFormsModel {
         return null;
     }
 
-    public static function is_value_match($field_value, $target_value, $operation="is", $source_field=null){
+    public static function is_value_match( $field_value, $target_value, $operation="is", $source_field = null, $rule = null ){
 
         $is_match = false;
 
@@ -1336,7 +1344,7 @@ class GFFormsModel {
             $field_value = GFCommon::prepare_post_category_value($field_value, $source_field, "conditional_logic");
 
         if (!empty($field_value) && !is_array($field_value) && $source_field["type"] == "multiselect")
-			$field_value = explode(",", $field_value); // convert the comma-delimited string into an array
+            $field_value = explode(",", $field_value); // convert the comma-delimited string into an array
 
         if(is_array($field_value)){
             $field_value = array_values($field_value); //returning array values, ignoring keys if array is associative
@@ -1353,7 +1361,7 @@ class GFFormsModel {
             $is_match = true;
         }
 
-        return apply_filters( 'gform_is_value_match', $is_match, $field_value, $target_value, $operation, $source_field );
+        return apply_filters( 'gform_is_value_match', $is_match, $field_value, $target_value, $operation, $source_field, $rule );
     }
 
     private static function try_convert_float($text){
@@ -2387,14 +2395,14 @@ class GFFormsModel {
         $value = self::prepare_value($form, $field, $value, $input_name, rgar($lead, "id"));
 
         //ignore fields that have not changed
-        if($lead != null && $value == rgget($input_id, $lead)){
+        if($lead != null && $value === rgget($input_id, $lead)){
             return;
 		}
 
-        if(!empty($value) || $value === "0"){
+        if(!rgblank($value)){
 
             $value = apply_filters("gform_save_field_value", $value, $lead, $field, $form);
-            $truncated_value = substr($value, 0, GFORMS_MAX_FIELD_LENGTH);
+            $truncated_value = mb_substr($value, 0, GFORMS_MAX_FIELD_LENGTH);
 
             $lead_detail_id = self::get_lead_detail_id($current_fields, $input_id);
             if($lead_detail_id > 0){
@@ -2406,7 +2414,7 @@ class GFFormsModel {
                 $has_long_field = intval($wpdb->get_var($sql)) > 0;
 
                 //delete long field if value has been shortened
-                if($has_long_field && strlen($value) <= GFORMS_MAX_FIELD_LENGTH){
+                if($has_long_field && mb_strlen($value) <= GFORMS_MAX_FIELD_LENGTH){
                     $sql = $wpdb->prepare("DELETE FROM $lead_detail_long_table WHERE lead_detail_id=%d", $lead_detail_id);
                     $wpdb->query($sql);
                 }
@@ -2415,7 +2423,7 @@ class GFFormsModel {
                     $wpdb->update($lead_detail_long_table, array("value" => $value), array("lead_detail_id" => $lead_detail_id), array("%s"), array("%d"));
                 }
                 //insert long field (value has been increased)
-                else if(strlen($value) > GFORMS_MAX_FIELD_LENGTH){
+                else if(mb_strlen($value) > GFORMS_MAX_FIELD_LENGTH){
                     $wpdb->insert($lead_detail_long_table, array("lead_detail_id" => $lead_detail_id, "value" => $value), array("%d", "%s"));
                 }
 
@@ -2423,7 +2431,7 @@ class GFFormsModel {
             else{
                 $wpdb->insert($lead_detail_table, array("lead_id" => $lead["id"], "form_id" => $form["id"], "field_number" => $input_id, "value" => $truncated_value), array("%d", "%d", "%F", "%s"));
 
-                if(strlen($value) > GFORMS_MAX_FIELD_LENGTH){
+                if(mb_strlen($value) > GFORMS_MAX_FIELD_LENGTH){
 
                     //read newly created lead detal id
                     $lead_detail_id = $wpdb->insert_id;
@@ -2818,6 +2826,25 @@ class GFFormsModel {
         return $leads;
     }
 
+    public static function get_lead_count($form_id, $search, $star=null, $read=null, $start_date=null, $end_date=null, $status=null, $payment_status = null){
+        global $wpdb;
+
+        if(!is_numeric($form_id))
+            return "";
+
+        $detail_table_name = self::get_lead_details_table_name();
+        $lead_table_name = self::get_lead_table_name();
+
+        $where = self::get_leads_where_sql(compact('form_id', 'search', 'status', 'star', 'read', 'start_date', 'end_date', 'payment_status', 'is_default'));
+
+        $sql = "SELECT count(distinct l.id)
+                FROM $lead_table_name l
+                INNER JOIN $detail_table_name ld ON l.id = ld.lead_id
+                $where";
+
+        return $wpdb->get_var($sql);
+    }
+
     public static function get_leads_count($form_id) { }
 
     private static function sort_by_custom_field_query($form_id, $sort_field_number=0, $sort_direction='DESC', $search='', $offset=0, $page_size=30, $star=null, $read=null, $is_numeric_sort = false, $status='active', $payment_status = false){
@@ -3051,25 +3078,6 @@ class GFFormsModel {
             $key = trim($key);
             update_option("rg_gforms_key", md5($key));
         }
-    }
-
-    public static function get_lead_count($form_id, $search, $star=null, $read=null, $start_date=null, $end_date=null, $status=null, $payment_status = null){
-        global $wpdb;
-
-        if(!is_numeric($form_id))
-            return "";
-
-        $detail_table_name = self::get_lead_details_table_name();
-        $lead_table_name = self::get_lead_table_name();
-
-        $where = self::get_leads_where_sql(compact('form_id', 'search', 'status', 'star', 'read', 'start_date', 'end_date', 'payment_status', 'is_default'));
-
-        $sql = "SELECT count(distinct l.id)
-                FROM $lead_table_name l
-                INNER JOIN $detail_table_name ld ON l.id = ld.lead_id
-                $where";
-
-        return $wpdb->get_var($sql);
     }
 
     public static function get_lead_ids($form_id, $search, $star=null, $read=null, $start_date=null, $end_date=null, $status=null, $payment_status = null){
