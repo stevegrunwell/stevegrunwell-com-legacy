@@ -1089,8 +1089,7 @@ class GFFormSettings {
 
         //page header loaded in below function because admin messages were not yet available to the header to display
         GFNotification::notification_page();
-
-        self::page_footer();
+        
     }
 
     public static function page_header($title = ''){

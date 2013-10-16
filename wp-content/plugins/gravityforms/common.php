@@ -1,7 +1,7 @@
 <?php
 class GFCommon{
 
-    public static $version = "1.7.10";
+    public static $version = "1.7.11";
     public static $tab_index = 1;
     public static $errors = array();
 
@@ -801,6 +801,7 @@ class GFCommon{
 
                     case "fileupload" :
                         $value = str_replace(" ", "%20", $value);
+
                     break;
 
                     case "post_image" :
@@ -5266,6 +5267,22 @@ class GFCommon{
         if( self::requires_gf_vars() ){
             echo '<script type="text/javascript">' . self::gf_vars(false) . '</script>';
         }
+    }
+
+    public static function safe_strlen($string){
+
+        if(function_exists("mb_strlen"))
+            return mb_strlen($string);
+        else
+            return strlen($string);
+
+    }
+
+    public static function safe_substr($string, $start, $length = null){
+        if(function_exists("mb_substr"))
+            return mb_substr($string, $start, $length);
+        else
+            return substr($string, $start, $length);
     }
 
 }

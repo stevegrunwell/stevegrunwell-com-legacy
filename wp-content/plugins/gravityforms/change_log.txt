@@ -1,4 +1,9 @@
 -------------------------------------------------------------------------------------------------------------------
+Version 1.7.11
+    - Fixed error on installations that don't support the mb_strlen() and mb_substr() functions
+    - Fixed issue on form notifications page where WP footer was overlapping notifications list
+
+-------------------------------------------------------------------------------------------------------------------
 Version 1.7.10
     - Added Cayman Islands to country list
     - Added new Javascript hook (gform_post_load_field_settings)
