@@ -2,8 +2,8 @@
 Contributors: humanmade, willmot, joehoyle, danielbachhuber, mattheu, pauldewouters, cuvelier, tcrsavage
 Tags: wpremote, remote administration, multiple wordpress
 Requires at least: 3.0
-Tested up to: 3.6.1
-Stable tag: 2.6.4
+Tested up to: 3.7
+Stable tag: 2.6.7
 
 WP Remote is a free web app that enables you to easily manage all of your WordPress powered sites from one place.
 
@@ -29,7 +29,28 @@ You can email us at support@wpremote.com for support.
 2. Activate the plugin.
 3. Sign up for an account at wpremote.com and add your site.
 
+== Screenshots ==
+
+1. The WP Remote dashboard at wpremote.com
+2. See all of the plugins and themes needing update across all Sites in one view.
+3. Download nightly Automatic Backups (Premium feature).
+
 == Changelog ==
+
+#### 2.6.7 (27 October 2013)
+
+* API improvement: specify database- and file-only backups
+* Bug fix: Make the backup download URL accessible on Apache servers again. The protective .htaccess was being generated with the wrong key.
+
+#### 2.6.6 (23 October 2013)
+
+* Bug fix: Due to some files moving around, WP Remote wasn't able to properly update the current version of the plugin.
+
+#### 2.6.5 (23 October 2013)
+
+* Incorporated a more reliable plugin re-activation process after update.
+* Bug fix: Properly delete backup folders for failed backups. Users may want to look inside of `/wp-content/` for any folders named as `*-backups`. If they were created by WP Remote, they can be safely deleted.
+* Bug fix: Log the proper fields in history when a new user is created.
 
 #### 2.6.4 (2 October 2013)
 
@@ -135,3 +156,7 @@ You can email us at support@wpremote.com for support.
 * Start keeping a changelog of plugin changes
 * Pass home_url, site_url and admin_url to WP Remote instead of guessing at them, fixes issues with the urls being wrong for non-standard WordPress installs
 * Better error message when you have the wrong API key entered.
+
+## Contribution guidelines ##
+
+see https://github.com/humanmade/WP-Remote-WordPress-Plugin/blob/master/CONTRIBUTING.md
