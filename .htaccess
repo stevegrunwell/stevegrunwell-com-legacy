@@ -7,7 +7,7 @@ RewriteRule ^\.git(/.*)?$  https://github.com/stevegrunwell/stevegrunwell-com [L
   RewriteEngine on
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteRule wp-content/uploads/(.*) http://{PRODUCTION_URL}/wp-content/uploads/$1 [NC,L]
+  RewriteRule wp-content/uploads/(.*) http://stevegrunwell.com/wp-content/uploads/$1 [NC,L]
 </IfModule>
 
 # BEGIN WordPress
