@@ -4,7 +4,7 @@ Plugin Name: WP Smush.it
 Plugin URI: http://wordpress.org/extend/plugins/wp-smushit/
 Description: Reduce image file sizes and improve performance using the <a href="http://smush.it/">Smush.it</a> API within WordPress.
 Author: WPMU DEV
-Version: 1.6.5.3
+Version: 1.6.5.4
 Author URI: http://premium.wpmudev.org/
 Textdomain: wp_smushit
 */
@@ -39,14 +39,11 @@ if ( !class_exists( 'WpSmushit' ) ) {
 
 class WpSmushit {
 
-	var $version = "1.6.5.2";
+	var $version = "1.6.5.4";
 
 	/**
      * Constructor
      */
-	function WpSmushit( ) {
-		$this->__construct( );
-	}
 	function __construct( ) {
 
 		/**
@@ -67,6 +64,7 @@ class WpSmushit {
 
 		define( 'WP_SMUSHIT_AUTO', intval( get_option( 'wp_smushit_smushit_auto', 0) ) );
 		define( 'WP_SMUSHIT_TIMEOUT', intval( get_option( 'wp_smushit_smushit_timeout', 60) ) );
+		define( 'WP_SMUSHIT_ENFORCE_SAME_URL', get_option( 'wp_smushit_smushit_enforce_same_url', 'on') );
 
 		if ((!isset($_GET['action'])) || ($_GET['action'] != "wp_smushit_manual")) {
 			define( 'WP_SMUSHIT_DEBUG', get_option( 'wp_smushit_smushit_debug', '') );
@@ -101,6 +99,10 @@ class WpSmushit {
 		add_action( 'admin_init', array( &$this, 'register_settings' ) );
 	}
 	
+	function WpSmushit( ) {
+		$this->__construct( );
+	}
+	
 	/**
 	 * Plugin setting functions
 	 */
@@ -113,11 +115,15 @@ class WpSmushit {
 		add_settings_field( 'wp_smushit_smushit_timeout', __( 'How many seconds should we wait for a response from Smush.it?', WP_SMUSHIT_DOMAIN ), 
 			array( &$this, 'render_timeout_opts' ), 'media', 'wp_smushit_settings' );
 
+		add_settings_field( 'wp_smushit_smushit_enforce_same_url', __( 'Enforce image URL is same as Home', WP_SMUSHIT_DOMAIN ), 
+			array( &$this, 'render_enforce_same_url_opts' ), 'media', 'wp_smushit_settings' );
+
 		add_settings_field( 'wp_smushit_smushit_debug', __( 'Enable debug processing', WP_SMUSHIT_DOMAIN ), 
 			array( &$this, 'render_debug_opts' ), 'media', 'wp_smushit_settings' );
 
 		register_setting( 'media', 'wp_smushit_smushit_auto' );
 		register_setting( 'media', 'wp_smushit_smushit_timeout' );
+		register_setting( 'media', 'wp_smushit_smushit_enforce_same_url' );
 		register_setting( 'media', 'wp_smushit_smushit_debug' );
 	}
 
@@ -144,9 +150,16 @@ class WpSmushit {
 		printf( "<input type='text' name='%1\$s' id='%1\$s' value='%2\%d'>",  esc_attr( $key ), intval( get_option( $key, 60 ) ) );
 	}
 
+	function render_enforce_same_url_opts(  ) {
+		$key = 'wp_smushit_smushit_enforce_same_url';
+		$val = get_option( $key, WP_SMUSHIT_ENFORCE_SAME_URL );
+		?><input type="checkbox" name="<?php echo $key ?>" <?php if ($val == 'on') { echo ' checked="checked" '; } ?>/> <?php 
+		echo '<strong>'. get_option('home'). '</strong><br />'.__( 'By default the plugin will enforce that the image URL is the same domain as the home. If you are using a sub-domain pointed to this same host or an external Content Delivery Network (CDN) you want to unset this option.', WP_SMUSHIT_DOMAIN );
+	}
+
 	function render_debug_opts(  ) {
 		$key = 'wp_smushit_smushit_debug';
-		$val = get_option( $key );
+		$val = get_option( $key, WP_SMUSHIT_DEBUG );
 		?><input type="checkbox" name="<?php echo $key ?>" <?php if ($val) { echo ' checked="checked" '; } ?>/> <?php _e( 'If you are having trouble with the plugin enable this option can reveal some information about your system needed for support.', WP_SMUSHIT_DOMAIN );
 	}
 
@@ -368,16 +381,22 @@ class WpSmushit {
 */		
 		// The Yahoo! Smush.it service does not working with https images. 
 		$file_url = str_replace('https://', 'http://', $file_url);
-		$home_url = str_replace('https://', 'http://', get_option('home'));
-		if (WP_SMUSHIT_DEBUG) {		
-			echo "DEBUG: file_url [". $file_url ."] home_url [". $home_url ."]<br />";		
-		}
 
-		if (stripos($file_url, $home_url) !== 0) {
-			return sprintf( __( "ERROR: <span class='code'>%s</span> must be within the website home URL (<span class='code'>%s</span>)", WP_SMUSHIT_DOMAIN ), 
+// File URL check disabled 2013-10-11 - The assumption here is the URL may not be the local site URL. The image may be served via a sub-domain pointed
+// to this same host or may be an external CDN. In either case the image would be the same. So we let the Yahoo! Smush.it service use the image URL with 
+// the assumption the remote image and the local file are the same. Also with the assumption that the CDN service will somehow be updated when the image
+// is changed. 
+		if ((defined('WP_SMUSHIT_ENFORCE_SAME_URL')) && (WP_SMUSHIT_ENFORCE_SAME_URL == 'on')) {
+			$home_url = str_replace('https://', 'http://', get_option('home'));
+			if (WP_SMUSHIT_DEBUG) {		
+				echo "DEBUG: file_url [". $file_url ."] home_url [". $home_url ."]<br />";		
+			}
+
+			if (stripos($file_url, $home_url) !== 0) {
+				return sprintf( __( "ERROR: <span class='code'>%s</span> must be within the website home URL (<span class='code'>%s</span>)", WP_SMUSHIT_DOMAIN ), 
 				htmlentities( $file_url ), $home_url);
+			}
 		}
-
 		//echo "calling _post(". $file_url .")<br />";
 		$data = $this->_post( $file_url );
 		

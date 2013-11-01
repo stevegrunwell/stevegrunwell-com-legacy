@@ -6,8 +6,8 @@ Author URI: http://premium.wpmudev.org
 Contributors: WPMUDEV, alexdunae
 Tags: images, image, attachments, attachment, Smush.it
 Requires at least: 3.5
-Tested up to: 3.6
-Stable tag: 1.6.5.3
+Tested up to: 3.6.1
+Stable tag: 1.6.5.4
 License: GPL v2 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
 Reduce image file sizes and improve performance using the <a href="http://smush.it/">Smush.it</a> API within WordPress.
@@ -71,6 +71,10 @@ This will give us a good foundation to start adding some new features!
 
 
 == Changelog ==
+
+= 1.6.5.4 =
+* Added settings option to disable check for home url.
+* for PHP 5.4.x reordered class WpSmushit contructors to prevent Strict Standards Exception
 
 = 1.6.5.3 =
 * Removed check for file within local site home path. 
