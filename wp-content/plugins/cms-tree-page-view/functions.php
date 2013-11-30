@@ -441,7 +441,6 @@ function cmstpv_filter_views_edit_postsoverview($filter_var) {
 	if view-switch exists: add item to it
 	if view-switch not exists: add it + item to it
 
-	http://playground.ep/wordpress/wp-admin/images/list.png
 	*/
 	$mode = "tree";
 	$class = isset($_GET["mode"]) && $_GET["mode"] == $mode ? " class='current' " : "";
@@ -1672,6 +1671,7 @@ function cms_tpv_move_page() {
 	#wp_update_post(array("ID" => $post_ref_node));
 	#clean_page_cache($node_id); clean_page_cache($post_ref_node); // hmpf.. db cache reloaded don't care
 	
+	do_action("cms_tree_page_view_node_move_finish");
 	
 	exit;
 }
