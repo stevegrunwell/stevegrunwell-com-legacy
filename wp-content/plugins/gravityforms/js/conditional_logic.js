@@ -236,6 +236,29 @@ function gf_do_action(action, targetId, useAnimation, defaultValues, isInit, cal
 }
 
 function gf_reset_to_default(targetId, defaultValue){
+
+    var dateFields = jQuery(targetId).find('.gfield_date_month input[type="text"], .gfield_date_day input[type="text"], .gfield_date_year input[type="text"], .gfield_date_dropdown_month select, .gfield_date_dropdown_day select, .gfield_date_dropdown_year select');
+    var dateIndex = 0;
+    if(dateFields.length > 0){
+        dateFields.each(function(){
+            if(defaultValue){
+                val = defaultValue.split(/[\.\/-]+/)[dateIndex];
+                dateIndex++;
+            }
+            else{
+                val = "";
+            }
+
+            if(jQuery(this).prop("tagName") == "SELECT")
+                val = parseInt(val);
+
+            jQuery(this).val(val).trigger("change");
+
+        });
+
+        return;
+    }
+
     //cascading down conditional logic to children to suppport nested conditions
     //text fields and drop downs
     var target = jQuery(targetId).find('select, input[type="text"], input[type="number"], textarea');

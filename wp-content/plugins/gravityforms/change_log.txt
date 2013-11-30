@@ -1,4 +1,17 @@
 -------------------------------------------------------------------------------------------------------------------
+Version 1.7.12
+    - Fixed non localized text "Insert Form" (displays when adding a form to a page/post)
+    - Fixed issue with file upload fields when upload files without an extension
+    - Fixed issue when truncating text with multi-byte characters
+    - Fixed issue when loading JSON serialized forms (i.e. forms created with v. 1.8)
+	- Fixed notice thrown in function selection_display when value is not an array
+	- Fixed notice thrown when displaying form description and there isn't one
+	- Fixed notice thrown when setting url for redirect when none specified
+    - Fixed issue with form import not importing checkbox item IDs correctly (by skipping the multiples of 10)
+    - Fixed issue with Form Settings & Notification subviews overflow past bottom of wpwrap causing adminmenu to appear shorter on scroll
+    - Fixed issue with date field not resetting to default value correctly when hidden by conditional logic
+
+-------------------------------------------------------------------------------------------------------------------
 Version 1.7.11
     - Fixed error on installations that don't support the mb_strlen() and mb_substr() functions
     - Fixed issue on form notifications page where WP footer was overlapping notifications list

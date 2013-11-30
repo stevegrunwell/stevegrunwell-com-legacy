@@ -240,6 +240,18 @@ class GFFormsModel {
         return $results[0];
     }
 
+    public static function unserialize($string){
+
+        if(is_serialized($string)){
+            $obj = @unserialize($string);
+        }
+        else{
+            $obj = json_decode($string, true);
+        }
+
+        return $obj;
+    }
+
     public static function get_form_meta($form_id){
         global $wpdb;
 
@@ -252,12 +264,12 @@ class GFFormsModel {
         $form_row = $wpdb->get_row($wpdb->prepare("SELECT display_meta, notifications FROM {$table_name} WHERE form_id=%d", $form_id), ARRAY_A);
 
         //loading main form object
-        $form = maybe_unserialize($form_row["display_meta"]);
+        $form = self::unserialize($form_row["display_meta"]);
         if(!$form)
             return null;
 
         //loading notifications
-        $form["notifications"] = maybe_unserialize($form_row["notifications"]);
+        $form["notifications"] = self::unserialize($form_row["notifications"]);
 
         //copying some form variables down to fields for easier access
         $page_number = 1;
@@ -307,9 +319,9 @@ class GFFormsModel {
                                         WHERE id in({$ids})", ARRAY_A);
 
         foreach ($results as &$result) {
-            $form = maybe_unserialize($result["display_meta"]);
-            $form['confirmations'] = maybe_unserialize($result["confirmations"]);
-            $form['notifications'] = maybe_unserialize($result["notifications"]);
+            $form = self::unserialize($result["display_meta"]);
+            $form['confirmations'] = self::unserialize($result["confirmations"]);
+            $form['notifications'] = self::unserialize($result["notifications"]);
             $result = $form;
         }
 
@@ -2575,6 +2587,9 @@ class GFFormsModel {
             $counter++;
         }
 
+        //Remove "." from the end if file does not have a file extension
+        $target_path = trim($target_path, '.');
+        
         //creating url
         $target_url = str_replace($target_root, $target_root_url, $target_path);
 
@@ -3355,7 +3370,7 @@ class GFFormsModel {
         $results = $wpdb->get_results($sql, ARRAY_A);
         $confirmations = rgars($results, '0/confirmations');
 
-        self::$_confirmations[$form_id] = $confirmations ? maybe_unserialize($confirmations) : array();
+        self::$_confirmations[$form_id] = $confirmations ? self::unserialize($confirmations) : array();
 
         return self::$_confirmations[$form_id];
     }

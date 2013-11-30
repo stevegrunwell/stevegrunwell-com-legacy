@@ -696,13 +696,24 @@ class GFExport{
                     if($input_type == "checkbox" && !isset($field["inputs"]))
                         $field["inputs"] = array();
 
+                    $adjust_by = 0;
                     for($i=1, $count = sizeof($field["choices"]); $i<=$count; $i++){
+
                         if(!RGForms::get("enableChoiceValue", $field))
                             $field["choices"][$i-1]["value"] = $field["choices"][$i-1]["text"];
 
-                        if($input_type == "checkbox")
-                            $field["inputs"][] = array("id" => $field["id"] . "." . $i, "label" => $field["choices"][$i-1]["text"]);
+                        if($input_type == "checkbox"){
+                            if( ( ($i + $adjust_by) % 10) == 0)
+                                $adjust_by++;
+
+                            $id = $i + $adjust_by;
+
+                            $field["inputs"][] = array("id" => $field["id"] . "." . $id, "label" => $field["choices"][$i-1]["text"]);
+
+                        }
                     }
+
+
 
                 }
             }

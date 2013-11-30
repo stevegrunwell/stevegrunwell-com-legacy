@@ -1738,6 +1738,24 @@ class GFFormDisplay{
                 }
             }
             else if(!empty($field_val)){
+
+                if(GFFormsModel::get_input_type($field) == "date"){
+                    //format date
+                    $format = empty($field["dateFormat"]) ? "mdy" : esc_attr($field["dateFormat"]);
+                    $date_info = GFcommon::parse_date($field_val, $format);
+                    switch($format){
+                        case "mdy":
+                            $field_val = $date_info["month"] . "/" . $date_info["day"] . "/" . $date_info["year"];
+                            break;
+                        case "dmy":
+                            $field_val = $date_info["day"] . "/" . $date_info["month"] . "/" . $date_info["year"];
+                            break;
+                        case "ymd":
+                            $field_val = $date_info["year"] . "/" . $date_info["month"] . "/" . $date_info["day"];
+                            break;
+                    }
+                }
+
                 $default_values[$field["id"]] = $field_val;
             }
         }

@@ -320,7 +320,7 @@ class GFFormSettings {
                 '
             </th>
             <td>
-                <textarea id="form_description_input" name="form_description_input" class="fieldwidth-3 fieldheight-2">' . esc_html($form['description']) . '</textarea>
+                <textarea id="form_description_input" name="form_description_input" class="fieldwidth-3 fieldheight-2">' . esc_html(rgar($form, 'description')) . '</textarea>
             </td>
         </tr>';
 
@@ -1420,7 +1420,7 @@ class GFConfirmationTable extends WP_List_Table {
         case 'redirect':
             $url_pieces = parse_url($item['url']);
             $url_connector = rgar($url_pieces, 'query') ? '&' : '?';
-            $url = $item['queryString'] ? "{$item['url']}{$url_connector}{$item['queryString']}" : $item['url'];
+            $url = rgar($item, 'queryString') ? "{$item['url']}{$url_connector}{$item['queryString']}" : $item['url'];
             return '<a class="limit-text" title="' . $url . '">' . $url . '</a>';
         }
 

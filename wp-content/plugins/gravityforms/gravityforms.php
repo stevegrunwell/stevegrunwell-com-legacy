@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms
 Plugin URI: http://www.gravityforms.com
 Description: Easily create web forms and manage form entries within the WordPress admin.
-Version: 1.7.11
+Version: 1.7.12
 Author: rocketgenius
 Author URI: http://www.rocketgenius.com
 
@@ -53,6 +53,7 @@ $gf_recaptcha_public_key = "";
 //define('GF_RECAPTCHA_PRIVATE_KEY','YOUR_PRIVATE_KEY_GOES_HERE');
 //define('GF_RECAPTCHA_PUBLIC_KEY','YOUR_PUBLIC_KEY_GOES_HERE');
 //------------------------------------------------------------------------------------------------------------------
+
 
 if(!defined("RG_CURRENT_PAGE"))
     define("RG_CURRENT_PAGE", basename($_SERVER['PHP_SELF']));
@@ -1090,7 +1091,7 @@ class GFForms {
                         <input type="checkbox" id="gform_ajax" /> <label for="gform_ajax"><?php _e("Enable AJAX", "gravityforms"); ?></label>
                     </div>
                     <div style="padding:15px;">
-                        <input type="button" class="button-primary" value="Insert Form" onclick="InsertForm();"/>&nbsp;&nbsp;&nbsp;
+                        <input type="button" class="button-primary" value="<?php _e("Insert Form", "gravityforms"); ?>" onclick="InsertForm();"/>&nbsp;&nbsp;&nbsp;
                     <a class="button" style="color:#bbb;" href="#" onclick="tb_remove(); return false;"><?php _e("Cancel", "gravityforms"); ?></a>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 <?php
 class GFCommon{
 
-    public static $version = "1.7.11";
+    public static $version = "1.7.12";
     public static $tab_index = 1;
     public static $errors = array();
 
@@ -166,7 +166,7 @@ class GFCommon{
             return $text;
 
         $middle = intval($max_length / 2);
-        return substr($text, 0, $middle) . "..." . substr($text, strlen($text) - $middle, $middle);
+        return self::safe_substr($text, 0, $middle) . "..." . self::safe_substr($text, strlen($text) - $middle, $middle);
     }
 
     public static function is_invalid_or_empty_email($email){
@@ -1968,7 +1968,11 @@ class GFCommon{
     }
 
     public static function selection_display($value, $field, $currency="", $use_text=false){
-        $ary = explode("|", $value);
+        if (is_array($value)){
+			return "";
+        }
+
+       	$ary = explode("|", $value);
         $val = $ary[0];
         $price = count($ary) > 1 ? $ary[1] : "";
 
@@ -4953,7 +4957,7 @@ class GFCommon{
             $choices = array_merge($choices, $field['choices']);
 
         }
-
+        
         if(empty($choices))
             $choices[] = array('text' => 'You must select at least one category.', 'value' => '');
 

@@ -8,7 +8,7 @@
 admin.css
 Gravity Forms Administration Form Styles
 http: //www.gravityforms.com
-updated: June 13, 2013 12:13 PM
+updated: October 15, 2013 11:23 AM
 
 Gravity Forms is a Rocketgenius project
 copyright 2013 Rocketgenius Inc.
@@ -954,7 +954,6 @@ div#wpbody {
 #floatMenu {
 	width: 280px;
 	z-index: 99;
-	background-color: #FFF;
 	padding-bottom: 20px
 }
 
@@ -1250,7 +1249,7 @@ table.entry-detail-view {
 }
 
 table.entry-detail-view td.lastrow {
-	border-bottom: none !important
+	border-bottom: none !important;
 }
 
 td.entry-view-section-break {
@@ -1258,7 +1257,7 @@ td.entry-view-section-break {
 	font-weight: bold;
 	background-color: #EEE;
 	border-bottom: 1px solid #DFDFDF;
-	padding: 7px
+	padding: 7px;
 }
 
 td.entry-view-field-name {
@@ -1266,66 +1265,85 @@ td.entry-view-field-name {
 	background-color: #EAF2FA;
 	border-bottom: 1px solid #FFF;
 	line-height: 1.5;
-	padding: 7px
+	padding: 7px;
 }
 
 td.entry-view-field-value {
 	border-bottom: 1px solid #DFDFDF;
 	padding: 7px 7px 7px 40px;
-	line-height: 1.5
+	line-height: 1.8;
 }
 
 td.entry-view-field-value p {
-	text-align: left
+	text-align: left;
 }
 
 td.entry-view-field-value ul.bulleted {
-	margin-left: 12px
+	margin-left: 12px;
 }
 
 td.entry-view-field-value ul.bulleted li {
-	list-style-type: disc
+	list-style-type: disc;
 }
 
 div.note-avatar {
 	width: 48px;
 	height: 48px;
 	float: left;
-	margin-right: 6px
+	margin-right: 6px;
 }
 
 h6.note-author {
 	font-weight: bold;
 	font-size: 13px;
 	margin: 0;
-	padding: 0
+	padding: 0;
+}
+
+div.detail-note-content:before {
+     content: " ";
+     width: 100%;
+     height: 30px;
+     position: absolute;
+     top: 0;
+     left: 0;
+     z-index: -1;
+     display: block;
+     background-color:#FFF;
 }
 
 div.detail-note-content {
-	margin: 10px 0 10px 54px;
-	line-height: 1.5
+	margin: 10px 6px 10px 0;
+	padding: 20px 14px;
+	line-height: 1.8;
+	border: 1px solid #E6DB55;
+	border-bottom: 2px solid #E6DB55;
+	background-color: #FFFBCC;
+	background-image: url(../images/top-highlight.png);
+	background-position: 0 0;
+	background-repeat: repeat-x;
 }
 
 div.detail-note-content p {
-	line-height: 1.5
+	line-height: 1.8;
 }
 
 /* edit details form styles ------------------------------------------------------*/
 
 #namediv_admin {
 	position: relative;
-	min-width: 500px
+	min-width: 500px;
 }
 
 body #namediv table.entry-details td.detail-view label.detail-label,.ginput_full_admin label {display: block; font-weight: bold; font-size: 13px; margin-bottom: 4px}
 body #namediv div.ginput_complex_admin .ginput_full_admin label {
 	font-weight: normal;
-	font-size: 11px
+	font-size: 11px;
 }
 
 body #namediv table.entry-details input[type="text"],
 body #namediv table.entry-details input {
-	width: 99%
+	width: 99%;
 }
 
 body #namediv .ginput_complex_admin.ginput_container span.ginput_left,
@@ -1336,36 +1354,36 @@ body #namediv .ginput_complex_admin.ginput_container span.ginput_right_admin {
 	display: -moz-inline-stack;
 	display: inline-block;
 	zoom: 1;
-	*display: inline
+	*display: inline;
 }
 
 body #namediv .ginput_complex_admin.ginput_container span.ginput_left,
 body #namediv .ginput_complex_admin.ginput_container span.ginput_left_admin {
-	margin-right: 1em
+	margin-right: 1em;
 }
 
 body #namediv .ginput_left_admin label,
 body #namediv .ginput_right_admin label {
-	display: block
+	display: block;
 }
 
 body #namediv .ginput_container ul.gfield_radio li input,
 body #namediv .ginput_container ul.gfield_checkbox li input {
-	width: auto !important
+	width: auto !important;
 }
 
 body #namediv .ginput_left_admin input[type="text"] {
-	width: 99% !important
+	width: 99% !important;
 }
 
 body #namediv select.medium_admin {
-	max-width: 400px
+	max-width: 400px;
 }
 
 body #namediv textarea.medium_admin {
 	width: 98%;
 	min-width: 475px;
-	min-height: 250px
+	min-height: 250px;
 }
 
 body #namediv h2.detail_gsection_title {
@@ -1375,7 +1393,7 @@ body #namediv h2.detail_gsection_title {
 	font-weight: bold;
 	letter-spacing: normal !important;
 	margin: 0 !important;
-	padding: 0 !important
+	padding: 0 !important;
 }
 
 /* notifications page styles ------------------------------------------------------*/
@@ -1386,51 +1404,51 @@ ul#form_notification_container,ul#form_autoresponder_container {
 
 ul#form_notification_container li,
 ul#form_autoresponder_container li {
-	margin-bottom: 15px !important
+	margin-bottom: 15px !important;
 }
 
 ul#form_notification_container li label,
 ul#form_autoresponder_container li label {
 	margin-bottom: 8px !important;
-	display: block
+	display: block;
 }
 
 /* set some widths and heights ------------------------------------------------------*/
 
 .fieldwidth-1,input.fieldwidth-1 {
-	width: 100%
+	width: 100%;
 }
 
 .fieldwidth-2,input.fieldwidth-2 {
-	width: 350px
+	width: 350px;
 }
 
 .fieldwidth-3,input.fieldwidth-3 {
-	width: 375px
+	width: 375px;
 }
 
 .fieldwidth-4,input.fieldwidth-4 {
-	width: 250px
+	width: 250px;
 }
 
 .fieldheight-1,input.fieldheight-1 {
-	height: 160px
+	height: 160px;
 }
 
 .fieldheight-2,input.fieldheight-2 {
-	height: 80px
+	height: 80px;
 }
 
 .gform_merge_tags{
-    width: 200px
+    width: 200px;
 }
 
 .gform_editor_merge_tags{
-    width: 190px
+    width: 190px;
 }
 
 .gform_content_template_merge_tags{
-    width: 165px
+    width: 165px;
 }
 
 /* bulk add panel ------------------------------------------------------*/
@@ -1440,7 +1458,7 @@ ul#form_autoresponder_container li label {
 	color: #555;
 	font-size: 11px;
 	padding: 4px 0;
-	margin-bottom: 6px
+	margin-bottom: 6px;
 }
 
 .bulk-left-panel {
@@ -1448,12 +1466,12 @@ ul#form_autoresponder_container li label {
 	overflow-y: auto;
 	height: 330px;
 	width: 220px;
-	padding: 0
+	padding: 0;
 }
 
 .bulk-left-panel ul li {
 	padding: 0;
-	margin: 0
+	margin: 0;
 }
 
 .bulk-left-panel ul li a.bulk-choice {
@@ -1465,11 +1483,11 @@ ul#form_autoresponder_container li label {
 	border-bottom: 1px solid #D7D7D7;
 	padding: 5px;
 	text-align: center;
-	text-decoration: none
+	text-decoration: none;
 }
 
 .bulk-left-panel ul li a.bulk-choice:hover {
-	background-color: #DADADA
+	background-color: #DADADA;
 }
 
 .bulk-left-panel ul li.choice_section_header {
@@ -1481,11 +1499,11 @@ ul#form_autoresponder_container li label {
 	border-bottom: 1px solid #C2D7EF;
 	padding: 5px;
 	text-align: center;
-	text-decoration: none
+	text-decoration: none;
 }
 
 a.bulk-choice:first-child {
-	border-top: none
+	border-top: none;
 }
 
 .bulk-arrow-mid {
@@ -1494,29 +1512,29 @@ a.bulk-choice:first-child {
 	height: 330px;
 	background-image: url(../images/arrow-right.jpg);
 	background-position: 100% 50%;
-	background-repeat: no-repeat
+	background-repeat: no-repeat;
 }
 
 textarea#gfield_bulk_add_input {
 	width: 320px;
 	height: 330px;
 	float: right;
-	padding: 6px
+	padding: 6px;
 }
 
 div.panel-buttons {
-	margin-top: 8px
+	margin-top: 8px;
 }
 
 .bulk-left-panel {
-	height: 300px
+	height: 300px;
 }
 
 div.panel-buttons {
 	display: -moz-inline-stack;
 	display: inline-block;
 	zoom: 1;
-	*display: inline
+	*display: inline;
 }
 
 div.panel-custom {
@@ -1524,11 +1542,11 @@ div.panel-custom {
 	display: -moz-inline-stack;
 	display: inline-block;
 	zoom: 1;
-	*display: inline
+	*display: inline;
 }
 
 div#bulk_custom_message {
-	position: absolute
+	position: absolute;
 }
 
 /* after update form panel ------------------------------------------------------*/
@@ -1543,21 +1561,21 @@ div#bulk_custom_message {
 	-moz-border-radius: 3px;
 	-khtml-border-radius: 3px;
 	-webkit-border-radius: 3px;
-	border-radius: 3px
+	border-radius: 3px;
 }
 
 .updated_base p {
 	margin: 0.5em 0;
 	line-height: 1;
-	padding: 2px
+	padding: 2px;
 }
 
 .wrap .updated_base {
-	margin: 10px 15px 24px 0
+	margin: 10px 15px 24px 0;
 }
 
 table.form-table td .updated_base {
-	font-size: 13px
+	font-size: 13px;
 }
 
 #gform_no_product_field_message{
@@ -1579,21 +1597,21 @@ table.form-table td .updated_base {
 	-moz-border-radius: 3px;
 	-khtml-border-radius: 3px;
 	-webkit-border-radius: 3px;
-	border-radius: 3px
+	border-radius: 3px;
 }
 
 .error_base p {
 	margin: 0.5em 0;
 	line-height: 1;
-	padding: 2px
+	padding: 2px;
 }
 
 .wrap .error_base {
-	margin: 10px 15px 10px 0
+	margin: 10px 15px 10px 0;
 }
 
 table.form-table td .error_base {
-	font-size: 13px
+	font-size: 13px;
 }
 
 .gf_input_error_icon {
@@ -1615,25 +1633,25 @@ table.form-table td .error_base {
 /*html block ------------------------------------------------------*/
 
 li.gfield_html label.gfield_label {
-	height: 18px
+	height: 18px;
 }
 
 /* simple captcha fields ------------------------------------------------------*/
 
 .gfield_captcha_input_container{
-	padding-top: 3px
+	padding-top: 3px;
 }
 
 .simple_captcha_small input {
-	width: 100px
+	width: 100px;
 }
 
 .simple_captcha_medium input {
-	width: 150px
+	width: 150px;
 }
 
 .simple_captcha_large input {
-	width: 200px
+	width: 200px;
 }
 
 .left_label .simple_captcha_small,
@@ -1642,21 +1660,21 @@ li.gfield_html label.gfield_label {
 .right_label .simple_captcha_medium,
 .left_label .simple_captcha_large,
 .right_label .simple_captcha_large {
-	margin-left: 32%
+	margin-left: 32%;
 }
 
 /* math challenge fields ------------------------------------------------------*/
 
 .math_small input {
-	width: 69px
+	width: 69px;
 }
 
 .math_medium input {
-	width: 90px
+	width: 90px;
 }
 
 .math_large input {
-	width: 108px
+	width: 108px;
 }
 
 .left_label .math_small,
@@ -1665,7 +1683,7 @@ li.gfield_html label.gfield_label {
 .right_label .math_medium,
 .left_label .math_large,
 .right_label .math_large {
-	margin-left: 32%
+	margin-left: 32%;
 }
 
 /* transaction table ------------------------------------------------------*/
@@ -1674,40 +1692,40 @@ table.entry-products {
 	border: 1px solid #DFDFDF;
 	border-right: none;
 	border-bottom: none;
-	margin: 10px 0
+	margin: 10px 0;
 }
 
 table.entry-products th[scope=col] {
 	background-color: #F4F4F4;
-	border-right: 1px solid #DFDFDF !important
+	border-right: 1px solid #DFDFDF !important;
 }
 
 table.entry-products col.entry-products-col2 {
-	width: 50px
+	width: 50px;
 }
 
 table.entry-products col.entry-products-col3 {
-	width: 155px
+	width: 155px;
 }
 
 table.entry-products col.entry-products-col4 {
-	width: 155px
+	width: 155px;
 }
 
 table.entry-products td {
 	border-right: 1px solid #DFDFDF !important;
 	padding-top: 7px;
-	padding-bottom: 8px
+	padding-bottom: 8px;
 }
 
 table.entry-products td.textcenter,
 table.entry-products th.textcenter {
-	text-align: center
+	text-align: center;
 }
 
 table.entry-products td.textright,
 table.entry-products th.textright {
-	text-align: right
+	text-align: right;
 }
 
 table.entry-products td.grandtotal,
@@ -1717,18 +1735,18 @@ table.entry-products td.shipping_amount {
 	font-weight: bold;
 	font-size: 13px;
 	padding-top: 7px;
-	padding-bottom: 8px
+	padding-bottom: 8px;
 }
 
 table.entry-products td.emptycell {
-	background-color: #F4F4F4
+	background-color: #F4F4F4;
 }
 
 table.entry-products td div.product_name {
 	font-weight: bold;
 	color: #BF461E;
 	font-size: 13px;
-	margin-bottom: 5px
+	margin-bottom: 5px;
 }
 
 table.entry-products td ul.product_options li {
@@ -1737,11 +1755,11 @@ table.entry-products td ul.product_options li {
 	background-repeat: no-repeat;
 	overflow: visible;
 	margin: 0 0 0 2px !important;
-	padding: 4px 0 4px 16px
+	padding: 4px 0 4px 16px;
 }
 
 table.entry-products td ul.product_options li.lastitem {
-	background-image: url(../images/prodlist-last.png)
+	background-image: url(../images/prodlist-last.png);
 }
 
 /* additional button styles ------------------------------------------------------*/
@@ -1756,7 +1774,6 @@ a.button-primary.gfbutton {
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
-	padding: 3px 8px 4px 8px !important
 }
 
 .menu.collapsible ol.field_type li input.button:hover {
@@ -1764,7 +1781,7 @@ a.button-primary.gfbutton {
 	border-color: #8F8F8F;
 	-webkit-border-radius: 16px !important;
 	-moz-border-radius: 16px !important;
-	border-radius: 16px !important
+	border-radius: 16px !important;
 }
 
 /* multi-page progress bar  ------------------------------------------------------*/
@@ -1778,12 +1795,12 @@ h3.gf_progressbar_title {
 	filter: alpha(opacity=60);
 	-moz-opacity: 0.6;
 	-khtml-opacity: 0.6;
-	opacity: 0.6
+	opacity: 0.6;
 }
 
 .gform_wrapper .gf_progressbar_wrapper {
 	clear: both;
-	margin: 0 0 14px 0
+	margin: 0 0 14px 0;
 }
 
 .gform_wrapper .gf_progressbar {
@@ -3482,7 +3499,6 @@ body.wp-admin .wrap .gform_tab_group .gform_tab_container .gform_tab_content inp
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
-	padding: 3px 8px 4px 8px !important;
 }
 
 .setting-row {
@@ -3745,7 +3761,7 @@ div.gf_clear.gf_clear_complex {
 	margin-bottom: 10px;
 }
 
-/* some new button styles ------------------------------------------------------*/
+/* new button styles ------------------------------------------------------*/
 
 .gf_button.slick_button {
 	display: inline-block;
@@ -3780,6 +3796,91 @@ div.gf_clear.gf_clear_complex {
 .slick_button.red_button:hover,
 .slick_button.red_button:active {
 	color: #FFF;
+}
+
+/* filter UI ----------------------------------------------------*/
+
+.gform-remove,
+.gform-add {
+    margin-top: 2px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.gform-add {
+    margin-left: 5px;
+}
+
+#gform-no-filters {
+    color: #CCC;
+    cursor: pointer;
+}
+
+.gform-filter-value,
+.gform-filter-field,
+.gform-filter-operator {
+	height: 2em;
+    padding: 4px 2px 0 2px;
+    box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.gform-filter-value,
+.gform-filter-field{
+    width: 150px;
+}
+
+.gform-filter-operator {
+    width: 70px;
+}
+
+#gform-field-filters {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.ui-resizable-handle {
+    position: absolute;
+    font-size: 0.1px;
+    z-index: 99999;
+    display: block;
+}
+
+.ui-resizable-s {
+    cursor: s-resize;
+    height: 7px;
+    width: 100%;
+    bottom: -5px;
+    left: 0px;
+}
+
+/* entry edit ----------------------------------------------------*/
+
+#namediv .gform_button_select_files{
+    width: 100px !important;
+}
+
+.gform_fileupload_multifile .gform_drop_area {
+    padding: 25px;
+    border: 2px dashed #ddd;
+    text-align: center;
+    color: #aaa;
+    margin-bottom: 10px;
+}
+
+.gform_delete{
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+tr.gf-locking.wp-locked .locked-info {
+    height: auto;
+}
+
+tr.gf-locking.wp-locked img.gform_active_icon {
+    display: none;
 }
 
 /* Safari & Google Chrome (webkit) specific styles ------------------------------------------------------*/
@@ -3833,7 +3934,6 @@ div.wrap.gf_browser_gecko .ui-tabs-panel ul li label.inline {
 
 /* Internet Explorer specific styles ----------------------------------------------------*/
 
-div.wrap.gf_browser_ie {}
 div.wrap.gf_browser_ie .menu.collapsible ol.field_type li {
 	width: 48%;
 }
