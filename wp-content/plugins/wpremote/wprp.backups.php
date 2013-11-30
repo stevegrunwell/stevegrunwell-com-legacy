@@ -23,41 +23,13 @@ class WPRP_Backups extends WPRP_HM_Backup {
 	 */
 	public static function get_instance() {
 
-		if ( empty( self::$instance ) )
+		if ( empty( self::$instance ) ) {
 			self::$instance = new WPRP_Backups();
-
-		return self::$instance;
-
-	}
-
-	/**
-	 * Recursively delete a directory including
-	 * all the files and sub-directories.
-	 *
-	 * @param string $dir
-	 * @return bool
-	 */
-	public static function rmdir_recursive( $dir ) {
-
-		if ( is_file( $dir ) )
-			@unlink( $dir );
-
-	    if ( ! is_dir( $dir ) )
-	    	return false;
-
-	    $files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $dir ), RecursiveIteratorIterator::CHILD_FIRST, RecursiveIteratorIterator::CATCH_GET_CHILD );
-
-		foreach ( $files as $file ) {
-
-			if ( $file->isDir() )
-				@rmdir( $file->getPathname() );
-
-			else
-				@unlink( $file->getPathname() );
+			self::$instance->set_is_using_file_manifest( apply_filters( 'wprp_backups_use_file_manifest', false ) );
 
 		}
 
-		@rmdir( $dir );
+		return self::$instance;
 
 	}
 
@@ -74,9 +46,12 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 		// Set the excludes
 		if ( class_exists( 'WPR_API_Request' ) &&  WPR_API_Request::get_arg( 'backup_excludes' ) )
-			$this->set_excludes( WPR_API_Request::get_arg( 'backup_excludes' ) );
+			$backup_excludes = WPR_API_Request::get_arg( 'backup_excludes' );
 		else if ( isset( $_GET['backup_excludes'] ) )
-			$this->set_excludes( $_GET['backup_excludes'] );
+			$backup_excludes = $_GET['backup_excludes'];
+
+		if ( ! empty( $backup_excludes ) )
+			$this->set_excludes( apply_filters( 'wprp_backup_excludes', $backup_excludes ) );
 
 		$this->filesize_transient = 'wprp_' . '_' . $this->get_type() . '_' . substr( md5( $this->exclude_string() ), 20 ) . '_filesize';
 
@@ -92,10 +67,19 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 		$this->set_status( 'Starting backup...' );
 
+		$this->set_start_timestamp();
+
 		$this->backup();
 
-		if ( ! file_exists( $this->get_archive_filepath() ) )
-			return new WP_Error( 'backup-failed', implode( ', ', $this->get_errors() ) );
+		if ( ! file_exists( $this->get_archive_filepath() ) ) {
+
+			$errors = $this->get_errors();
+			if ( ! empty( $errors ) )
+				return new WP_Error( 'backup-failed', implode( ', ', $errors ) );
+			else
+				return new WP_Error( 'backup-failed', __( 'Backup file is missing.', 'wpremote' ) );
+
+		}
 
 		return true;
 
@@ -110,11 +94,18 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 		global $is_apache;
 
-		if ( $status = $this->get_status() )
-			return new WP_Error( 'error-status', $status );
+		// Restore the start timestamp to global scope so HM Backup recognizes the proper archive file
+		$this->restore_start_timestamp();
 
-		$backup = glob( $this->get_path() . '/*.zip' );
-		$backup = reset( $backup );
+		if ( $status = $this->get_status() ) {
+
+			if ( $this->is_backup_still_running() )
+				return new WP_Error( 'error-status', $status );
+			else
+				return new WP_Error( 'backup-process-killed', __( 'Backup process failed or was killed.', 'wpremote' ) );
+		}
+
+		$backup = $this->get_archive_filepath();
 
 		if ( file_exists( $backup ) ) {
 
@@ -131,7 +122,10 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 			}
 
-			return str_replace( parent::conform_dir( WP_CONTENT_DIR ), WP_CONTENT_URL, $backup );
+			$response = new stdClass;
+			$response->url = str_replace( parent::conform_dir( WP_CONTENT_DIR ), WP_CONTENT_URL, $backup );
+			$response->seconds_elapsed = time() - $this->start_timestamp;
+			return $response;
 
 		}
 
@@ -150,6 +144,17 @@ class WPRP_Backups extends WPRP_HM_Backup {
 		$this->rmdir_recursive( $this->get_path() );
 
 		delete_option( 'wprp_backup_path' );
+
+	}
+
+	/**
+	 * Cleanup old ZipArchive partials that may have been left by old processes
+	 */
+	public function cleanup_ziparchive_partials() {
+
+		foreach( glob( $this->get_path() . '/*.zip.*' ) as $ziparchive_partial ) {
+			unlink( $ziparchive_partial );
+		}
 
 	}
 
@@ -179,7 +184,8 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 		// we dont know the size yet, fire off a remote request to get it for later
 		// it can take some time so we have a small timeout then return "Calculating"
-		wp_remote_get( add_query_arg( array( 'action' => 'wprp_calculate_backup_size', 'backup_excludes' => $this->get_excludes() ), admin_url( 'admin-ajax.php' ) ), array( 'timeout' => 0.1, 'sslverify' => false ) );
+		global $wprp_noauth_nonce;
+		wp_remote_get( add_query_arg( array( 'action' => 'wprp_calculate_backup_size', 'backup_excludes' => $this->get_excludes() ), add_query_arg( '_wpnonce', $wprp_noauth_nonce, admin_url( 'admin-ajax.php' ) ) ), array( 'timeout' => 0.1, 'sslverify' => false ) );
 
 		return __( 'Calculating', 'wpremote' );
 
@@ -192,7 +198,15 @@ class WPRP_Backups extends WPRP_HM_Backup {
 	 */
 	protected function do_action( $action ) {
 
+		$this->update_heartbeat_timestamp();
+
 		switch ( $action ) :
+
+			case 'hmbkp_backup_started':
+
+				$this->save_backup_process_id();
+
+			break;
 
 	    	case 'hmbkp_mysqldump_started' :
 
@@ -208,7 +222,12 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 			case 'hmbkp_archive_started' :
 
-	    		$this->set_status( sprintf( __( 'Creating zip archive %s', 'wpremote' ), '(<code>' . $this->get_archive_method() . '</code>)' ) );
+				if ( $this->is_using_file_manifest() )
+					$status = sprintf( __( '%d files remaining to archive %s', 'wpremote' ), $this->file_manifest_remaining, '(<code>' . $this->get_archive_method() . '</code>)' );
+				else
+					 $status = sprintf( __( 'Creating zip archive %s', 'wpremote' ), '(<code>' . $this->get_archive_method() . '</code>)' );
+
+				$this->set_status( $status );
 
 	    	break;
 
@@ -222,6 +241,8 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 	    		if ( file_exists( $this->get_schedule_running_path() ) )
 	    			unlink( $this->get_schedule_running_path() );
+
+				$this->clear_backup_process_id();
 
 	    	break;
 
@@ -415,6 +436,161 @@ class WPRP_Backups extends WPRP_HM_Backup {
 	}
 
 	/**
+	 * Set the start timestamp for the backup
+	 */
+	private function set_start_timestamp() {
+		$this->start_timestamp = current_time( 'timestamp' );
+		file_put_contents( $this->get_path() . '/.start-timestamp', $this->start_timestamp );
+	}
+
+	/**
+	 * Restore the start timestamp for the backup
+	 */
+	private function restore_start_timestamp() {
+		if ( $start_timestamp = file_get_contents( $this->get_path() . '/.start-timestamp' ) )
+			$this->start_timestamp = (int) $start_timestamp;
+	}
+
+	/**
+	 * Update the heartbeat timestamp to the current time.
+	 */
+	private function update_heartbeat_timestamp() {
+		file_put_contents( $this->get_path() . '/.heartbeat-timestamp', time() );
+	}
+
+	/**
+	 * Get the heartbeat timestamp.
+	 */
+	private function get_heartbeat_timestamp() {
+
+		$heartbeat = $this->get_path() . '/.heartbeat-timestamp';
+
+		if ( file_exists( $heartbeat ) )
+			return (int) file_get_contents( $heartbeat );
+
+		return false;
+	}
+
+	/**
+	 * Get the file path to the backup process ID log
+	 * 
+	 * @access private
+	 */
+	private function get_backup_process_id_path() {
+		return $this->get_path() . '/.backup-process-id';
+	}
+
+	/**
+	 * Get the current backup process ID
+	 * 
+	 * @access private
+	 */
+	private function get_backup_process_id() {
+		$file = $this->get_backup_process_id_path();
+		if ( file_exists( $file ) )
+			return (int) trim( file_get_contents( $file ) );
+		else
+			return false;
+	}
+
+	/**
+	 * Save this current backup process ID in case
+	 * we need to check later whether it was killed in action
+	 *
+	 * @access private
+	 */
+	private function save_backup_process_id() {
+
+		if ( ! $handle = fopen( $this->get_backup_process_id_path(), 'w' ) )
+			return;
+
+		fwrite( $handle, getmypid() );
+
+		fclose( $handle );
+
+	}
+
+	/**
+	 * Clear the backup process ID
+	 * 
+	 * @access private
+	 */
+	private function clear_backup_process_id() {
+
+		if ( file_exists( $this->get_backup_process_id_path() ) )
+			unlink( $this->get_backup_process_id_path() );
+	}
+
+	/**
+	 * Whether or not a backup appears to be in progress
+	 * 
+	 * @access private
+	 */
+	private function is_backup_still_running() {
+
+		// Check whether there's supposed to be a backup in progress
+		if ( false == ( $process_id = $this->get_backup_process_id() ) )
+			return false;
+
+		$time_to_wait = 120;
+
+		// If the heartbeat has been modified in the last 90 seconds, we might not be dead
+		if ( ( time() - $this->get_heartbeat_timestamp() ) < $time_to_wait )
+			return true;
+
+		// Check if the database archive was modified recently
+		$database = $this->get_database_dump_filepath();
+		if ( file_exists( $database ) && ( ( time() - filemtime( $database ) ) < $time_to_wait ) )
+			return true;
+
+		// Check if there's a ZipArchive file being modified.
+		$ziparchive_files = glob( $this->get_path() . '/*.zip.*' );
+		$ziparchive_mtimes = array();
+		foreach( $ziparchive_files as $ziparchive_file ) {
+			$ziparchive_mtimes[] = filemtime( $ziparchive_file );
+		}
+		if ( ! empty( $ziparchive_mtimes ) ) {
+			$latest_ziparchive_mtime = max( $ziparchive_mtimes );
+			if ( ( time() - $latest_ziparchive_mtime ) < $time_to_wait )
+				return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if there's a backup in progress, whether it's running,
+	 * and restart it if it's not running
+	 *
+	 * @todo support checking whether the database should exist
+	 */
+	public function backup_heartbeat() {
+
+		// Restore the start timestamp to global scope so HM Backup recognizes the proper archive file
+		$this->restore_start_timestamp();
+
+		// No process means no backup in progress
+		if ( ! $this->get_backup_process_id() )
+			return false;
+
+		// No file manifest directory means this wasn't a file manifest approach
+		if ( ! is_dir( $this->get_file_manifest_dirpath() ) )
+			return false;
+
+		// Check whether there's supposed to be a backup in progress
+		if ( $this->get_backup_process_id() && $this->is_backup_still_running() )
+			return false;
+
+		// Uh oh, needs to be restarted
+		$this->cleanup_ziparchive_partials();
+
+		$this->save_backup_process_id();
+
+		$this->restart_archive();
+
+	}
+
+	/**
 	 * Calculate the size of the backup
 	 *
 	 * Doesn't account for compression
@@ -475,7 +651,7 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 }
 
-/**
+/*
  * Return an array of back meta information
  *
  * @return array
@@ -498,6 +674,9 @@ function _wprp_get_backups_info() {
  * The calculated size is stored in a transient
  */
 function wprp_ajax_calculate_backup_size() {
+
+	if ( ! wp_verify_nonce( $_GET['_wpnonce'], 'wprp_calculate_backup_size' ) )
+		exit;
 
 	WPRP_Backups::get_instance()->get_filesize();
 
