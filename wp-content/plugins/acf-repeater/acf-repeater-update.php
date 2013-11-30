@@ -1,14 +1,20 @@
 <?php
 
 /*
-*  acf_remote_update
+*  acf_repeater_plugin_update
 *
-*  @description: Handles all plugin updates
-*  @since: 3.6
-*  @created: 2/02/13
+*  this class will connect with and download updates from the ACF website
+*
+*  IMPORTANT: 	This file must be removed from the add-on if you are distibuting this add-on within a plugin or theme.
+*  				to read more about the terms & conditions regarding add-ons, please refer to the documentation here:
+*				http://www.advancedcustomfields.com/terms-conditions/
+*
+*  @type	class
+*  @date	13/07/13
+*
 */
 
-class acf_remote_update
+class acf_repeater_plugin_update
 {
 	var $settings;
 	
@@ -21,20 +27,20 @@ class acf_remote_update
 	*  @created: 23/06/12
 	*/
 	
-	function __construct( $options )
+	function __construct()
 	{
-		// Add slug
-		$options['slug'] = current( explode('/', $options['basename']) );
+		// vars
+		$this->settings = array(
+			'version'	=>	'',
+			'remote'	=>	'http://download.advancedcustomfields.com/QJF7-L4IX-UCNP-RF2W/info/',
+			'basename'	=>	plugin_basename( str_replace('-update.php', '.php', __FILE__) ),
+			'slug'		=>	dirname( plugin_basename( str_replace('-update.php', '.php', __FILE__) ) )
+		);
 		
 		
-		// devine settins
-		$this->settings = $options;
-		
-
-		// update
+		// filters
 		add_filter('pre_set_site_transient_update_plugins', array($this, 'check_update'));
 		add_filter('plugins_api', array($this, 'check_info'), 10, 3);
-
 	}
 	
 	
@@ -75,7 +81,6 @@ class acf_remote_update
 	
 	function check_update( $transient )
 	{
-		
 	    if( empty($transient->checked) )
 	    {
             return $transient;
@@ -94,7 +99,7 @@ class acf_remote_update
         
         
         // compare versions
-        if( version_compare($info->version, $this->settings['version'], '<=') )
+        if( version_compare($info->version, $this->get_version(), '<=') )
         {
         	return $transient;
         }
@@ -126,7 +131,6 @@ class acf_remote_update
 	
     function check_info( $false, $action, $arg )
     {
-    
     	// validate
     	if( !isset($arg->slug) || $arg->slug != $this->settings['slug'] )
     	{
@@ -142,6 +146,40 @@ class acf_remote_update
     	        
         return $false;
     }
+    
+    
+    /*
+    *  get_version
+    *
+    *  This function will return the current version of this add-on 
+    *
+    *  @type	function
+    *  @date	27/08/13
+    *
+    *  @param	N/A
+    *  @return	(string)
+    */
+    
+    function get_version()
+    {
+    	// populate only once
+    	if( !$this->settings['version'] )
+    	{
+	    	$plugin_data = get_plugin_data( str_replace('-update.php', '.php', __FILE__) );
+	    	
+	    	$this->settings['version'] = $plugin_data['Version'];
+    	}
+    	
+    	// return
+    	return $this->settings['version'];
+	}
+}
+
+
+// instantiate
+if( is_admin() )
+{
+	new acf_repeater_plugin_update();
 }
 
 ?>
