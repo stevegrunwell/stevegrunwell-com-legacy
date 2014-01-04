@@ -1,4 +1,15 @@
 -------------------------------------------------------------------------------------------------------------------
+Version 1.7.13
+    - Added JS filter: "gform_calculation_result" to allow modifying the calculated result
+    - Added JS filter: "gform_calculation_format_result" to allow user to override default formatting to calculated result
+	- Fixed issue where function setup_site had been changed to setup_database but code not updated; caused fatal error to be thrown
+    - Fixed issue where formatted calculation result was always used even if none was returned
+    - Fixed issue where datepicker was displaying below WP content
+    - Fixed issue where notification edit page was "busting out" of the WP wrapper
+    - Fixed issue where using decimal values from drop downs (and other fields) resulted in ignored decimals
+    - Fixed issue with ReCAPTCHA field throwing Javascript errors when tab index wasn't defined.
+
+-------------------------------------------------------------------------------------------------------------------
 Version 1.7.12
     - Fixed non localized text "Insert Form" (displays when adding a form to a page/post)
     - Fixed issue with file upload fields when upload files without an extension

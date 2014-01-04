@@ -405,6 +405,9 @@ Class GFNotification {
         </form>
 
         <?php
+
+        GFFormSettings::page_footer();
+
     }
 
     public static function notification_list_page($form_id) {
@@ -1064,7 +1067,6 @@ class GFNotificationTable extends WP_List_Table {
     }
 
     function no_items(){
-
         printf(__("This form doesn't have any notifications. Let's go %screate one%s.", "gravityforms"), "<a href='" . add_query_arg(array("nid" => 0)) . "'>", "</a>");
     }
 }

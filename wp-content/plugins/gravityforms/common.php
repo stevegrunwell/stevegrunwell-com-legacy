@@ -1,7 +1,7 @@
 <?php
 class GFCommon{
 
-    public static $version = "1.7.12";
+    public static $version = "1.7.13";
     public static $tab_index = 1;
     public static $errors = array();
 
@@ -3569,6 +3569,9 @@ class GFCommon{
                         else{
                             $language = empty($field["captchaLanguage"]) ? "en" : esc_attr($field["captchaLanguage"]);
 
+                            if(empty(self::$tab_index))
+                                self::$tab_index = 1;
+
                             $options = "<script type='text/javascript'>" . apply_filters("gform_cdata_open", "") . " var RecaptchaOptions = {theme : '$theme'}; if(parseInt('" . self::$tab_index . "') > 0) {RecaptchaOptions.tabindex = " . self::$tab_index++ . ";}" .
                             apply_filters("gform_recaptcha_init_script", "", $form_id, $field) . apply_filters("gform_cdata_close", "") . "</script>";
 
@@ -4957,7 +4960,7 @@ class GFCommon{
             $choices = array_merge($choices, $field['choices']);
 
         }
-        
+
         if(empty($choices))
             $choices[] = array('text' => 'You must select at least one category.', 'value' => '');
 

@@ -723,7 +723,7 @@ class GFFormsModel {
         $form_count = $wpdb->get_var("SELECT count(0) FROM {$form_table_name}");
         if($wpdb->last_error){
             GFCommon::log_debug("Blog " . get_current_blog_id() . " - Form database table does not exist. Forcing database setup.");
-            GFForms::setup_site();
+            GFForms::setup_database();
         }
     }
 

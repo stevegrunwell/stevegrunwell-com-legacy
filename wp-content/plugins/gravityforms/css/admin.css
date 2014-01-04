@@ -8,7 +8,7 @@
 admin.css
 Gravity Forms Administration Form Styles
 http: //www.gravityforms.com
-updated: October 15, 2013 11:23 AM
+updated: December 12, 2013 11:47 AM
 
 Gravity Forms is a Rocketgenius project
 copyright 2013 Rocketgenius Inc.
@@ -2368,16 +2368,12 @@ body.wp-admin div#add_fields div#floatMenu input.button.button-large.button-prim
 	float: right;
 }
 
-/* edit confirmation dialog ----------------------------------------------------*/
-
 div#wpbody-content div.wrap div#after_update_dialog.updated_base.gform_editor_status,
 div.gform_editor_status {
 	max-width: 480px !important;
 	padding: 10px;
-	border: 1px solid #E6DB55 !important;
+	border: 1px solid #E6DB55;
 }
-
-/* new update and delete button positions for 1.6 ----------------------------------------------------*/
 
 #floatMenu h3.gf_add_fields {
 	display: none;
@@ -3184,7 +3180,6 @@ ul#gf_merge_tag_list a:hover {
 
 .gform_tab_group {
 	background-color: #fff;
-	background-image: url(../images/gf-tab-container-bg.png);
 	border: 1px solid #DFDFDF;
 	margin-right: 9px;
 	border-radius: 3px;
@@ -3882,6 +3877,154 @@ tr.gf-locking.wp-locked .locked-info {
 tr.gf-locking.wp-locked img.gform_active_icon {
     display: none;
 }
+
+/* new 3.8 admin UI styles ----------------------------------------------------*/
+
+body.version-3-8 div.gf-pagebreak-text-main span {
+	background-color: #EEE;
+}
+
+body.version-3-8 .field_edit_icon,
+body.version-3-8 .form_edit_icon,
+body.version-3-8 .field_delete_icon,
+body.version-3-8 .form_delete_icon,
+body.version-3-8 .field_duplicate_icon {
+	height: auto !important;
+}
+
+body.version-3-8 ul#gf_form_toolbar_links {
+	background: #ffffff;
+	background: -moz-linear-gradient(top,  #ffffff 0%, #f8f8f8 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f8f8f8));
+	background: -webkit-linear-gradient(top,  #ffffff 0%,#f8f8f8 100%);
+	background: -o-linear-gradient(top,  #ffffff 0%,#f8f8f8 100%);
+	background: -ms-linear-gradient(top,  #ffffff 0%,#f8f8f8 100%);
+	background: linear-gradient(to bottom,  #ffffff 0%,#f8f8f8 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f8f8f8',GradientType=0 );
+}
+
+body.version-3-8 table tbody.user-list tr:nth-child(odd) {
+	background-color: #F9F9F9;
+}
+
+body.version-3-8 #namediv input[type=checkbox],
+body.version-3-8 #namediv input[type=radio] {
+	width: auto !important;
+}
+
+/* new 3.8 tab group styles ----------------------------------------------------*/
+
+body.version-3-8 .gform_tab_group {
+	background-color: #FFF;
+	border: 1px solid #DEDEDE;
+}
+
+body.version-3-8 .gform_tab_container {
+	background-color: #F6FBFD;
+	border-left: 1px solid #E1E1E1;
+}
+
+body.version-3-8 .gform_tabs a {
+	border: 1px solid #FFF;
+	font-size: 14px;
+}
+
+body.version-3-8 .gform_tabs li.active a {
+	background-color: #F6FBFD;
+	border: 1px solid #E1E1E1;
+	border-right-color: #F6FBFD;
+	border-left: 2px solid #2EA2CC;
+	margin: 0 -1px 0 0;
+	width: 138px;
+	padding: 6px 0 6px 10px !important;
+}
+
+body.version-3-8 .updated_base {
+	background-color: #FFF;
+	border: 1px solid #FFF;
+	border-left: 4px solid #FFBA00;
+	-webkit-box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.1);
+	box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.1);
+}
+
+/* new 3.8 alert styles ----------------------------------------------------*/
+
+body.version-3-8 .alert_green,
+body.version-3-8 .alert_red,
+body.version-3-8 .alert_yellow,
+body.version-3-8 .alert_gray,
+body.version-3-8 .alert_blue {
+	position: relative;
+	-webkit-box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.1);
+	box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.1);
+}
+
+body.version-3-8 .alert_green {
+	border-left: 4px solid #7AD03A;
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	color: #424242;
+	background-color: #FFF;
+}
+
+body.version-3-8 .alert_red {
+	border-left: 4px solid #dd3d36;
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	color: #9E0B0F;
+	background-color: #FFF;
+}
+
+body.version-3-8 .alert_yellow {
+	border-left: 4px solid #FFBA00;
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	background-color: #FFF;
+	color: #424242;
+}
+
+body.version-3-8 .alert_gray {
+	border-left: 4px solid #CCC;
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	color: #424242;
+	background-color: #FFF;
+}
+
+body.version-3-8 .alert_blue {
+	border-left: 4px solid #2EA2CC;
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	color: #424242;
+	background-color: #FFF;
+}
+
+body.version-3-8 span.gf_keystatus_valid_text,
+body.version-3-8 span.gf_keystatus_invalid_text {
+	font-size: .8em;
+}
+
+
+body.version-3-8 div.delete-alert {
+    padding: 10px 0 20px 20px;
+}
+
+body.version-3-8 div#after_update_dialog.updated_base {
+	background-color: #FFF;
+	border: 1px solid #FFF !important;
+	border-left: 4px solid #FFBA00 !important;
+	padding: 0 0.6em;
+	margin: 10px 15px 10px 0;
+	-webkit-box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.1);
+	box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.1);
+}
+
 
 /* Safari & Google Chrome (webkit) specific styles ------------------------------------------------------*/
 

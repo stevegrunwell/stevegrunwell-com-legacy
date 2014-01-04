@@ -693,6 +693,7 @@ var GFCalc = function(formId, formulaFields){
     this.isCalculating = {};
 
     this.init = function(formId, formulaFields) {
+
         var calc = this;
         jQuery(document).bind("gform_post_conditional_logic", function(){
             for(var i=0; i<formulaFields.length; i++) {
@@ -711,15 +712,12 @@ var GFCalc = function(formId, formulaFields){
 
     this.runCalc = function(formulaField, formId) {
 
-        var calcObj = this;
-        var formulaInput, expr;
-
-        var field = jQuery('#field_' + formId + '_' + formulaField.field_id);
-        formulaInput = jQuery('#input_' + formId + '_' + formulaField.field_id);
-        var previous_val = formulaInput.val();
-
-        expr = calcObj.replaceFieldTags( formId, formulaField.formula, formulaField.numberFormat );
-        result = '';
+        var calcObj      = this,
+            field        = jQuery('#field_' + formId + '_' + formulaField.field_id),
+            formulaInput = jQuery('#input_' + formId + '_' + formulaField.field_id),
+            previous_val = formulaInput.val(),
+            expr         = calcObj.replaceFieldTags( formId, formulaField.formula, formulaField ).replace(/(\r\n|\n|\r)/gm,""),
+            result       = '';
 
         if(calcObj.exprPatt.test(expr)) {
             try {
@@ -727,18 +725,34 @@ var GFCalc = function(formId, formulaFields){
                 //run calculation
                 result = eval(expr);
 
-            } catch (e) {}
+            } catch( e ) { }
         }
-        
+
+        // if result is postive infinity, negative infinity or a NaN, defaults to 0
+        if( ! isFinite( result ) )
+            result = 0;
+
         // allow users to modify result with their own function
-        if(window["gform_calculation_result"])
+        if( window["gform_calculation_result"] ) {
             result = window["gform_calculation_result"](result, formulaField, formId, calcObj);
+            if( window.console )
+                console.log( '"gform_calculation_result" function is deprecated since version 1.8! Use "gform_calculation_result" JS hook instead.' );
+        }
+
+        // allow users to modify result with their own function
+        result = gform.applyFilters( 'gform_calculation_result', result, formulaField, formId, calcObj );
+
+        // allow result to be custom formatted
+        var formattedResult = gform.applyFilters( 'gform_calculation_format_result', false, result, formulaField, formId, calcObj );
 
         //formatting number
-        if(field.hasClass('gfield_price')) {
+        if( formattedResult !== false ) {
+            result = formattedResult;
+        }
+        else if( field.hasClass( 'gfield_price' ) ) {
             result = gformFormatMoney(result ? result : 0);
         }
-        else{
+        else {
 
             var decimalSeparator, thousandSeparator;
             if(formulaField.numberFormat == "decimal_comma"){
@@ -754,12 +768,11 @@ var GFCalc = function(formId, formulaFields){
 
         //If value doesn't change, abort.
         //This is needed to prevent an infinite loop condition with conditional logic
-        if(result == previous_val)
+        if( result == previous_val )
             return;
 
         // if this is a calucation product, handle differently
         if(field.hasClass('gfield_price')) {
-
             formulaInput.text(result);
             jQuery('#ginput_base_price_' + formId + '_' + formulaField.field_id).val(result).trigger('change');
             gformCalculateTotalPrice(formId);
@@ -769,6 +782,7 @@ var GFCalc = function(formId, formulaFields){
 
     }
 
+
     this.bindCalcEvents = function(formulaField, formId) {
 
         var calcObj = this;
@@ -777,7 +791,10 @@ var GFCalc = function(formId, formulaFields){
 
         calcObj.isCalculating[formulaFieldId] = false;
 
-        for(i in matches) {
+        for(var i in matches) {
+
+            if(! matches.hasOwnProperty(i))
+                continue;
 
             var inputId = matches[i][1];
             var fieldId = parseInt(inputId);
@@ -820,12 +837,15 @@ var GFCalc = function(formId, formulaFields){
 
     }
 
-    this.replaceFieldTags = function( formId, expr, parentNumberFormat ) {
+    this.replaceFieldTags = function( formId, expr, formulaField ) {
 
         var matches = getMatchGroups(expr, this.patt);
         var origExpr = expr;
 
         for(i in matches) {
+
+            if(! matches.hasOwnProperty(i))
+                continue;
 
             var inputId = matches[i][1];
             var fieldId = parseInt(inputId);
@@ -850,22 +870,22 @@ var GFCalc = function(formId, formulaFields){
                 } else {
                     value = input.val();
                 }
-                
+
             }
-            
+
             var numberFormat = gf_global.number_formats[formId][fieldId];
             if( ! numberFormat )
-                numberFormat = parentNumberFormat;
-            
+                numberFormat = gf_global.number_formats[formId][formulaField.field_id];
+
             var decimalSeparator = numberFormat == 'decimal_dot' ? '.' : ',';
-            
+
             value = gformCleanNumber( value, '', '', decimalSeparator );
             if( ! value )
                 value = 0;
 
             expr = expr.replace( matches[i][0], value );
         }
-        
+
         return expr;
     }
 
