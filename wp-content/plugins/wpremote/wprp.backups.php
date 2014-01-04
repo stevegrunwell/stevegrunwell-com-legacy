@@ -25,8 +25,6 @@ class WPRP_Backups extends WPRP_HM_Backup {
 
 		if ( empty( self::$instance ) ) {
 			self::$instance = new WPRP_Backups();
-			self::$instance->set_is_using_file_manifest( apply_filters( 'wprp_backups_use_file_manifest', false ) );
-
 		}
 
 		return self::$instance;
@@ -529,10 +527,14 @@ class WPRP_Backups extends WPRP_HM_Backup {
 	private function is_backup_still_running() {
 
 		// Check whether there's supposed to be a backup in progress
-		if ( false == ( $process_id = $this->get_backup_process_id() ) )
+		if ( false === ( $process_id = $this->get_backup_process_id() ) )
 			return false;
 
-		$time_to_wait = 120;
+		// When safe mode is enabled, WPRP can't modify max_execution_time
+		if ( self::is_safe_mode_active() && ini_get( 'max_execution_time' ) )
+			$time_to_wait = ini_get( 'max_execution_time' );
+		else
+			$time_to_wait = 90;
 
 		// If the heartbeat has been modified in the last 90 seconds, we might not be dead
 		if ( ( time() - $this->get_heartbeat_timestamp() ) < $time_to_wait )
