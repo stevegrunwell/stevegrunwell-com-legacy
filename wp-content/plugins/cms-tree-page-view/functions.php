@@ -32,6 +32,28 @@ add_action("cms_tree_page_view_post_user_can_add_after", function($can_edit, $po
 */
 
 /**
+ * Check if a post type is ignored
+ */
+function cms_tpv_post_type_is_ignored($post_type) {
+	
+	$ignored_post_types = cms_tpv_get_ignored_post_types();
+	
+	return in_array($post_type, $ignored_post_types);
+
+}
+
+/**
+ * Returns a list of ignored post types
+ * These are post types used by plugins etc.
+ */
+function cms_tpv_get_ignored_post_types() {
+	return array(
+		// advanced custom fields
+		"acf"
+	);
+}
+
+/**
  * Use the ajax action-thingie to catch our form with new pages
  * Add pages and then redirect to...?
  */
@@ -554,6 +576,10 @@ function cms_tpv_admin_menu() {
 
 	foreach ($options["menu"] as $one_menu_post_type) {
 		
+		if ( cms_tpv_post_type_is_ignored($one_menu_post_type) ) {
+			continue;
+		}
+
 		// post is a special one.
 		if ($one_menu_post_type == "post") {
 			$slug = "edit.php";
@@ -567,9 +593,11 @@ function cms_tpv_admin_menu() {
 		// I think you can get a notice message here if you for example have enabled
 		// the menu for a custom post type that you later on remove?
 		if ( ! empty( $post_type_object ) ) {
+
 			$menu_name = _x("Tree View", "name in menu", "cms-tree-page-view");
 			$page_title = sprintf(_x('%1$s Tree View', "title on page with tree", "cms-tree-page-view"), $post_type_object->labels->name);
 			add_submenu_page($slug, $page_title, $menu_name, $post_type_object->cap->edit_posts, "cms-tpv-page-$one_menu_post_type", "cms_tpv_pages_page");
+
 		}
 	}
 
@@ -607,9 +635,14 @@ function cms_tpv_options() {
 					$post_types = get_post_types(array(
 						"show_ui" => TRUE
 					), "objects");
+
 					
 					$arr_page_options = array();
 					foreach ($post_types as $one_post_type) {
+
+						if ( cms_tpv_post_type_is_ignored($one_post_type->name) ) {
+							continue;
+						}
 
 						$name = $one_post_type->name;
 						
