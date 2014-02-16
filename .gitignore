@@ -11,6 +11,7 @@ wp-content/uploads/*
 readme.html
 sitemap.*
 wp-config.php
+REVISION
 
 # Include these files in previously blocked directories
 !wp-content/uploads/.htaccess
