@@ -1,6 +1,5 @@
 # Exclude these files from the git repo
 wp-content/backups/*
-wp-content/cache/*
 wp-content/themes/grunwell2012/css/ie8.css
 wp-content/themes/grunwell2012/css/style.css
 wp-content/upgrade/*
@@ -12,6 +11,10 @@ readme.html
 sitemap.*
 wp-config.php
 REVISION
+
+# WP Super cache
+wp-content/cache/*
+wp-content/wp-cache-config.php
 
 # Include these files in previously blocked directories
 !wp-content/uploads/.htaccess
