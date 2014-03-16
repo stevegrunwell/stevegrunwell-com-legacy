@@ -874,6 +874,7 @@ class GFAddOnFeedsTable extends WP_List_Table {
     }
 
     function column_default($item, $column) {
+
         if (is_callable($this->_column_value_callback)) {
             $value = call_user_func($this->_column_value_callback, $item, $column);
         }

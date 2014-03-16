@@ -828,6 +828,9 @@ class GFFormsModel {
 
         self::$_current_forms[$form_id] = null;
 
+        add_action( 'gform_after_update_form_meta', $form_meta, $form_id, $meta_name );
+        add_action( "gform_after_update_form_meta_{$form_id}", $form_meta, $form_id, $meta_name );
+
         return $result;
     }
 
@@ -1495,8 +1498,12 @@ class GFFormsModel {
         global $wp_locale;
         $number_format = $wp_locale->number_format['decimal_point'] == "," ? "decimal_comma" : "decimal_dot";
 
-        if(GFCommon::is_numeric($text, $number_format))
+        if(is_numeric($text) && $number_format == "decimal_comma"){
+            return GFCommon::format_number($text, "decimal_comma");
+        }
+        else if(GFCommon::is_numeric($text, $number_format)){
             return GFCommon::clean_number($text, $number_format);
+        }
 
         return $text;
     }
@@ -1660,6 +1667,9 @@ class GFFormsModel {
                     require_once(GFCommon::get_base_path() . '/currency.php');
                     $currency = new RGCurrency(GFCommon::get_currency());
                     $value = $currency->to_number( $value );
+                }
+                else if($field["numberFormat"] == "decimal_comma"){
+                    $value = GFCommon::clean_number($value, "decimal_comma");
                 }
             break;
 
@@ -2091,12 +2101,17 @@ class GFFormsModel {
 
             default:
 
-                //allow HTML for certain field types
-                $allow_html = in_array($field["type"], array("post_custom_field", "post_title", "post_content", "post_excerpt", "post_tags")) || in_array($input_type, array("checkbox", "radio")) ? true : false;
-                $allowable_tags = apply_filters("gform_allowable_tags_{$form_id}", apply_filters("gform_allowable_tags", $allow_html, $field, $form_id), $field, $form_id);
+                // only filter HTML on non-array based values
+                if( ! is_array( $value ) ) {
 
-                if($allowable_tags !== true)
-                    $value = strip_tags($value, $allowable_tags);
+                    //allow HTML for certain field types
+                    $allow_html = in_array($field["type"], array("post_custom_field", "post_title", "post_content", "post_excerpt", "post_tags")) || in_array($input_type, array("checkbox", "radio")) ? true : false;
+                    $allowable_tags = apply_filters("gform_allowable_tags_{$form_id}", apply_filters("gform_allowable_tags", $allow_html, $field, $form_id), $field, $form_id);
+
+                    if($allowable_tags !== true)
+                        $value = strip_tags($value, $allowable_tags);
+
+                }
 
             break;
         }
@@ -2129,6 +2144,41 @@ class GFFormsModel {
         }
 
         return $value;
+    }
+
+    public static function is_checkbox_checked($field_id, $field_label, $lead, $form){
+
+        //looping through lead detail values trying to find an item identical to the column label. Mark with a tick if found.
+        $lead_field_keys = array_keys($lead);
+        foreach($lead_field_keys as $input_id){
+            //mark as a tick if input label (from form meta) is equal to submitted value (from lead)
+            if(is_numeric($input_id) && absint($input_id) == absint($field_id)){
+                if($lead[$input_id] == $field_label){
+                    return $lead[$input_id];
+                }
+                else{
+                    $field = RGFormsModel::get_field($form, $field_id);
+                    if(rgar($field, "enableChoiceValue") || rgar($field, "enablePrice")){
+                        foreach($field["choices"] as $choice){
+                            if($choice["value"] == $lead[$field_id]){
+                                return $choice["value"];
+                            }
+                            else if(rgar($field,"enablePrice")){
+                                $ary = explode("|", $lead[$field_id]);
+                                $val = count($ary) > 0 ? $ary[0] : "";
+                                $price = count($ary) > 1 ? $ary[1] : "";
+
+                                if($val == $choice["value"]){
+                                    return $choice["value"];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private static function create_list_array($field, $value){
@@ -3077,8 +3127,6 @@ class GFFormsModel {
         //initializing rownum
         $wpdb->query("select @rownum:=0");
 
-        GFCommon::log_debug($sql);
-
         //getting results
         $results = $wpdb->get_results($sql);
 
@@ -3973,10 +4021,8 @@ class GFFormsModel {
                     $search_type = "global";
                 } elseif (is_numeric($key)){
                     $search_type = "field";
-                } elseif(isset($entry_meta[$key])){
-                    $search_type = "meta";
                 } else {
-                    $search_type = "global";
+                    $search_type = "meta";
                 }
             }
 

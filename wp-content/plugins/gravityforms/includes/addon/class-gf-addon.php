@@ -857,23 +857,13 @@ abstract class GFAddOn {
     */
     protected function single_setting_row( $field ) {
 
-        $display = rgar( $field, 'hidden' ) || rgar( $field, 'type') == 'hidden' ? 'style="display:none;"' : '';
+        $display = rgar( $field, 'hidden' ) || rgar( $field, 'type' ) == 'hidden' ? 'style="display:none;"' : '';
 
         ?>
 
         <tr id="gaddon-setting-row-<?php echo $field["name"] ?>" <?php echo $display; ?>>
             <th>
-                <?php
-
-                    echo $field["label"];
-
-                    if( isset( $field['tooltip'] ) )
-                        echo ' ' . gform_tooltip( $field['tooltip'], rgar( $field, 'tooltip_class'), true );
-
-                    if( rgar( $field, 'required' ) )
-                        echo ' ' . $this->get_required_indicator( $field );
-
-                ?>
+                <?php $this->single_setting_label( $field ); ?>
             </th>
             <td>
                 <?php $this->single_setting( $field ); ?>
@@ -881,6 +871,18 @@ abstract class GFAddOn {
         </tr>
 
         <?php
+    }
+
+    protected function single_setting_label( $field ) {
+
+        echo $field['label'];
+
+        if( isset( $field['tooltip'] ) )
+            echo ' ' . gform_tooltip( $field['tooltip'], rgar( $field, 'tooltip_class'), true );
+
+        if( rgar( $field, 'required' ) )
+            echo ' ' . $this->get_required_indicator( $field );
+
     }
 
     protected function single_setting_row_save( $field ) {
@@ -964,7 +966,7 @@ abstract class GFAddOn {
     }
 
     protected static function is_json($value) {
-        if (is_string($value) && substr($value, 0, 1) == '{' && is_array(json_decode($value, ARRAY_A)))
+        if (is_string($value) && in_array( substr($value, 0, 1), array( '{', '[' ) ) && is_array(json_decode($value, ARRAY_A)))
             return true;
 
         return false;
@@ -1347,15 +1349,16 @@ abstract class GFAddOn {
                 $checked     = checked($selected_value, $radio_value, false);
                 $html .= '
                         <div id="gaddon-setting-radio-choice-' . $choice['id'] . '" class="gaddon-setting-radio' . $horizontal . '">
-                        <input
-                            id = "' . esc_attr($choice['id']) . '"
-                            type = "radio" ' .
-                            'name="_gaddon_setting_' . esc_attr($field["name"]) . '" ' .
-                            'value="' . $radio_value . '" ' .
-                            implode( ' ', $choice_attributes ) . ' ' .
-                            $checked .
-                            ' />
-                            <label for="' . esc_attr($choice['id']) . '">' . esc_html($choice['label']) . ' ' . $tooltip . '</label>
+                        <label for="' . esc_attr($choice['id']) . '">
+                            <input
+                                id = "' . esc_attr($choice['id']) . '"
+                                type = "radio" ' .
+                                'name="_gaddon_setting_' . esc_attr($field["name"]) . '" ' .
+                                'value="' . $radio_value . '" ' .
+                                implode( ' ', $choice_attributes ) . ' ' .
+                                $checked .
+                                ' /><span>'. esc_html($choice['label']) . ' ' . $tooltip . '</span>
+                        </label>
                         </div>
                     ';
             }
@@ -1885,13 +1888,13 @@ abstract class GFAddOn {
 
             foreach( $section['fields'] as $field ) {
 
+                if( ! $this->setting_dependency_met( rgar( $field, 'dependency' ) ) )
+                    continue;
+
                 if($field["type"] == "field_map"){
                     $this->validate_field_map_settings($field, $settings);
                 }
                 else{
-                    if( ! $this->setting_dependency_met( rgar( $field, 'dependency' ) ) )
-                        continue;
-
                     $field_setting = rgar( $settings, rgar( $field, 'name' ) );
 
                     if( is_callable( rgar( $field, 'validation_callback' ) ) ) {
@@ -2074,7 +2077,7 @@ abstract class GFAddOn {
         return false;
     }
 
-    protected function build_choices( $key_value_pairs ) {
+    public function build_choices( $key_value_pairs ) {
 
         $choices = array();
 
@@ -2276,7 +2279,7 @@ abstract class GFAddOn {
     protected function form_settings_page_title(){
         return "";
     }
-    
+
     protected function form_settings_icon(){
         return "";
     }
@@ -2435,7 +2438,7 @@ abstract class GFAddOn {
     public function plugin_settings_title(){
         return $this->get_short_title() . ' ' . __( "Settings", "gravityforms" );
     }
-    
+
     protected function plugin_settings_icon(){
         return "";
     }
@@ -2808,7 +2811,16 @@ abstract class GFAddOn {
         return $class;
     }
 
-
+    /**
+     * Checked whether an object is locked
+     *
+     * @param int|mixed $object_id The object ID
+     * @return bool
+     */
+    public function is_object_locked($object_id) {
+        $gf_locking = new GFAddonLocking($this->get_locking_config(),$this);
+        return $gf_locking->is_locked($object_id);
+    }
 
     //--------------  Helper functions  ---------------------------------------------------
 

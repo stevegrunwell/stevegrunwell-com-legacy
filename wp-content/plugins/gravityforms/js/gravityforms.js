@@ -823,15 +823,14 @@ var GFCalc = function(formId, formulaFields){
         }
         else {
 
-            var decimalSeparator, thousandSeparator;
-            if(formulaField.numberFormat == "decimal_comma"){
+            var decimalSeparator = ".";
+            var thousandSeparator = ",";
+
+            if(numberFormat == "decimal_comma"){
                 decimalSeparator = ",";
                 thousandSeparator = ".";
             }
-            else if(formulaField.numberFormat == "decimal_dot"){
-                decimalSeparator = ".";
-                thousandSeparator = ",";
-            }
+
             result = gformFormatNumber(result, !gformIsNumber(formulaField.rounding) ? -1 : formulaField.rounding, decimalSeparator, thousandSeparator);
         }
 

@@ -997,36 +997,9 @@ class GFEntryList{
                                             }
                                             else{
                                                 $value = "";
-                                                //looping through lead detail values trying to find an item identical to the column label. Mark with a tick if found.
-                                                $lead_field_keys = array_keys($lead);
-                                                foreach($lead_field_keys as $input_id){
-                                                    //mark as a tick if input label (from form meta) is equal to submitted value (from lead)
-                                                    if(is_numeric($input_id) && absint($input_id) == absint($field_id)){
-                                                        if($lead[$input_id] == $columns[$field_id]["label"]){
-                                                            $value = "<i class='fa fa-check gf_valid'></i>";
-                                                        }
-                                                        else{
-                                                            $field = RGFormsModel::get_field($form, $field_id);
-                                                            if(rgar($field, "enableChoiceValue") || rgar($field, "enablePrice")){
-                                                                foreach($field["choices"] as $choice){
-                                                                    if($choice["value"] == $lead[$field_id]){
-                                                                        $value = "<i class='fa fa-check gf_valid'></i>";
-                                                                        break;
-                                                                    }
-                                                                    else if(rgar($field,"enablePrice")){
-                                                                        $ary = explode("|", $lead[$field_id]);
-                                                                        $val = count($ary) > 0 ? $ary[0] : "";
-                                                                        $price = count($ary) > 1 ? $ary[1] : "";
 
-                                                                        if($val == $choice["value"]){
-                                                                            $value = "<i class='fa fa-check gf_valid'></i>";
-                                                                            break;
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
+                                                if(GFFormsModel::is_checkbox_checked($field_id, $columns[$field_id]["label"], $lead, $form)){
+                                                    $value = "<i class='fa fa-check gf_valid'></i>";
                                                 }
                                             }
                                         break;
@@ -1347,6 +1320,8 @@ class GFEntryList{
         </div>
         <?php
     }
+
+
 
     public static function get_icon_url($path){
         $info = pathinfo($path);

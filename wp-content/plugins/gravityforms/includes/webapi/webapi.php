@@ -343,6 +343,8 @@ if (class_exists("GFForms")) {
 
         public function handle_page_request() {
 
+            global $HTTP_RAW_POST_DATA;
+
             $route = get_query_var(GFWEBAPI_ROUTE_VAR);
             if (false == $route)
                 return;
@@ -355,8 +357,10 @@ if (class_exists("GFForms")) {
 
             $settings = get_option('gravityformsaddon_gravityformswebapi_settings');
 
-            if (empty($settings))
+            if (empty($settings)){
                 $this->die_not_authorized();
+            }
+
             $account_id = $settings["impersonate_account"];
             wp_set_current_user($account_id);
 
@@ -396,8 +400,18 @@ if (class_exists("GFForms")) {
                 do_action("gform_webapi_" . strtolower($method) . "_" . $collection . "_" . $collection2, $id, $id2, $format, $args);
             }
 
-            $raw_body = file_get_contents("php://input");
-            $data = json_decode($raw_body, true);
+            if (!isset($HTTP_RAW_POST_DATA)) {
+                $HTTP_RAW_POST_DATA = file_get_contents('php://input');
+            }
+
+            GFCommon::log_debug("WebAPI: HTTP_RAW_POST_DATA = " . $HTTP_RAW_POST_DATA);
+
+
+            $data = json_decode($HTTP_RAW_POST_DATA, true);
+
+
+            // todo: tidy up this mess
+
             switch ($collection) {
                 case "forms" :
                     switch ($collection2) {
@@ -508,7 +522,7 @@ if (class_exists("GFForms")) {
                             break;
                         case 'PUT' :
                             switch ($collection2) {
-                                case "properties" : // route = /entries/{id}/fields/{id2}
+                                case "properties" : // route = /entries/{id}/properties/{id2}
                                     $this->put_entry_properties($data, $id);
                                     break;
                                 case "" :
@@ -777,19 +791,29 @@ if (class_exists("GFForms")) {
         public function put_entry_properties($property_values, $entry_id){
             $this->authorize("gravityforms_edit_entries");
 
-            foreach($property_values as $key => $property_value){
-                $result = GFAPI::update_entry_property($entry_id, $key, $property_value);
-                if(is_wp_error($result)){
-                    break;
+            if(is_array($property_values)){
+                foreach($property_values as $key => $property_value){
+                    $result = GFAPI::update_entry_property($entry_id, $key, $property_value);
+                    if(is_wp_error($result)){
+                        break;
+                    }
                 }
-            }
 
-            if (is_wp_error($result)) {
-                $response = $this->get_error_response($result);
-                $status   = $this->get_error_status($result);
+                if (is_wp_error($result)) {
+                    $response = $this->get_error_response($result);
+                    $status   = $this->get_error_status($result);
+                } else {
+                    $status   = 200;
+                    $response = __("Success", "gravityforms");
+                }
+
             } else {
-                $status   = 200;
-                $response = __("Success", "gravityforms");
+                $status   = 400;
+                if(empty($property_values)){
+                    $response = __("No property values were found in the request body", "gravityforms");
+                } else {
+                    $response = __("Property values should be sent as an array", "gravityforms");
+                }
             }
 
             $this->end($status, $response);

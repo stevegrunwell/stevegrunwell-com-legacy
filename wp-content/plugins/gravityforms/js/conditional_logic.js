@@ -105,17 +105,34 @@ function gf_is_match(formId, rule){
 
         var matchCount = 0;
 
-        var isCurrencyFormat = window['gf_global'] && gf_global.number_formats && gf_global.number_formats[formId] && gf_global.number_formats[formId][rule["fieldId"]] == 'currency';
+        var fieldNumberFormat = window['gf_global'] && gf_global.number_formats && gf_global.number_formats[formId] && gf_global.number_formats[formId][rule["fieldId"]] ? gf_global.number_formats[formId][rule["fieldId"]] : false;
 
         for(var i=0; i < values.length; i++){
             fieldValue = gf_get_value(values[i]);
-            if(isCurrencyFormat){
-                var decimalSeparator = gformGetDecimalSeparator('currency');
+            var decimalSeparator = ".";
+            if( fieldNumberFormat ){
+
+                if( fieldNumberFormat == "currency" )
+                    decimalSeparator = gformGetDecimalSeparator('currency');
+                else if( fieldNumberFormat == "decimal_comma")
+                    decimalSeparator = ",";
+                else if( fieldNumberFormat == "decimal_dot")
+                    decimalSeparator = ".";
+
+                //transform to a decimal dot number
                 fieldValue = gformCleanNumber( fieldValue, '', '', decimalSeparator);
+
+                //now transform to number specified by locale
+                if(window['gf_number_format'] && window['gf_number_format'] == "decimal_comma")
+                    fieldValue = gformFormatNumber(fieldValue, -1, ",", ".");
+
                 if( ! fieldValue )
                     fieldValue = 0;
+
                 fieldValue = fieldValue.toString();
             }
+
+
 
             if(gf_matches_operation(fieldValue, rule["value"], rule["operator"])){
                 matchCount++;

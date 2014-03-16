@@ -621,7 +621,7 @@ class GFExport{
 
         $entry_count = GFAPI::count_entries($form_id, $search_criteria);
 
-        $page_size = 200;
+        $page_size = 100;
         $offset = 0;
 
         //Adding BOM marker for UTF-8
@@ -633,11 +633,14 @@ class GFExport{
         $field_rows = self::get_field_row_count($form, $fields, $entry_count);
 
         //writing header
+        $headers = array();
         foreach($fields as $field_id){
             $field = RGFormsModel::get_field($form, $field_id);
             $value = str_replace('"', '""', GFCommon::get_label($field, $field_id)) ;
 
             GFCommon::log_debug("Header for field ID {$field_id}: {$value}");
+
+            $headers[$field_id] = $value;
 
             $subrow_count = isset($field_rows[$field_id]) ? intval($field_rows[$field_id]) : 0;
             if($subrow_count == 0){
@@ -679,6 +682,14 @@ class GFExport{
                             }
 
                             $value = !empty($long_text) ? $long_text : rgar($lead,$field_id);
+
+                            $field = RGFormsModel::get_field($form, $field_id);
+                            if(RGFormsModel::get_input_type($field) == "checkbox"){
+                                $value = GFFormsModel::is_checkbox_checked($field_id, $headers[$field_id], $lead, $form);
+                                if($value === false)
+                                    $value = "";
+                            }
+
                             $value = apply_filters("gform_export_field_value", $value, $form_id, $field_id, $lead);
 
                             GFCommon::log_debug("Value for field ID {$field_id}: {$value}");

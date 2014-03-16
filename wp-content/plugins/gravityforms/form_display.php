@@ -1120,7 +1120,7 @@ class GFFormDisplay{
                     break;
                 }
 
-                $field["validation_message"] =  apply_filters("gform_duplicate_message_{$form["id"]}", apply_filters("gform_duplicate_message", $default_message, $form), $form);
+                $field["validation_message"] = apply_filters( "gform_duplicate_message_{$form["id"]}", apply_filters("gform_duplicate_message", $default_message, $form, $field, $value ), $form, $field, $value );
 
             }
             else{

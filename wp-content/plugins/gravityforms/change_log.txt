@@ -1,4 +1,48 @@
 -------------------------------------------------------------------------------------------------------------------
+Version 1.8.5
+
+    - Added $field and $value parameters to 'gform_duplicate_message' filter.
+    - Added new hook: "gform_after_update_form_meta", fires any time form meta is updated.
+
+    - Updated shortcode_atts() call in GFForms::parse_shortcode() method to pass 'gravityforms' as the third parameter so 3rd party developers can add/filter shortcode attributes.
+
+    - Fixed Notice when adding a post category field to the form.
+    - Fixed issue with email notification format when using the {pricing_fields} merge tag.
+    - Fixed issue with conditional logic when the current number locale is set to decimal comma.
+    - Fixed issue with export where it was returning results inconsistent with entry list for checkbox items that have been re-ordered.
+    - Fixed issue where custom field types which posted values as arrays were set to null when filtering for HTML.
+    - Fixed issue with number format and conditional logic when number was configured with the comma as the decimal separator.
+
+    - AF: Added is_object_locked().
+    - AF: Added payment_callback table to track callbacks and prevent duplicate execution of them.
+    - AF: Added Donation as a dependency value for transaction type for the Payment Add-On.
+	- AF: Added function to set the onchange event for enabling a trial for the Payment Add-On.
+    - AF: Added support for a transaction id to be added to the transaction table for subscription recurring payments.
+    - AF: Added support for a subscription to be retrieved by a transaction id.
+	- AF: Added new styles for add-on results.
+
+	- AF: Updated payment amount to have a default value of form_total for the Payment Add-On.
+	- AF: Updated the logic for showing/hiding trial fields for the Payment Add-On.
+    - AF: Updated radio button setting markup so that it is consistent with WordPress'.
+    - AF: Updated settings label code; moved it to its own function.
+    - AF: Updated is_json() method to accept "[" as a valid first character of a JSON string.
+    - AF: Updated build_choices() method to 'public' from 'protected'.
+
+    - AF: Fixed notices in the Payment Add-On.
+
+    - API: Fixed an issue with get_entries() where incorrect entries were being returned when searching across all forms using an entry meta key that is not currently active for any of the forms.
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.8.4.1
+    - Fixed issue with tooltips not working on Add On pages. Included font-awesome.css to Add On pages to fix the issue.
+    - Fixed issue where old inputs were not removed when adding new choices via bulk add functionality for Post Custom Fields with a "checkbox" field type
+    - Fixed an issue with entry export which may result in an empty export file for forms with a large number of entries
+    - AF: Added logging statements
+    - AF: Fixed issue with field map validation on fields that are hidden by dependency
+    - API: Added some logging statements
+    - API: Updated GFWebAPI::handle_page_request() to check the $HTTP_RAW_POST_DATA global variable before attempting to read the contents of the request body.
+
+-------------------------------------------------------------------------------------------------------------------
 Version 1.8.4
 
     - Added "gform_footer_init_scripts_filter" hook to support filtering the footer init scripts string

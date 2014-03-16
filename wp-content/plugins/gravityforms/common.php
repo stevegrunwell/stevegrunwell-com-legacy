@@ -1142,7 +1142,7 @@ class GFCommon{
 
             default :
                 if(!empty($products["products"])){
-                    $field_data ='<tr bgcolor="#EAF2FA">
+                    $field_data ='<table><tr bgcolor="#EAF2FA">
                             <td colspan="2">
                                 <font style="font-family: sans-serif; font-size:12px;"><strong>' . $order_label . '</strong></font>
                             </td>
@@ -1213,7 +1213,7 @@ class GFCommon{
                                 </tfoot>
                                </table>
                             </td>
-                        </tr>';
+                        </tr></table>';
                 }
             break;
         }
@@ -1561,7 +1561,13 @@ class GFCommon{
             GFCommon::log_debug("Sending email via wp_mail()");
             GFCommon::log_debug(print_r(compact("to", "subject", "message", "headers", "attachments", "abort_email"), true));
             $is_success = wp_mail($to, $subject, $message, $headers, $attachments);
-            GFCommon::log_debug("Result from wp_mail(): {$is_success}");
+            GFCommon::log_debug( "Result from wp_mail(): {$is_success}" );
+            if( $is_success ) {
+                GFCommon::log_debug( 'Mail was passed from WordPress to the mail server.' );
+            } else {
+                GFCommon::log_debug( 'The mail message was passed off to WordPress for processing, but WordPress was unable to send the message.' );
+            }
+
         }
 
         self::add_emails_sent();
@@ -5084,8 +5090,10 @@ class GFCommon{
 
         $field['choices'] = $choices;
 
-        $field['choices'] = apply_filters("gform_post_category_choices", $field["choices"], $field, $field["formId"]);
-        $field['choices'] = apply_filters("gform_post_category_choices_{$field["formId"]}_{$field["id"]}", $field["choices"], $field, $field["formId"]);
+        $form_id = IS_ADMIN ? rgget("id") : rgar($field,"formId");
+
+        $field['choices'] = apply_filters("gform_post_category_choices", $field["choices"], $field, $form_id);
+        $field['choices'] = apply_filters("gform_post_category_choices_{$form_id}_{$field["id"]}", $field["choices"], $field, $form_id);
 
         if(RGFormsModel::get_input_type($field) == 'checkbox')
             $field['inputs'] = $inputs;
