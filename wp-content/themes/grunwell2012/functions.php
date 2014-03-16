@@ -16,7 +16,7 @@ require_once dirname( __FILE__ ) . '/functions/advanced-custom-fields.php';
  */
 function grunwell_register_scripts_styles() {
   global $wp_styles;
-  $hash = grunwell_get_current_git_commit( 'master', 8 );
+  $hash = grunwell_get_current_git_commit( 8 );
 
   # Styles
   wp_register_style( 'site-styles', get_bloginfo( 'template_url' ) . '/css/style.css', null, $hash, 'all' );
@@ -348,14 +348,18 @@ function grunwell_comment( $comment, $args, $depth ) {
 /**
  * Get the hash of the current git HEAD
  * @global GRUNWELL_CURRENT_GIT_COMMIT
- * @param str $branch The git branch to check
  * @param int $length Optionally only return the first $length characters of the hash
  * @return mixed Either the hash or a boolean false
  */
-function grunwell_get_current_git_commit( $branch='master', $length=false ) {
+function grunwell_get_current_git_commit( $length=false ) {
   if ( ! defined( 'GRUNWELL_CURRENT_GIT_COMMIT' ) ) {
-    $hash = file_get_contents( sprintf( '%s.git/refs/heads/%s', ABSPATH, $branch ) );
-    define( 'GRUNWELL_CURRENT_GIT_COMMIT', ( $hash ? $hash : false ) );
+    $file = ABSPATH . 'REVISION'; // Let Capistrano work for us!
+    if ( is_readable( $file ) ) {
+      $hash = trim( file_get_contents( $file ) );
+    } else {
+      $hash = false;
+    }
+    define( 'GRUNWELL_CURRENT_GIT_COMMIT', $hash );
   }
   return ( $length ? substr( GRUNWELL_CURRENT_GIT_COMMIT, 0, $length ) : GRUNWELL_CURRENT_GIT_COMMIT );
 }
@@ -365,7 +369,7 @@ function grunwell_get_current_git_commit( $branch='master', $length=false ) {
  * @uses grunwell_get_current_git_commit()
  */
 function grunwell_show_repository_data() {
-  if ( $hash = grunwell_get_current_git_commit( 'master', 8 ) ) {
+  if ( $hash = grunwell_get_current_git_commit( 8 ) ) {
     printf( "<!-- This site's source is available at https://github.com/stevegrunwell/stevegrunwell-com - HEAD is currently at %s -->\n", $hash );
   }
 }
