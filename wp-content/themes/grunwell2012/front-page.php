@@ -14,13 +14,15 @@ get_header(); ?>
     <?php the_content(); ?>
 
     <h2>Latest Blog Posts</h2>
-    <?php foreach ( get_posts( array( 'numberposts' => 3, 'post_status' => 'publish' ) ) as $post ) : setup_postdata( $post ); ?>
+    <?php foreach ( get_posts( array( 'posts_per_page' => 3, 'post_status' => 'publish' ) ) as $post ) : setup_postdata( $post ); ?>
 
       <h3 class="post-title"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h3>
       <?php the_excerpt(); ?>
 
     <?php endforeach; ?>
-    <?php wp_reset_postdata(); ?>
+
+    <?php grunwell_pagination(); ?>
+    <p><?php printf( __( 'Get your geeky fill <a href="%s">on my blog!</a>', 'grunwell-2012' ), get_permalink( get_option( 'page_for_posts' ) ) ); ?></p>
   </div><!--// #post-<?php the_ID(); ?>-->
 
 <?php endwhile; ?>

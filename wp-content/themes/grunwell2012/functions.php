@@ -376,14 +376,22 @@ function grunwell_show_repository_data() {
 add_action( 'wp_head', 'grunwell_show_repository_data' );
 
 /**
- * Generate pagination to use on archive-style templates - will echo directly to the page
- * @return void
- * @uses get_next_posts_link()
+ * Create previous/next post links
+ *
+ * @return str
+ *
  * @uses get_previous_posts_link()
+ * @uses get_next_posts_link()
  */
 function grunwell_pagination() {
-  printf( '<ul class="pagination clearfix"><li class="prev">%s</li><li class="next">%s</li></ul>', get_previous_posts_link(), get_next_posts_link() );
-  return;
+  $nav = '';
+  if ( $next = get_next_posts_link( __( '&laquo; Older Posts', 'grunwell-2012' ) ) ) {
+    $nav .= sprintf( '<li class="next">%s</li>', $next );
+  }
+  if ( $prev = get_previous_posts_link( __( 'Newer Posts &raquo;', 'grunwell-2012' ) ) ) {
+    $nav .= sprintf( '<li class="prev">%s</li>', $prev );
+  }
+  echo ( $nav ? sprintf( '<ul class="post-nav-links">%s</ul>', $nav ) : '' );
 }
 
 /**

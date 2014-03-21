@@ -196,9 +196,9 @@ article.primary .entry-meta { margin-bottom: $line_height; }
   }
 }
 
-.pagination { margin:2em 0 0; list-style:none;
-  .prev { float:left; }
-  .next { float:right; }
+.post-nav-links { margin:2em 0 0; list-style:none;
+  .prev { float: right; }
+  .next { float: left; }
 }
 
 /** Sidebar styles */
