@@ -1,20 +1,22 @@
 # Exclude these files from the git repo
-wp-content/backups/*
+wp-content/backups
+wp-content/ewww
 wp-content/themes/grunwell2012/css/ie8.css
 wp-content/themes/grunwell2012/css/style.css
-wp-content/upgrade/*
-wp-content/uploads/*
+wp-content/upgrade
+wp-content/uploads
+wp-config.php
+
+# Hidden files
 *.sass-cache*
 *.DS_Store
 *Thumbs.db
-readme.html
+*~imageoptim*
+
+# Generated and/or artifact files
 sitemap.*
-wp-config.php
 REVISION
 
 # WP Super cache
 wp-content/cache/*
 wp-content/wp-cache-config.php
-
-# Include these files in previously blocked directories
-!wp-content/uploads/.htaccess
