@@ -6,7 +6,7 @@ Tested up to: 3.8.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Fully customise WordPress edit screens with powerful fields. Boasting a professional interface and a powerfull API, it’s a must have for any web developer working with WordPress.Field types include: Wysiwyg, text, textarea, image, file, select, checkbox, page link, post object, date picker, color picker and more!
+Fully customise WordPress edit screens with powerful fields. Boasting a professional interface and a powerful API, it’s a must have for any web developer working with WordPress.Field types include: Wysiwyg, text, textarea, image, file, select, checkbox, page link, post object, date picker, color picker and more!
 
 
 == Description ==
@@ -106,6 +106,23 @@ http://support.advancedcustomfields.com/
 
 
 == Changelog ==
+
+= 4.3.5 =
+* Textarea field: Added new `rows` setting
+* API: Added `$format_value` parameter to the `get_fields` function
+* Core: Improved conditional logic & tab JS performance
+* Core: Removed changelog anouncement in plugins update list
+* Core: Fixed anoying `wp is not defined` JS error
+* Core: Added logic to load full or minified scripts using the `SCRIPT_DEBUG` constant
+* Core: Improved loading structure to better allow ACF functions within the functions.php file
+* Core: Fixed revisions bug causing sub field data to not restore
+* Core: Made use of WP datepicker UI
+* Field Group: Changed post location rule to show all post types
+* Field Group: Changed page location rule to show only page post type
+* Field Group: Added new filter for meta box priority `acf/input/meta_box_priority`
+* Language: Added missing translation support in multiple fields
+* Language: Added Hebrew translation - Thanks to Erez Lieberman
+* Language: Updating Czech translations - Thanks to webeescz
 
 = 4.3.4 =
 * Post Object field: Fixed get_pages bug cuasing 'pages' to not appear
