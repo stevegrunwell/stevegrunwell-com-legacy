@@ -1,7 +1,7 @@
 <?php
 /**
  * Integrate image optimizers into WordPress.
- * @version 1.8.4
+ * @version 1.8.5
  * @package EWWW_Image_Optimizer
  */
 /*
@@ -10,7 +10,7 @@ Plugin URI: http://wordpress.org/extend/plugins/ewww-image-optimizer/
 Description: Reduce file sizes for images within WordPress including NextGEN Gallery and GRAND FlAGallery. Uses jpegtran, optipng/pngout, and gifsicle.
 Author: Shane Bishop
 Text Domain: ewww-image-optimizer
-Version: 1.8.4
+Version: 1.8.5
 Author URI: http://www.shanebishop.net/
 License: GPLv3
 */
@@ -23,7 +23,7 @@ define('EWWW_IMAGE_OPTIMIZER_TOOL_PATH', WP_CONTENT_DIR . '/ewww/');
 define('EWWW_IMAGE_OPTIMIZER_PLUGIN_FILE', __FILE__);
 // this is the full system path to the plugin folder
 define('EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('EWWW_IMAGE_OPTIMIZER_VERSION', '184');
+define('EWWW_IMAGE_OPTIMIZER_VERSION', '185');
 
 require_once(EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'common.php');
 
@@ -184,6 +184,7 @@ function ewww_image_optimizer_admin_init() {
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_enable_cloudinary');
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_delay', 'intval');
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_interval', 'intval');
+	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_import_status');
 	// setup scheduled optimization if the user has enabled it, and it isn't already scheduled
 	if (ewww_image_optimizer_get_option('ewww_image_optimizer_auto') == TRUE && !wp_next_scheduled('ewww_image_optimizer_auto')) {
 		$ewww_debug .= "scheduling auto-optimization<br>";
@@ -463,6 +464,7 @@ function ewww_image_optimizer_path_check ( $j = true, $o = true, $g = true, $p =
 	$optipng = false;
 	$gifsicle = false;
 	$pngout = false;
+	$pngquant = false;
 	// for Windows, everything must be in the wp-content/ewww folder, so that is all we check
 	if ('WINNT' == PHP_OS) {
 		if (file_exists(EWWW_IMAGE_OPTIMIZER_TOOL_PATH . 'jpegtran.exe') && $j) {
@@ -720,6 +722,8 @@ function ewww_image_optimizer_find_binary ($binary, $switch) {
 		return '/usr/local/bin/' . $binary;
 	} elseif (ewww_image_optimizer_tool_found('/usr/gnu/bin/' . $binary, $switch)) {
 		return '/usr/gnu/bin/' . $binary;
+	} elseif (ewww_image_optimizer_tool_found('/usr/syno/bin/' . $binary, $switch)) { // for synology diskstation OS
+		return '/usr/syno/bin/' . $binary;
 	} else {
 		return '';
 	}
@@ -1266,17 +1270,6 @@ function ewww_image_optimizer($file, $gallery_type, $converted, $new, $fullsize 
 			} elseif (!$convert) {
 				break;
 			}
-			// if we generated a smaller PNG than the optimized JPG
-/*			if ($converted && $new_size > $png_size) {
-				// store the result of the conversion
-				$result = "$orig_size vs. $new_size";
-			// if the PNG was smaller than the original JPG, but bigger than the optimized JPG
-			} elseif ($converted) {
-				// unsuccessful conversion
-				$converted = FALSE;
-				// remove the converted PNG
-				unlink($pngfile);
-			}*/
 			// if the conversion process is turned ON, or if this is a resize and the full-size was converted
 			if ($convert && !ewww_image_optimizer_get_option('ewww_image_optimizer_cloud_jpg')) {
 				$ewww_debug .= "attempting to convert JPG to PNG: $pngfile <br>";
@@ -1487,34 +1480,6 @@ function ewww_image_optimizer($file, $gallery_type, $converted, $new, $fullsize 
 			clearstatcache();
 			// retrieve the new filesize of the PNG
 			$new_size = filesize($file);
-			// if the converted JPG was smaller than the original, and smaller than the optimized PNG, and the JPG isn't an empty file
-			/*if ($converted && $new_size > $jpg_size && $jpg_size != 0) {
-				// store the size of the JPG as the new filesize
-				$new_size = $jpg_size;
-				// if the user wants originals delted after a conversion
-				if (ewww_image_optimizer_get_option('ewww_image_optimizer_delete_originals') == TRUE) {
-					// delete the original PNG
-					unlink($file);
-				}
-				// update the $file location to the new JPG
-				$file = $jpgfile;
-			// if the converted JPG was smaller than the original, but larger than the optimized PNG
-			} elseif ($converted) {
-				// unsuccessful conversion
-				$converted = FALSE;
-				if (is_file($jpgfile)) {
-					// delete the resulting JPG
-					unlink($jpgfile);
-				}
-			}*/
-			// if the new file (converted OR optimized) is smaller than the original
-/*			if ($orig_size > $new_size) {
-				// return a message comparing the two
-				$result = "$orig_size vs. $new_size";    
-			} else {
-				// otherwise nothing has changed
-				$result = "unchanged";
-			}*/
 			// if conversion is on and the PNG doesn't have transparency or the user set a background color to replace transparency
 			if ($convert && (!ewww_image_optimizer_png_alpha($file) || ewww_image_optimizer_jpg_background())) {
 				$ewww_debug .= "attempting to convert PNG to JPG: $jpgfile <br>";
@@ -1687,8 +1652,29 @@ function ewww_image_optimizer($file, $gallery_type, $converted, $new, $fullsize 
 			}
 			// if optimization is turned ON
 			if ($optimize) {
+				$tempfile = $file . ".tmp"; //temporary GIF output
 				// run gifsicle on the GIF
-				exec( "$nice " . $tools['GIFSICLE'] . " -b -O3 --careful " . ewww_image_optimizer_escapeshellarg( $file ) );
+				exec( "$nice " . $tools['GIFSICLE'] . " -b -O3 --careful -o $tempfile" . ewww_image_optimizer_escapeshellarg( $file ) );
+				if (file_exists($tempfile)) {
+					// retrieve the filesize of the temporary GIF
+					$new_size = filesize($tempfile);
+					// if the new GIF is smaller
+					if ($orig_size > $new_size && $new_size != 0) {
+						// replace the original with the optimized file
+						rename($tempfile, $file);
+						// store the results of the optimization
+						$result = "$orig_size vs. $new_size";
+					// if the optimization didn't produce a smaller GIF
+					} else {
+						if (is_file($tempfile)) {
+							// delete the optimized file
+							unlink($tempfile);
+						}
+						// store the results
+						$result = 'unchanged';
+						$new_size = $orig_size;
+					}
+				}
 			// if conversion and optimization are both turned OFF, we are done here
 			} elseif (!$convert) {
 				break;
@@ -1697,34 +1683,6 @@ function ewww_image_optimizer($file, $gallery_type, $converted, $new, $fullsize 
 			clearstatcache();
 			// get the new filesize for the GIF
 			$new_size = filesize($file);
-			// if the PNG was smaller than the original GIF, and smaller than the optimized GIF
-/*			if ($converted && $new_size > $png_size && $png_size != 0) {
-				// store the PNG size as the new filesize
-				$new_size = $png_size;
-				// if the user wants original GIFs deleted after successful conversion
-				if (ewww_image_optimizer_get_option('ewww_image_optimizer_delete_originals') == TRUE) {
-					// delete the original GIF
-					unlink($file);
-				}
-				// update the $file location with the new PNG
-				$file = $pngfile;
-			// if the PNG was smaller than the original GIF, but bigger than the optimized GIF
-			} elseif ($converted) {
-				// unsuccessful conversion
-				$converted = FALSE;
-				if (is_file($pngfile)) {
-					// delete the resulting PNG
-					unlink($pngfile);
-				}
-			}*/
-/*			// if the new file (converted or optimized) is smaller than the original
-			if ($orig_size > $new_size) {
-				// send back a message with the results
-				$result = "$orig_size vs. $new_size";
-			} else {
-				// otherwise, nothing has changed
-				$result = "unchanged";
-			}*/
 			// if conversion is ON and the GIF isn't animated
 			if ($convert && !ewww_image_optimizer_is_animated($file)) {
 				// if optipng is enabled
@@ -1878,11 +1836,6 @@ function ewww_image_optimizer_options () {
 	} ?>
 	<script type='text/javascript'>
 		jQuery(document).ready(function($) {$('.fade').fadeTo(5000,1).fadeOut(3000);});
-		//jQuery(function() {
-		//	jQuery("#ewww-accordion").accordion({
-		//		heightStyle: "content"	
-		//	});
-		//});
 	</script>
 	<div class="wrap">
 		<div id="icon-options-general" class="icon32"><br /></div>
@@ -1891,13 +1844,18 @@ function ewww_image_optimizer_options () {
 		<a href="http://wordpress.org/extend/plugins/ewww-image-optimizer/installation/"><?php _e('Installation Instructions', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></a> | 
 		<a href="http://wordpress.org/support/plugin/ewww-image-optimizer"><?php _e('Plugin Support', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></a> | 
 		<a href="http://stats.pingdom.com/w89y81bhecp4"><?php _e('Cloud Status', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></a></p>
-		<p><?php printf(__('New images uploaded to the Media Library will be optimized automatically. If you have existing images you would like to optimize, you can use the %s tool.', EWWW_IMAGE_OPTIMIZER_DOMAIN), '<a href="upload.php?page=ewww-image-optimizer-bulk">' . __('Bulk Optimize', EWWW_IMAGE_OPTIMIZER_DOMAIN) . '</a>'); ?></p>
+<?php		if (function_exists('is_plugin_active_for_network') && is_plugin_active_for_network('ewww-image-optimizer/ewww-image-optimizer.php')) {
+			$bulk_link = __('Media Library') . ' -> ' . __('Bulk Optimize', EWWW_IMAGE_OPTIMIZER_DOMAIN);
+		} else {
+			$bulk_link = '<a href="upload.php?page=ewww-image-optimizer-bulk">' . __('Bulk Optimize', EWWW_IMAGE_OPTIMIZER_DOMAIN) . '</a>';
+		} ?>
+		<p><?php printf(__('New images uploaded to the Media Library will be optimized automatically. If you have existing images you would like to optimize, you can use the %s tool.', EWWW_IMAGE_OPTIMIZER_DOMAIN), $bulk_link); ?></p>
 		<div id="status" style="border: 1px solid #ccc; padding: 0 8px; border-radius: 12px;">
 			<h3>Plugin Status</h3>
 			<?php
 			if (ewww_image_optimizer_get_option('ewww_image_optimizer_cloud_key')) {
 				echo '<p><b>Cloud API Key:</b> ';
-				$verify_cloud = ewww_image_optimizer_cloud_verify(); 
+				$verify_cloud = ewww_image_optimizer_cloud_verify(false); 
 				if (preg_match('/great/', $verify_cloud)) {
 					echo '<span style="color: green">' . __('Verified,', EWWW_IMAGE_OPTIMIZER_DOMAIN) . ' </span>';
 					echo ewww_image_optimizer_cloud_quota();
@@ -2105,7 +2063,7 @@ function ewww_image_optimizer_options () {
 			</div></div>
 			<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save Changes', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?>" /></p>
 		</form>
-		<p>I recommend hosting your Wordpress site with <a href=http://www.dreamhost.com/r.cgi?132143">Dreamhost.com</a> or <a href="http://www.bluehost.com/track/nosilver4u">Bluehost.com</a>. Using these referral links will allow you to support future development of this plugin: <a href=http://www.dreamhost.com/r.cgi?132143">Dreamhost</a> | <a href="http://www.bluehost.com/track/nosilver4u">Bluehost</a>. Alternatively, you can contribute directly by <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MKMQKCBFFG3WW">donating with Paypal</a>.</p>
+		<p>I recommend hosting your Wordpress site with <a href="http://www.dreamhost.com/r.cgi?132143">Dreamhost.com</a> or <a href="http://www.bluehost.com/track/nosilver4u">Bluehost.com</a>. Using these referral links will allow you to support future development of this plugin: <a href=http://www.dreamhost.com/r.cgi?132143">Dreamhost</a> | <a href="http://www.bluehost.com/track/nosilver4u">Bluehost</a>. Alternatively, you can contribute directly by <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MKMQKCBFFG3WW">donating with Paypal</a>.</p>
 	</div>
 	<?php
 }

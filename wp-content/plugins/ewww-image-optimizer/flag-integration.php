@@ -53,8 +53,6 @@ class ewwwflag {
 				return;
 			}
 		}
-		// get the previously stored attachments array from the options table
-		//$attachments = get_option('ewww_image_optimizer_bulk_flag_attachments');
 		list($fullsize_count, $unoptimized_count, $resize_count, $unoptimized_resize_count) = ewww_image_optimizer_count_optimized ('flag');
 		// bail-out if there aren't any images to optimize
 		if ($fullsize_count < 1) {
@@ -88,7 +86,7 @@ class ewwwflag {
 			<div id="ewww-interval-slider" style="width:50%"></div>-->
 		</form>
 		<div id="bulk-forms">
-		<p class="bulk-info"><?php printf(__('%1$d images in the Media Library have been selected (%2$d unoptimized), with %3$d resizes (%4$d unoptimized).', EWWW_IMAGE_OPTIMIZER_DOMAIN), $fullsize_count, $unoptimized_count, $resize_count, $unoptimized_resize_count); ?><br />
+		<p class="bulk-info"><?php printf(__('%1$d images have been selected (%2$d unoptimized), with %3$d resizes (%4$d unoptimized).', EWWW_IMAGE_OPTIMIZER_DOMAIN), $fullsize_count, $unoptimized_count, $resize_count, $unoptimized_resize_count); ?><br />
 		<?php _e('Previously optimized images will be skipped by default.', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></p>
 		<form id="bulk-start" class="bulk-form" method="post" action="">
 			<input type="submit" class="button-secondary action" value="<?php echo $button_text; ?>" />
@@ -167,8 +165,6 @@ class ewwwflag {
 		}
 		// store the IDs to optimize in the options table of the db
 		update_option('ewww_image_optimizer_bulk_flag_attachments', $ids);
-		// add a custom jquery-ui script that contains the progressbar widget
-//		wp_enqueue_script('ewwwjuiscript', plugins_url('/jquery-ui-1.10.2.custom.min.js', __FILE__), false);
 		// add the EWWW IO javascript
 		wp_enqueue_script('ewwwbulkscript', plugins_url('/eio.js', __FILE__), array('jquery', 'jquery-ui-progressbar', 'jquery-ui-slider'));
 		// add the styling for the progressbar
@@ -229,7 +225,6 @@ class ewwwflag {
 		$meta->image->meta_data['thumbnail']['ewww_image_optimizer'] = $tres[1];
 		// update the metadata for the full-size image
 		flagdb::update_image_meta($id, $meta->image->meta_data);
-//		flagdb::update_image_meta($id, array('ewww_image_optimizer' => $res[1]));
 		// get the referring page
 		$sendback = wp_get_referer();
 		// and clean it up a bit
@@ -286,9 +281,6 @@ class ewwwflag {
 		// get the image meta for the current ID
 		$meta = new flagMeta($id);
 		$file_path = $meta->image->imagePath;
-/*		if ($meta->get_META('ewww_image_optimizer') && empty($_REQUEST['force'])) {
-			printf( "<p>" . __('Already optimized image:', EWWW_IMAGE_OPTIMIZER_DOMAIN) . " <strong>%s</strong><br>", esc_html($file_path) );
-		} else {*/
 			// optimize the full-size version
 			$fres = ewww_image_optimizer($file_path, 3, false, false, ewww_image_optimizer_get_option('ewww_image_optimizer_lossy_skip_full'));
 			$meta->image->meta_data['ewww_image_optimizer'] = $fres[1];
@@ -306,7 +298,6 @@ class ewwwflag {
 			$elapsed = microtime(true) - $started;
 			// and output it to the user
 			printf(__('Elapsed: %.3f seconds', EWWW_IMAGE_OPTIMIZER_DOMAIN) . "</p>", $elapsed);
-//		}
 		// retrieve the list of attachments left to work on
 		$attachments = get_option('ewww_image_optimizer_bulk_flag_attachments');
 		// take the first image off the list
