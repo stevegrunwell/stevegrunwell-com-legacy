@@ -30,8 +30,13 @@ class GFFormList{
         {
             check_admin_referer('gforms_update_forms', 'gforms_update_forms');
             $form_id = RGForms::post("action_argument");
-            RGFormsModel::delete_form($form_id);
-            $message = __('Form deleted.', 'gravityforms');
+            if(GFCommon::current_user_can_any("gravityforms_delete_forms")){
+                RGFormsModel::delete_form($form_id);
+                $message = __('Form deleted.', 'gravityforms');
+            } else {
+                $message = __("You don't have adequate permissions to delete forms.", 'gravityforms');
+            }
+
         }
         else if($action == "duplicate"){
             check_admin_referer('gforms_update_forms', 'gforms_update_forms');
@@ -56,8 +61,12 @@ class GFFormList{
                 $message = _n('%s form restored.', '%s forms restored.', $form_count, 'gravityforms');
                 break;
             case 'delete':
-                GFFormsModel::delete_forms($form_ids);
-                $message = _n('%s form deleted.', '%s forms deleted.', $form_count, 'gravityforms');
+                if(GFCommon::current_user_can_any("gravityforms_delete_forms")){
+                    GFFormsModel::delete_forms($form_ids);
+                    $message = _n('%s form deleted.', '%s forms deleted.', $form_count, 'gravityforms');
+                } else {
+                    $message = __("You don't have adequate permissions to delete forms.", 'gravityforms');
+                }
                 break;
             case 'reset_views':
                 foreach($form_ids as $form_id){
@@ -66,10 +75,15 @@ class GFFormList{
                 $message = _n('Views for %s form have been reset.', 'Views for %s forms have been reset.', $form_count, 'gravityforms');
                 break;
             case 'delete_entries':
-                foreach($form_ids as $form_id){
-                    GFFormsModel::delete_leads_by_form($form_id);
+                if(GFCommon::current_user_can_any("gravityforms_delete_entries")){
+                    foreach($form_ids as $form_id){
+                        GFFormsModel::delete_leads_by_form($form_id);
+                    }
+                    $message = _n('Entries for %s form have been deleted.', 'Entries for %s forms have been deleted.', $form_count, 'gravityforms');
+                } else {
+                    $message = __("You don't have adequate permissions to delete entries.", "gravityforms");
                 }
-                $message = _n('Entries for %s form have been deleted.', 'Entries for %s forms have been deleted.', $form_count, 'gravityforms');
+
                 break;
             case 'activate':
                 foreach($form_ids as $form_id){

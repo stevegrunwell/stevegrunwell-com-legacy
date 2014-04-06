@@ -29,6 +29,9 @@ Class GFNotification {
             $notification_id = rgpost("gform_notification_id");
 
         $form = RGFormsModel::get_form_meta($form_id);
+
+        $form = apply_filters("gform_form_notification_page_{$form_id}", apply_filters("gform_form_notification_page", $form, $notification_id), $notification_id);
+
         $notification = !$notification_id ? array() : self::get_notification($form, $notification_id);
 
         // added second condition to account for new notifications with errors as notification ID will

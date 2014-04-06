@@ -1,4 +1,78 @@
 -------------------------------------------------------------------------------------------------------------------
+Version 1.8.6
+
+    - Added logging to help troubleshooting form submissions.
+    - Added hook to allow multi-file upload settings/behavior to be changed.
+    - Added "French Polynesia" to countries list.
+    - Added 'gravityforms_delete_forms' and 'gravityforms_delete_entries' permission checks to form list.
+    - Added new filter "gform_email_background_color_label" to change the background color for the field label in the html email.
+    	add_filter("gform_email_background_color_label", "set_email_label_color", 10, 3);
+		function set_email_label_color($color, $field, $lead){
+			return "#CC99FF";
+		}
+	- Added new filter "gform_email_background_color_data" to change the background color for the field data in the html email.
+		add_filter("gform_email_background_color_data", "set_email_data_color", 10, 3);
+		function set_email_data_color($color, $field, $lead){
+			return "#CCCCFF";
+		}
+    - Added gform_form_notification_page filter.
+    - Added 'gravityforms_delete_entries' permission checks to entry list and entry detail pages.
+    - Added $input_id as fifth parameter to the "gform_save_field_value" function; better allows overriding values for a specific input ID.
+    - Added support for state code via gform_us_states and gform_address_types hook.
+    - Added gform_form_export_page hook.
+    - Added gform_payment_details hook under gform_entry_info in preparation for a new Payment Details box on the entry page.
+    - Added support for country codes in country drop down.
+    - Added support for note type.
+    - Added support for changing note avatar.
+    - Added gform_delete_entries to get fired when entries are being deleted in bulk.
+
+    - Fixed security vulnerability which allowed malicious form submissions to bypass validation of certain fields
+    - Fixed PHP warning on entry list when the created_by field contains the ID of a user that no longer exists
+    - Fixed issue with conditional logic when configured to start with "0".
+	- Fixed minor PHP warning for recently imported multi-step forms.
+    - Fixed issue where editing credit card fields with HTML5 ouptut enabled generated a browser validation error.
+    - Fixed security vulnerability which allowed malicious form submissions to bypass validation of certain fields.
+    - Fixed issue with entry detail pagination not working correctly on certain types of searches.
+    - Fixed issue with with the multi-file upload field generating a JavaScript error on multi-page, ajax-enabled forms with conditional logic.
+    - Fixed issue with multi file upload throwing AJAX errors when uploading a file with a single quote on certain webservers.
+    - Added GFs instance of the gfMergeTagsObj to the global scope to allow 3rd party devs to more easily work with merge tags.
+	- Fixed issue in the Italian translation file where a string was breaking javascript on the entry detail page.
+	- Fixed issue with entry export not decoding the value of multi file upload fields.
+
+    - Fixed issue with the {pricing_fields} merge tag markup.
+    - Fixed escaping issue on input mask.
+    - Fixed issue with the new form modal on IE8.
+    - Fixed issue with datepicker css being rendered to the page even when no datepicker field is in the form.
+    - Fixed issue with country not being selected properly when code was provided via hook.
+    - Fixed styling issue with entry actions on entry detail page.
+    - Fixed issue where styles/scripts were being output before doctype when including a form in a confirmation.
+    - Fixed issue with number field validation when set to decimal comma.
+    - Fixed issue with select columns page not loading in SSL when appropriate.
+    - Fixed security vulnerability when validating product state.
+    - Fixed an issue with the entry list where trashed entries appear in the list of active entries when sorting by a field value.
+    - Fixed an issue with conditional logic when product drop down is used as a target.
+
+    - Removed permissions check from low level GFFormsModel::delete_lead() - moved to page level.
+    - Removed the value and size attributes from the input tag for the "file" type since they are not supported and cause html validation errors.
+    - Removed permission checks from GFFormsModel::delete_form() and GFFormsModel::delete_leads_by_form() - moved to page level.
+
+	- AF: Set trial amount to user entered value when trial option set to "Enter amount" for the Payment Add-On.
+    - AF: Added GFAPI::current_user_can_any() so developers can check permissions before calling any of the other API functions.
+    - AF: Added some logging for the Payment Add-On.
+    - AF: Added discounts to the order data for the Payment Add-On.
+    - AF: Added product options as a separate array to the line items array for the Payment Add-On.
+    - AF: Added is_shipping indicator to line items to distinguish between shipping field and regular product field for the Payment Add-On
+    - AF: Added name property to settings_setup_fee and settings_trial for the Payment Add-On.
+
+    - AF: Added integration with the Logging Add-On - all add-ons now appear automatically on the settings page.
+    - AF: Fixed issue with validation failure icon not being displayed for all field types.
+    - AF: Fixed issue with checkbox validation.
+
+    - API: Fixed an issue with GFAPI::add_entry() where the status was being ignored.
+    - API: Fixed an issue with GFAPI:get_entries() where the status was being ignored when sorting by a field value.
+    - API: Fixed issue with Web API GET entries ignoring is_numeric.
+
+-------------------------------------------------------------------------------------------------------------------
 Version 1.8.5
 
     - Added $field and $value parameters to 'gform_duplicate_message' filter.

@@ -108,9 +108,14 @@ function gf_is_match(formId, rule){
         var fieldNumberFormat = window['gf_global'] && gf_global.number_formats && gf_global.number_formats[formId] && gf_global.number_formats[formId][rule["fieldId"]] ? gf_global.number_formats[formId][rule["fieldId"]] : false;
 
         for(var i=0; i < values.length; i++){
+
+            //fields with pipes in the value will use the label for conditional logic comparison
+            var hasLabel = values[i] ? values[i].indexOf("|") >= 0 : true;
+
             fieldValue = gf_get_value(values[i]);
+
             var decimalSeparator = ".";
-            if( fieldNumberFormat ){
+            if( fieldNumberFormat && !hasLabel){
 
                 if( fieldNumberFormat == "currency" )
                     decimalSeparator = gformGetDecimalSeparator('currency');

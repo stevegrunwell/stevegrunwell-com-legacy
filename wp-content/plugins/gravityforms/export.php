@@ -600,10 +600,6 @@ class GFExport{
         $start_date = empty($_POST["export_date_start"]) ? "" : self::get_gmt_date($_POST["export_date_start"] . " 00:00:00");
         $end_date = empty($_POST["export_date_end"]) ? "" : self::get_gmt_date($_POST["export_date_end"] . " 23:59:59");
 
-        //strip off time and re-add midnight to "midnight"
-        //$start_date = date("Y-m-d", strtotime($start_date)) . " 00:00:00";
-        //$end_date = date("Y-m-d", strtotime($end_date)) . " 23:59:59";
-
         $search_criteria["status"] = "active";
         $search_criteria["field_filters"] = GFCommon::get_field_filters_from_post();
         if(!empty($start_date))
@@ -684,10 +680,15 @@ class GFExport{
                             $value = !empty($long_text) ? $long_text : rgar($lead,$field_id);
 
                             $field = RGFormsModel::get_field($form, $field_id);
-                            if(RGFormsModel::get_input_type($field) == "checkbox"){
+                            $input_type = RGFormsModel::get_input_type($field);
+
+                            if($input_type == "checkbox"){
                                 $value = GFFormsModel::is_checkbox_checked($field_id, $headers[$field_id], $lead, $form);
                                 if($value === false)
                                     $value = "";
+                            }
+                            else if($input_type == "fileupload" && rgar($field,"multipleFiles") ){
+                                $value = !empty($value) ? implode(" , ", json_decode($value, true)) : "";
                             }
 
                             $value = apply_filters("gform_export_field_value", $value, $form_id, $field_id, $lead);

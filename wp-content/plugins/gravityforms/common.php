@@ -828,7 +828,14 @@ class GFCommon{
 
         //pricing fields
         if (strpos($text, "{pricing_fields}") !== false){
-            $text = str_replace("{pricing_fields}", self::get_submitted_pricing_fields($form, $lead, $format), $text);
+            $text = str_replace("{pricing_fields}", '<table width="99%" border="0" cellpadding="1" cellspacing="0" bgcolor="#EAEAEA">
+                                                           <tr><td>
+                                                                <table width="100%" border="0" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF">' .
+                                                                    self::get_submitted_pricing_fields($form, $lead, $format) .
+                                                                '</table>
+                                                           </tr></td>
+                                                     </table>',
+                    $text);
         }
 
         //form id
@@ -1071,18 +1078,18 @@ class GFCommon{
 
                             default:
 
-                                $field_data .= sprintf('<tr bgcolor="#EAF2FA">
+                                $field_data .= sprintf('<tr bgcolor="%3$s">
                                                             <td colspan="2">
-                                                                <font style="font-family: sans-serif; font-size:12px;"><strong>%s</strong></font>
+                                                                <font style="font-family: sans-serif; font-size:12px;"><strong>%1$s</strong></font>
                                                             </td>
                                                        </tr>
-                                                       <tr bgcolor="#FFFFFF">
+                                                       <tr bgcolor="%4$s">
                                                             <td width="20">&nbsp;</td>
                                                             <td>
-                                                                <font style="font-family: sans-serif; font-size:12px;">%s</font>
+                                                                <font style="font-family: sans-serif; font-size:12px;">%2$s</font>
                                                             </td>
                                                        </tr>
-                                                       ', $field_label, empty($field_value) && strlen($field_value) == 0 ? "&nbsp;" : $field_value);
+                                                       ', $field_label, empty($field_value) && strlen($field_value) == 0 ? "&nbsp;" : $field_value, apply_filters("gform_email_background_color_label", '#EAF2FA', $field, $lead), apply_filters("gform_email_background_color_data", '#FFFFFF', $field, $lead) );
                             break;
                         }
                     }
@@ -1406,8 +1413,11 @@ class GFCommon{
 
     public static function send_notifications($notification_ids, $form, $lead, $do_conditional_logic = true, $event = "form_submission"){
         if(!is_array($notification_ids)){
+            GFCommon::log_debug("No notifications to be sent.");
             return;
         }
+
+        GFCommon::log_debug("Sending notifications: " . print_r($notification_ids, true));
 
         foreach($notification_ids as $notification_id){
             if(!isset($form["notifications"][$notification_id])){
@@ -1447,6 +1457,8 @@ class GFCommon{
         $notifications = self::get_notifications_to_send("form_submission", $form, $lead);
         $notifications_to_send = array();
 
+
+
         //running through filters that disable form submission notifications
         foreach($notifications as $notification){
 
@@ -1466,6 +1478,7 @@ class GFCommon{
 
             $notifications_to_send[] = $notification["id"];
         }
+
 
         self::send_notifications($notifications_to_send, $form, $lead, true, "form_submission");
     }
@@ -2348,7 +2361,7 @@ class GFCommon{
 
     public static function get_countries(){
         return apply_filters("gform_countries", array(
-        __('Afghanistan', 'gravityforms'),__('Albania', 'gravityforms'),__('Algeria', 'gravityforms'), __('American Samoa', 'gravityforms'), __('Andorra', 'gravityforms'),__('Angola', 'gravityforms'),__('Antigua and Barbuda', 'gravityforms'),__('Argentina', 'gravityforms'),__('Armenia', 'gravityforms'),__('Australia', 'gravityforms'),__('Austria', 'gravityforms'),__('Azerbaijan', 'gravityforms'),__('Bahamas', 'gravityforms'),__('Bahrain', 'gravityforms'),__('Bangladesh', 'gravityforms'),__('Barbados', 'gravityforms'),__('Belarus', 'gravityforms'),__('Belgium', 'gravityforms'),__('Belize', 'gravityforms'),__('Benin', 'gravityforms'),__('Bermuda', 'gravityforms'),__('Bhutan', 'gravityforms'),__('Bolivia', 'gravityforms'),__('Bosnia and Herzegovina', 'gravityforms'),__('Botswana', 'gravityforms'),__('Brazil', 'gravityforms'),__('Brunei', 'gravityforms'),__('Bulgaria', 'gravityforms'),__('Burkina Faso', 'gravityforms'),__('Burundi', 'gravityforms'),__('Cambodia', 'gravityforms'),__('Cameroon', 'gravityforms'),__('Canada', 'gravityforms'),__('Cape Verde', 'gravityforms'),__('Cayman Islands', 'gravityforms'),__('Central African Republic', 'gravityforms'),__('Chad', 'gravityforms'),__('Chile', 'gravityforms'),__('China', 'gravityforms'),__('Colombia', 'gravityforms'),__('Comoros', 'gravityforms'),__('Congo, Democratic Republic of the', 'gravityforms'),__('Congo, Republic of the', 'gravityforms'),__('Costa Rica', 'gravityforms'),__('C&ocirc;te d\'Ivoire', 'gravityforms'),__('Croatia', 'gravityforms'),__('Cuba', 'gravityforms'),__('Cyprus', 'gravityforms'),__('Czech Republic', 'gravityforms'),__('Denmark', 'gravityforms'),__('Djibouti', 'gravityforms'),__('Dominica', 'gravityforms'),__('Dominican Republic', 'gravityforms'),__('East Timor', 'gravityforms'),__('Ecuador', 'gravityforms'),__('Egypt', 'gravityforms'),__('El Salvador', 'gravityforms'),__('Equatorial Guinea', 'gravityforms'),__('Eritrea', 'gravityforms'),__('Estonia', 'gravityforms'),__('Ethiopia', 'gravityforms'),__('Fiji', 'gravityforms'),__('Finland', 'gravityforms'),__('France', 'gravityforms'),__('Gabon', 'gravityforms'),
+        __('Afghanistan', 'gravityforms'),__('Albania', 'gravityforms'),__('Algeria', 'gravityforms'), __('American Samoa', 'gravityforms'), __('Andorra', 'gravityforms'),__('Angola', 'gravityforms'),__('Antigua and Barbuda', 'gravityforms'),__('Argentina', 'gravityforms'),__('Armenia', 'gravityforms'),__('Australia', 'gravityforms'),__('Austria', 'gravityforms'),__('Azerbaijan', 'gravityforms'),__('Bahamas', 'gravityforms'),__('Bahrain', 'gravityforms'),__('Bangladesh', 'gravityforms'),__('Barbados', 'gravityforms'),__('Belarus', 'gravityforms'),__('Belgium', 'gravityforms'),__('Belize', 'gravityforms'),__('Benin', 'gravityforms'),__('Bermuda', 'gravityforms'),__('Bhutan', 'gravityforms'),__('Bolivia', 'gravityforms'),__('Bosnia and Herzegovina', 'gravityforms'),__('Botswana', 'gravityforms'),__('Brazil', 'gravityforms'),__('Brunei', 'gravityforms'),__('Bulgaria', 'gravityforms'),__('Burkina Faso', 'gravityforms'),__('Burundi', 'gravityforms'),__('Cambodia', 'gravityforms'),__('Cameroon', 'gravityforms'),__('Canada', 'gravityforms'),__('Cape Verde', 'gravityforms'),__('Cayman Islands', 'gravityforms'),__('Central African Republic', 'gravityforms'),__('Chad', 'gravityforms'),__('Chile', 'gravityforms'),__('China', 'gravityforms'),__('Colombia', 'gravityforms'),__('Comoros', 'gravityforms'),__('Congo, Democratic Republic of the', 'gravityforms'),__('Congo, Republic of the', 'gravityforms'),__('Costa Rica', 'gravityforms'),__('C&ocirc;te d\'Ivoire', 'gravityforms'),__('Croatia', 'gravityforms'),__('Cuba', 'gravityforms'),__('Cyprus', 'gravityforms'),__('Czech Republic', 'gravityforms'),__('Denmark', 'gravityforms'),__('Djibouti', 'gravityforms'),__('Dominica', 'gravityforms'),__('Dominican Republic', 'gravityforms'),__('East Timor', 'gravityforms'),__('Ecuador', 'gravityforms'),__('Egypt', 'gravityforms'),__('El Salvador', 'gravityforms'),__('Equatorial Guinea', 'gravityforms'),__('Eritrea', 'gravityforms'),__('Estonia', 'gravityforms'),__('Ethiopia', 'gravityforms'),__('Fiji', 'gravityforms'),__('Finland', 'gravityforms'),__('France', 'gravityforms'), __('French Polynesia', 'gravityforms'), __('Gabon', 'gravityforms'),
         __('Gambia', 'gravityforms'),__('Georgia', 'gravityforms'),__('Germany', 'gravityforms'),__('Ghana', 'gravityforms'),__('Greece', 'gravityforms'),__('Greenland', 'gravityforms'),__('Grenada', 'gravityforms'),__('Guam', 'gravityforms'),__('Guatemala', 'gravityforms'),__('Guinea', 'gravityforms'),__('Guinea-Bissau', 'gravityforms'),__('Guyana', 'gravityforms'),__('Haiti', 'gravityforms'),__('Honduras', 'gravityforms'),__('Hong Kong', 'gravityforms'),__('Hungary', 'gravityforms'),__('Iceland', 'gravityforms'),__('India', 'gravityforms'),__('Indonesia', 'gravityforms'),__('Iran', 'gravityforms'),__('Iraq', 'gravityforms'),__('Ireland', 'gravityforms'),__('Israel', 'gravityforms'),__('Italy', 'gravityforms'),__('Jamaica', 'gravityforms'),__('Japan', 'gravityforms'),__('Jordan', 'gravityforms'),__('Kazakhstan', 'gravityforms'),__('Kenya', 'gravityforms'),__('Kiribati', 'gravityforms'),__('North Korea', 'gravityforms'),__('South Korea', 'gravityforms'),__('Kosovo', 'gravityforms'),__('Kuwait', 'gravityforms'),__('Kyrgyzstan', 'gravityforms'),__('Laos', 'gravityforms'),__('Latvia', 'gravityforms'),__('Lebanon', 'gravityforms'),__('Lesotho', 'gravityforms'),__('Liberia', 'gravityforms'),__('Libya', 'gravityforms'),__('Liechtenstein', 'gravityforms'),__('Lithuania', 'gravityforms'),__('Luxembourg', 'gravityforms'),__('Macedonia', 'gravityforms'),__('Madagascar', 'gravityforms'),__('Malawi', 'gravityforms'),__('Malaysia', 'gravityforms'),__('Maldives', 'gravityforms'),__('Mali', 'gravityforms'),__('Malta', 'gravityforms'),__('Marshall Islands', 'gravityforms'),__('Mauritania', 'gravityforms'),__('Mauritius', 'gravityforms'),__('Mexico', 'gravityforms'),__('Micronesia', 'gravityforms'),__('Moldova', 'gravityforms'),__('Monaco', 'gravityforms'),__('Mongolia', 'gravityforms'),__('Montenegro', 'gravityforms'),__('Morocco', 'gravityforms'),__('Mozambique', 'gravityforms'),__('Myanmar', 'gravityforms'),__('Namibia', 'gravityforms'),__('Nauru', 'gravityforms'),__('Nepal', 'gravityforms'),__('Netherlands', 'gravityforms'),__('New Zealand', 'gravityforms'),
         __('Nicaragua', 'gravityforms'),__('Niger', 'gravityforms'),__('Nigeria', 'gravityforms'),__('Norway', 'gravityforms'), __('Northern Mariana Islands', 'gravityforms'), __('Oman', 'gravityforms'),__('Pakistan', 'gravityforms'),__('Palau', 'gravityforms'),__('Palestine', 'gravityforms'),__('Panama', 'gravityforms'),__('Papua New Guinea', 'gravityforms'),__('Paraguay', 'gravityforms'),__('Peru', 'gravityforms'),__('Philippines', 'gravityforms'),__('Poland', 'gravityforms'),__('Portugal', 'gravityforms'),__('Puerto Rico', 'gravityforms'),__('Qatar', 'gravityforms'),__('Romania', 'gravityforms'),__('Russia', 'gravityforms'),__('Rwanda', 'gravityforms'),__('Saint Kitts and Nevis', 'gravityforms'),__('Saint Lucia', 'gravityforms'),__('Saint Vincent and the Grenadines', 'gravityforms'),__('Samoa', 'gravityforms'),__('San Marino', 'gravityforms'),__('Sao Tome and Principe', 'gravityforms'),__('Saudi Arabia', 'gravityforms'),__('Senegal', 'gravityforms'),__('Serbia and Montenegro', 'gravityforms'),__('Seychelles', 'gravityforms'),__('Sierra Leone', 'gravityforms'),__('Singapore', 'gravityforms'),__('Slovakia', 'gravityforms'),__('Slovenia', 'gravityforms'),__('Solomon Islands', 'gravityforms'),__('Somalia', 'gravityforms'),__('South Africa', 'gravityforms'),__('Spain', 'gravityforms'),__('Sri Lanka', 'gravityforms'),__('Sudan', 'gravityforms'),__('Sudan, South', 'gravityforms'),__('Suriname', 'gravityforms'),__('Swaziland', 'gravityforms'),__('Sweden', 'gravityforms'),__('Switzerland', 'gravityforms'),__('Syria', 'gravityforms'),__('Taiwan', 'gravityforms'),__('Tajikistan', 'gravityforms'),__('Tanzania', 'gravityforms'),__('Thailand', 'gravityforms'),__('Togo', 'gravityforms'),__('Tonga', 'gravityforms'),__('Trinidad and Tobago', 'gravityforms'),__('Tunisia', 'gravityforms'),__('Turkey', 'gravityforms'),__('Turkmenistan', 'gravityforms'),__('Tuvalu', 'gravityforms'),__('Uganda', 'gravityforms'),__('Ukraine', 'gravityforms'),__('United Arab Emirates', 'gravityforms'),__('United Kingdom', 'gravityforms'),
         __('United States', 'gravityforms'),__('Uruguay', 'gravityforms'),__('Uzbekistan', 'gravityforms'),__('Vanuatu', 'gravityforms'),__('Vatican City', 'gravityforms'),__('Venezuela', 'gravityforms'),__('Vietnam', 'gravityforms'), __('Virgin Islands, British', 'gravityforms'), __('Virgin Islands, U.S.', 'gravityforms'),__('Yemen', 'gravityforms'),__('Zambia', 'gravityforms'),__('Zimbabwe', 'gravityforms')));
@@ -2570,7 +2583,23 @@ class GFCommon{
     }
 
     public static function get_us_states(){
-        return array(__("Alabama","gravityforms"),__("Alaska","gravityforms"),__("Arizona","gravityforms"),__("Arkansas","gravityforms"),__("California","gravityforms"),__("Colorado","gravityforms"),__("Connecticut","gravityforms"),__("Delaware","gravityforms"),__("District of Columbia", "gravityforms"), __("Florida","gravityforms"),__("Georgia","gravityforms"),__("Hawaii","gravityforms"),__("Idaho","gravityforms"),__("Illinois","gravityforms"),__("Indiana","gravityforms"),__("Iowa","gravityforms"),__("Kansas","gravityforms"),__("Kentucky","gravityforms"),__("Louisiana","gravityforms"),__("Maine","gravityforms"),__("Maryland","gravityforms"),__("Massachusetts","gravityforms"),__("Michigan","gravityforms"),__("Minnesota","gravityforms"),__("Mississippi","gravityforms"),__("Missouri","gravityforms"),__("Montana","gravityforms"),__("Nebraska","gravityforms"),__("Nevada","gravityforms"),__("New Hampshire","gravityforms"),__("New Jersey","gravityforms"),__("New Mexico","gravityforms"),__("New York","gravityforms"),__("North Carolina","gravityforms"),__("North Dakota","gravityforms"),__("Ohio","gravityforms"),__("Oklahoma","gravityforms"),__("Oregon","gravityforms"),__("Pennsylvania","gravityforms"),__("Rhode Island","gravityforms"),__("South Carolina","gravityforms"),__("South Dakota","gravityforms"),__("Tennessee","gravityforms"),__("Texas","gravityforms"),__("Utah","gravityforms"),__("Vermont","gravityforms"),__("Virginia","gravityforms"),__("Washington","gravityforms"),__("West Virginia","gravityforms"),__("Wisconsin","gravityforms"),__("Wyoming","gravityforms"), __("Armed Forces Americas","gravityforms"), __("Armed Forces Europe","gravityforms"),__("Armed Forces Pacific","gravityforms"));
+        return apply_filters("gform_us_states", array(
+            __("Alabama","gravityforms"),__("Alaska","gravityforms"),__("Arizona","gravityforms"),__("Arkansas","gravityforms"),
+            __("California","gravityforms"),__("Colorado","gravityforms"),__("Connecticut","gravityforms"),__("Delaware","gravityforms"),
+            __("District of Columbia", "gravityforms"), __("Florida","gravityforms"),__("Georgia","gravityforms"),
+            __("Hawaii","gravityforms"),__("Idaho","gravityforms"),__("Illinois","gravityforms"),__("Indiana","gravityforms"),
+            __("Iowa","gravityforms"),__("Kansas","gravityforms"),__("Kentucky","gravityforms"),__("Louisiana","gravityforms"),
+            __("Maine","gravityforms"),__("Maryland","gravityforms"),__("Massachusetts","gravityforms"),__("Michigan","gravityforms"),
+            __("Minnesota","gravityforms"),__("Mississippi","gravityforms"),__("Missouri","gravityforms"),__("Montana","gravityforms"),
+            __("Nebraska","gravityforms"),__("Nevada","gravityforms"),__("New Hampshire","gravityforms"),__("New Jersey","gravityforms"),
+            __("New Mexico","gravityforms"),__("New York","gravityforms"),__("North Carolina","gravityforms"),
+            __("North Dakota","gravityforms"),__("Ohio","gravityforms"),__("Oklahoma","gravityforms"),__("Oregon","gravityforms"),
+            __("Pennsylvania","gravityforms"),__("Rhode Island","gravityforms"),__("South Carolina","gravityforms"),
+            __("South Dakota","gravityforms"),__("Tennessee","gravityforms"),__("Texas","gravityforms"),__("Utah","gravityforms"),
+            __("Vermont","gravityforms"),__("Virginia","gravityforms"),__("Washington","gravityforms"),__("West Virginia","gravityforms"),
+            __("Wisconsin","gravityforms"),__("Wyoming","gravityforms"), __("Armed Forces Americas","gravityforms"),
+            __("Armed Forces Europe","gravityforms"),__("Armed Forces Pacific","gravityforms"))
+        );
     }
 
     public static function get_us_state_code($state_name){
@@ -2644,18 +2673,24 @@ class GFCommon{
 
     public static function get_state_dropdown($states, $selected_state=""){
         $str = "";
-        foreach($states as $state){
-            $selected = $state == $selected_state ? "selected='selected'" : "";
-            $str .= "<option value='" . esc_attr($state) . "' $selected>" . $state . "</option>";
+        foreach($states as $code => $state){
+            if(is_numeric($code))
+                $code = $state;
+
+            $selected = $code == $selected_state ? "selected='selected'" : "";
+            $str .= "<option value='" . esc_attr($code) . "' $selected>" . $state . "</option>";
         }
         return $str;
     }
 
     public static function get_us_state_dropdown($selected_state = ""){
         $states = array_merge(array(''), self::get_us_states());
-        foreach($states as $state){
-            $selected = $state == $selected_state ? "selected='selected'" : "";
-            $str .= "<option value='" . esc_attr($state) . "' $selected>" . $state . "</option>";
+        foreach($states as $code => $state){
+            if(is_numeric($code))
+                $code = $state;
+
+            $selected = $code == $selected_state ? "selected='selected'" : "";
+            $str .= "<option value='" . esc_attr($code) . "' $selected>" . $state . "</option>";
         }
         return $str;
     }
@@ -2672,9 +2707,12 @@ class GFCommon{
     public static function get_country_dropdown($selected_country = ""){
         $str = "";
         $countries = array_merge(array(''), self::get_countries());
-        foreach($countries as $country){
-            $selected = $country == $selected_country ? "selected='selected'" : "";
-            $str .= "<option value='" . esc_attr($country) . "' $selected>" . $country . "</option>";
+        foreach($countries as $code => $country){
+            if(is_numeric($code))
+                $code = $country;
+
+            $selected = $code == $selected_country ? "selected='selected'" : "";
+            $str .= "<option value='" . esc_attr($code) . "' $selected>" . $country . "</option>";
         }
         return $str;
     }
@@ -3031,6 +3069,8 @@ class GFCommon{
                 $step_attr = $is_html5 ? "step='any'" : "";
 
                 $logic_event = self::get_logic_event($field, "keyup");
+
+                $value = GFCommon::format_number($value, $field["numberFormat"]);
 
                 $tabindex = self::get_tabindex();
                 return sprintf("<div class='ginput_container'><input name='input_%d' id='%s' type='{$html_input_type}' {$step_attr} value='%s' class='%s' {$tabindex} {$logic_event} {$read_only} %s/>%s</div>", $id, $field_id, esc_attr($value), esc_attr($class),  $disabled_text, $instruction);
@@ -3533,6 +3573,8 @@ class GFCommon{
                         )
                     );
 
+                    $plupload_init = apply_filters("gform_plupload_settings_{$form_id}", apply_filters('gform_plupload_settings', $plupload_init, $form_id, $field), $form_id, $field);
+
                     // Multi-file uploading doesn't currently work in iOS Safari,
                     // single-file allows the built-in camera to be used as source for images
                     if ( wp_is_mobile() )
@@ -3548,7 +3590,7 @@ class GFCommon{
 
                 } else {
                     $upload = sprintf("<input type='hidden' name='MAX_FILE_SIZE' value='%d' />", $max_upload_size);
-                    $upload .= sprintf("<input name='input_%d' id='%s' type='file' value='%s' size='20' class='%s' $tabindex %s/>", $id, $field_id, esc_attr($value), esc_attr($class), $disabled_text);
+                    $upload .= sprintf("<input name='input_%d' id='%s' type='file' class='%s' $tabindex %s/>", $id, $field_id, esc_attr($class), $disabled_text);
                 }
 
                 if(IS_ADMIN && RG_CURRENT_VIEW === "entry" && !empty($value)){ // edit entry
@@ -3719,7 +3761,7 @@ class GFCommon{
 
                 //card number fields
                 $tabindex = self::get_tabindex();
-                $html5_output = GFFormsModel::is_html5_enabled() ? "pattern='[0-9]*' title='" . __("Only digits are allowed", "gravityforms") .  "'" : "";
+                $html5_output = ! is_admin() && GFFormsModel::is_html5_enabled() ? "pattern='[0-9]*' title='" . __("Only digits are allowed", "gravityforms") .  "'" : "";
                 $card_field =   sprintf("<span class='ginput_full{$class_suffix}' id='{$field_id}_1_container' >{$card_icons}<input type='text' name='input_%d.1' id='%s_1' value='%s' {$tabindex} %s {$onchange} {$onkeyup} {$autocomplete} {$html5_output}/><label for='%s_1' id='{$field_id}_1_label'>" . apply_filters("gform_card_number_{$form_id}", apply_filters("gform_card_number",__("Card Number", "gravityforms"), $form_id), $form_id) . "</label></span>", $id, $field_id, $card_number, $disabled_text, $field_id);
 
                 //expiration date field
@@ -4737,7 +4779,11 @@ class GFCommon{
         $forms = GFFormDisplay::get_embedded_forms($content, $is_ajax);
 
         foreach($forms as $form){
-            GFFormDisplay::print_form_scripts($form, $is_ajax);
+            if( headers_sent() ) {
+                GFFormDisplay::print_form_scripts( $form, $is_ajax );
+            } else {
+                GFFormDisplay::enqueue_form_scripts( $form, $is_ajax );
+            }
         }
 
         return do_shortcode($content);
@@ -5682,7 +5728,7 @@ class GFCommon{
                 'file_exceeds_limit' => __("File exceeds size limit", "gravityforms"),
                 'illegal_extension' => __("This type of file is not allowed." , "gravityforms"),
                 "max_reached" => __("Maximum number of files reached", "gravityforms"),
-                "unknown_error" => __("There was an problem while saving the file on the server", "gravityforms"),
+                "unknown_error" => __("There was a problem while saving the file on the server", "gravityforms"),
                 "currently_uploading" => __("Please wait for the uploading to complete", "gravityforms"),
                 "cancel" => __("Cancel", "gravityforms"),
                 "cancel_upload" => __("Cancel this upload", "gravityforms"),

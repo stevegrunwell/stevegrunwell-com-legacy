@@ -1121,10 +1121,12 @@ var gform = {
                 }
 
             });
-            $(document).bind("gform_post_conditional_logic", function(e,formID){
-                $.each(gfMultiFileUploader.uploaders, function(i, uploader){
-                    uploader.refresh();
-                });
+            $(document).bind("gform_post_conditional_logic", function(e,formID, fields, isInit){
+                if(!isInit){
+                    $.each(gfMultiFileUploader.uploaders, function(i, uploader){
+                        uploader.refresh();
+                    });
+                }
             });
         }
     });
