@@ -1,4 +1,122 @@
 -------------------------------------------------------------------------------------------------------------------
+Version 1.8.8
+
+    - Added support for Proxy to resolve issues with sites on blacklisted IPs not being able to access the Gravity Help API.
+    - Added ability to place the payment details in a separate box on the entry detail page.
+	- Added Bulgarian translation file.
+
+    - Added 'gform_display_product_summary' hook to allow suppressing pricing summary on {all_fields} merge tag and displaying pricing fields inline with other form fields.
+	    add_filter( 'gform_display_product_summary', '__return_false' );
+
+    - Added 'gform_export_form' hook to allow modification of the form meta before export.
+        add_filter( 'gform_export_form', 'modify_form_for_export' );
+        function modify_form_for_export( $form ) {
+            $form['exported'] = true;
+            return $form;
+        }
+
+    - Added 'gform_export_options' hook to allow adding custom export options.
+        add_filter( 'gform_export_options', 'my_export_options', 10, 2 );
+        function my_export_options( $options, $forms ) {
+            $options["forms/form/myCustomProperty/id"] = array( 'is_attribute' => true );
+            return $options;
+        }
+
+    - Added 'gform_form_update_meta' hook to allow modifying form meta before it is saved to the database.
+        add_filter( 'gform_form_update_meta', 'my_import_form', 10, 3 );
+        function my_import_form( $meta, $form_id, $meta_name ) {
+
+            $is_import_page           = GFForms::get_page() == 'import_form';
+            $is_updating_display_meta = $meta_name == 'display_meta';
+
+            if( ! $is_import_page || ! $is_updating_display_meta )
+                return $meta;
+
+            $form = $meta;
+            $form['isImported'] = true;
+
+            return $form;
+        }
+
+    - Added gform_entry_pre_update filter to allow entry to be changed prior to being saved.
+        $entry = apply_filters("gform_entry_pre_update", $entry, $original_entry);
+
+    - Added gform_post_update_entry hook to allow actions to be taken when entry is updated
+        do_action("gform_post_update_entry", $entry, $original_entry);
+
+    - Added gform_post_payment_transaction hook to allow actions to be taken after a payment transaction is created.
+        do_action("gform_post_payment_transaction", $txn_id, $entry_id, $transaction_type, $transaction_id, $amount, $is_recurring);
+
+    - Added gform_action_pre_payment_callback filter to allow callback action and parameters to be changed before a payment callback is executed.
+        $action = do_action("gform_action_pre_payment_callback", $action, $entry);
+
+    - Added gform_post_payment_callback hook to allow actions to be taken after a payment callback is processed.
+        do_action("gform_post_payment_callback", $entry, $action, $result);
+
+    - Added gform_post_payment_completed hook to allow actions to be taken when a payment is completed.
+        do_action("gform_post_payment_completed", $entry, $action);
+
+    - Added gform_post_payment_refunded hook to allow actions to be taken after a payment refund is processed.
+        do_action("gform_post_payment_refunded", $entry, $action);
+
+    - Added gform_post_subscription_started hook to allow actions to be taken after a subscription has been created.
+        do_action("gform_post_subscription_started", $entry, $subscription);
+
+	- Updated the multi-file upload field to support Plupload 2.x in WordPress 3.9.
+    - Updated the Locking API to use a Heartbeat interval of 30 seconds as standard and 5 seconds while waiting for the response to a control request. The lock timeout is now 150 seconds - equivalent to Posts and Pages.
+    - Updated links to sign up page for reCAPTCHA.
+
+    - Fixed security vulnerability.
+    - Fixed issue with feed addon not refreshing list page when a feed is deleted.
+    - Fixed issue introduced in 1.8.7.14 with the multi-file upload field not properly displaying an error message in case of a failed upload.
+    - Fixed issue with multi-file upload field not allowing files with special accent characters from being uploaded.
+	- Fixed issue where legacy notification data was not cleaned up when editing existing notifications.
+    - Fixed issue with quantity of single product fields allowing negative values to be entered.
+    - Fixed issue with number field validation.
+    - Fixed issue with Addon Browser not recognizing valid licenses.
+    - Fixed notice in GFFormDisplay::get_chosen_init_script() where $input_type was not defined.
+    - Fixed issue where selecting option from bulk choice menu scrolled page to top.
+    - Fixed issue with chosen script throwing javascript errors on certain situations.
+    - Fixed issue with multi-file upload field throwing javascript errors when the number of files uploaded reached the max files setting.
+
+	- AF: Added more logging statements to the Payment Add-On.
+	- AF: Added the function is_callback_valid which can be overwritten for use by Payment plugins for the Payment Add-On.
+	- AF: Added entry and action objects to be passed as parameters for custom events for the Payment Add-On.
+	- AF: Updated logging to go to the plugins log instead of Gravity Forms' log for the Payment Add-on.
+	- AF: Updated to remove caching the feed in the Payment Add-On.
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.8.7
+
+    - Added Text Domain and Domain Path to plugin header so the description may be translated
+
+    - Updated product calculation to improve performance
+    - Updated width of form title column so form actions do not wrap.
+    - Updated two notice statements to alleviate confusion
+    - Updated German translation file with user-provided update
+	- Updated a few strings so they can be translated
+	- Updated POT file
+    - Updated GFFormsModel::save_lead() method to support saving leads on non-admin views
+    - Updated GFFormDisplay::has_conditional_logic from private to public
+
+    - Fixed an issue with the validation of the number field when set to currency format and the Gravity Forms currency setting is set to a decimal comma formatted currency
+    - Fixed incorrect domain for translations in a few instances
+    - Fixed security vulnerabilities
+    - Fixed issue with nested conditional logic on checkboxes.
+    - Fixed issue where conditional logic setting was showing up for Hidden products
+    - Fixed issue where GF Results was being initialized on all admin pages
+    - Fixed issue with the {pricing_fields} merge tag markup.
+
+    - API: Updated the Web API authentication to accept both url-encoded and unencoded signatures to handle different client behavior
+    - API: Updated some mysql_*() calls to support WordPress 3.9 under PHP 5.5 or higher
+
+    - AF: Added support for top level "app" menus
+    - AF: Added support for top level "app settings"
+    - AF: Added support for app tab UIs
+    - AF: Fixed an issue with the form settings menu where the menu item for the add-on was appearing in the menu even when the current user did not have adequate permissions
+    - AF: Fixed filter for app settings menu
+
+-------------------------------------------------------------------------------------------------------------------
 Version 1.8.6
 
     - Added logging to help troubleshooting form submissions.

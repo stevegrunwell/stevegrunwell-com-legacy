@@ -1,5 +1,9 @@
 <?php
 
+if(!class_exists('GFForms')){
+    die();
+}
+
 class GFExport{
 
     private static $min_import_version = "1.3.12.3";
@@ -40,6 +44,7 @@ class GFExport{
 
             //removing the inputs for checkboxes (choices will be used during the import)
             foreach($forms as &$form){
+
                 foreach($form["fields"] as &$field){
                     $inputType = RGFormsModel::get_input_type($field);
 
@@ -76,11 +81,15 @@ class GFExport{
                         $form['notifications'] = array_values($form['notifications']);
 
                 }
+
+                $form = apply_filters( 'gform_export_form', $form );
+                $form = apply_filters( "gform_export_form_{$form['id']}", $form );
+
             }
 
             require_once("xml.php");
 
-             $options = array(
+            $options = array(
                 "version" => GFCommon::$version,
                 "forms/form/id" => array("is_hidden" => true),
                 "forms/form/nextFieldId" => array("is_hidden" => true),
@@ -157,6 +166,8 @@ class GFExport{
                 "forms/form/confirmations/confirmation/disableAutoformatting" => array("is_attribute" => true),
                 "forms/form/notifications/notification/id" => array("is_attribute" => true)
             );
+
+            $options = apply_filters( 'gform_export_options', $options, $forms );
 
             $serializer = new RGXML($options);
             $xml = $serializer->serialize("forms", $forms);

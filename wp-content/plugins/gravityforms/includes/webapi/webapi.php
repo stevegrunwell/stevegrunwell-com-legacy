@@ -1,13 +1,8 @@
 <?php
 
-/**
- * todo
- * - Support for Authorization header?
- * - Enforce maximum expiration?
- * - MVC pattern?
- * - support for JSONP
- * - API wrappers
- */
+if(!class_exists('GFForms')){
+    die();
+}
 
 
 if (!defined('GFWEBAPI_REQUIRE_SIGNATURE'))
@@ -1398,7 +1393,7 @@ if (class_exists("GFForms")) {
             if (time() >= $expires)
                 return false;
 
-            $is_valid = $signature == $calculated_sig;
+            $is_valid = $signature == $calculated_sig || $signature == rawurlencode($calculated_sig);
 
             return $is_valid;
         }

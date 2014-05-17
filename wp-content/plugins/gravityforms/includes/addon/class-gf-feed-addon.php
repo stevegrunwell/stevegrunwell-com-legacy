@@ -1,4 +1,9 @@
 <?php
+
+if(!class_exists('GFForms')){
+    die();
+}
+
 /**
  * Specialist Add-On class designed for use by Add-Ons that require form feed settings
  * on the form settings tab.
@@ -107,20 +112,17 @@ abstract class GFFeedAddOn extends GFAddOn {
 
     public function maybe_process_feed( $entry, $form, $is_delayed = false ) {
 
-        //Getting all active feeds for current addon
-        $feeds = $this->get_feeds( $form['id'] );
+        $paypal_feed = $this->get_paypal_feed( $form['id'], $entry );
+        $has_payment = self::get_paypal_payment_amount($form, $entry, $paypal_feed) > 0;
 
-        //Aborting if delayed payment is configured
-        if(!empty($feeds)){
-            $is_delayed_payment_configured = $this->is_delayed_payment($entry, $form, $is_delayed);
-
-            if( $is_delayed_payment_configured ) {
-                self::log_debug( "Feed processing delayed pending PayPal payment received for entry {$entry['id']}" );
-                return $entry;
-            }
+        if( $paypal_feed && rgar( $paypal_feed['meta'], "delay_{$this->_slug}" ) && $has_payment && !$is_delayed ) {
+            self::log_debug( "Feed processing delayed pending PayPal payment received for entry {$entry['id']}" );
+            return $entry;
         }
 
-        //Processing feeds
+        // getting all active feeds
+        $feeds = $this->get_feeds( $form['id'] );
+
         $processed_feeds = array();
         foreach ( $feeds as $feed ) {
             if ( $this->is_feed_condition_met( $feed, $form, $entry ) ) {
@@ -131,7 +133,6 @@ abstract class GFFeedAddOn extends GFAddOn {
             }
         }
 
-        //Saving processed feeds
         if(!empty($processed_feeds)){
             $meta = gform_get_meta($entry["id"], "processed_feeds");
             if(empty($meta))
@@ -190,11 +191,6 @@ abstract class GFFeedAddOn extends GFAddOn {
     public function get_feeds( $form_id = null ){
         global $wpdb;
 
-        $cache_key = implode( '_', array_filter( array( $this->_slug, 'get_feeds', $form_id ) ) );
-        $feeds = GFCache::get( $cache_key );
-        if( is_array( $feeds ) )
-            return $feeds;
-
         $form_filter = is_numeric($form_id) ? $wpdb->prepare("AND form_id=%d", absint($form_id)) : "";
 
         $sql = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}gf_addon_feed
@@ -204,8 +200,6 @@ abstract class GFFeedAddOn extends GFAddOn {
         foreach($results as &$result){
             $result["meta"] = json_decode($result["meta"], true);
         }
-
-        GFCache::set( $cache_key, $results );
 
         return $results;
     }
@@ -775,7 +769,6 @@ abstract class GFFeedAddOn extends GFAddOn {
 
     public static function get_paypal_payment_amount($form, $entry, $paypal_config){
 
-        //TODO: need to support old "paypal_config" format as well as new format when delayed payment suported feed addons are released
         $products = GFCommon::get_product_fields($form, $entry, true);
         $recurring_field = rgar($paypal_config["meta"], "recurring_amount_field");
         $total = 0;
@@ -801,20 +794,6 @@ abstract class GFFeedAddOn extends GFAddOn {
 
     protected function has_feed( $form_id ) {
         return $this->get_feeds( $form_id ) != false;
-    }
-
-    protected function is_delayed_payment($entry, $form, $is_delayed)
-    {
-        if($this->_slug == "gravityformspaypal")
-            return false;
-
-        $paypal_feed = $this->get_paypal_feed($form['id'], $entry);
-        if(!$paypal_feed)
-            return false;
-
-        $has_payment = self::get_paypal_payment_amount($form, $entry, $paypal_feed) > 0;
-
-        return rgar($paypal_feed['meta'], "delay_{$this->_slug}") && $has_payment && !$is_delayed;
     }
 
 }

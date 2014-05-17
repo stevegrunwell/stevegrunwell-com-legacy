@@ -1,4 +1,9 @@
 <?php
+
+if(!class_exists('GFForms')){
+    die();
+}
+
 /**
  * upload.php
  *
@@ -10,7 +15,6 @@
  *
  * Modified by Rocketgenius
  */
-
 class GFAsyncUpload {
 
     public static function upload() {

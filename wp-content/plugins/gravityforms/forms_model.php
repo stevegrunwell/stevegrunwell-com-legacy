@@ -1,5 +1,9 @@
 <?php
 
+if(!class_exists('GFForms')){
+    die();
+}
+
 require_once(ABSPATH . WPINC . "/post.php");
 
 define("GFORMS_MAX_FIELD_LENGTH", 200);
@@ -581,6 +585,9 @@ class GFFormsModel {
     }
 
     public static function update_lead($lead){
+
+        _deprecated_function("GFFormsModel::update_lead()", "1.8.8", "GFAPI::update_entry()");
+
         global $wpdb;
         $lead_table = self::get_lead_table_name();
 
@@ -812,10 +819,14 @@ class GFFormsModel {
 
     }
 
-    public static function update_form_meta($form_id, $form_meta, $meta_name="display_meta"){
+    public static function update_form_meta( $form_id, $form_meta, $meta_name = 'display_meta' ) {
         global $wpdb;
+
+        $form_meta = apply_filters( 'gform_form_update_meta', $form_meta, $form_id, $meta_name );
+        $form_meta = apply_filters( "gform_form_update_meta_{$form_id}", $form_meta, $form_id, $meta_name );
+
         $meta_table_name = self::get_meta_table_name();
-        $form_meta = json_encode($form_meta);
+        $form_meta = json_encode( $form_meta );
 
         if(intval($wpdb->get_var($wpdb->prepare("SELECT count(0) FROM $meta_table_name WHERE form_id=%d", $form_id))) > 0)
             $result = $wpdb->query( $wpdb->prepare("UPDATE $meta_table_name SET $meta_name=%s WHERE form_id=%d", $form_meta, $form_id) );
@@ -824,8 +835,8 @@ class GFFormsModel {
 
         self::$_current_forms[$form_id] = null;
 
-        add_action( 'gform_after_update_form_meta', $form_meta, $form_id, $meta_name );
-        add_action( "gform_after_update_form_meta_{$form_id}", $form_meta, $form_id, $meta_name );
+        do_action( 'gform_post_update_form_meta', $form_meta, $form_id, $meta_name );
+        do_action( "gform_post_update_form_meta_{$form_id}", $form_meta, $form_id, $meta_name );
 
         return $result;
     }
@@ -1124,9 +1135,11 @@ class GFFormsModel {
             die(__("You don't have adequate permission to edit entries.", "gravityforms"));
 
         $lead_detail_table = self::get_lead_details_table_name();
+        $is_new_lead = $lead == null;
 
         //Inserting lead if null
-        if($lead == null){
+        if( $is_new_lead ) {
+
             global $current_user;
             $user_id = $current_user && $current_user->ID ? $current_user->ID : 'NULL';
 
@@ -1140,7 +1153,7 @@ class GFFormsModel {
 
             //reading newly created lead id
             $lead_id = $wpdb->insert_id;
-            $lead = array("id" => $lead_id);
+            $lead = array( 'id' => $lead_id );
 
             GFCommon::log_debug("Entry record created in the database. ID: {$lead_id}");
         }
@@ -1174,7 +1187,7 @@ class GFFormsModel {
             }
 
             //only save fields that are not hidden (except on entry screen)
-            if(RG_CURRENT_VIEW == "entry" || !RGFormsModel::is_field_hidden($form, $field, array()) ){
+            if( RG_CURRENT_VIEW == 'entry' || ! GFFormsModel::is_field_hidden( $form, $field, array(), $is_new_lead ? null : $lead ) ) {
 
                 // process calculation fields after all fields have been saved (moved after the is hidden check)
                 if( GFCommon::has_field_calculation($field) ) {
@@ -1618,7 +1631,7 @@ class GFFormsModel {
                 $value[$field["id"] . ".7"] = self::get_input_value($field, "input_" . $field["id"] . "_7", $get_from_post);
             break;
             case "checkbox" :
-                $parameter_values = self::get_parameter_value($field["inputName"], $field_values, $field);
+                $parameter_values = self::get_parameter_value( rgar( $field, 'inputName' ), $field_values, $field);
                 if(!empty($parameter_values) && !is_array($parameter_values)){
                     $parameter_values = explode(",", $parameter_values);
                 }
@@ -1663,6 +1676,9 @@ class GFFormsModel {
                 }
                 else if($field["numberFormat"] == "decimal_comma"){
                     $value = GFCommon::clean_number($value, "decimal_comma");
+                }
+                else if($field["numberFormat"] == "decimal_dot"){
+                    $value = GFCommon::clean_number($value, "decimal_dot");
                 }
             break;
 
@@ -2523,7 +2539,7 @@ class GFFormsModel {
         //update post_id field if a post was created
         $lead["post_id"] = $post_id;
         GFCommon::log_debug("Updating entry.");
-        self::update_lead($lead);
+        self::update_lead_property($lead["id"], "post_id", $post_id);
 
         do_action( 'gform_after_create_post', $post_id );
 
@@ -3589,7 +3605,8 @@ class GFFormsModel {
             return false;
 
         if(!self::$_current_lead) {
-            $form = self::get_form_meta(rgpost('gform_submit'));
+            $form_id = absint(rgpost('gform_submit'));
+            $form = self::get_form_meta($form_id);
             self::$_current_lead = self::create_lead($form);
         }
 

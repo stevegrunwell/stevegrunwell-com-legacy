@@ -1,4 +1,9 @@
 <?php
+
+if(!class_exists('GFForms')){
+    die();
+}
+
 class GFFormList{
 
     public static function form_list_page(){
@@ -401,7 +406,7 @@ class GFFormList{
                                 $dir = $sort_column == "title" && $sort_direction == "ASC" ? "DESC" : "ASC";
                                 $url_title = admin_url("admin.php?page=gf_edit_forms&sort=title&dir=$dir&trash=$trash");
                                 ?>
-                            <th width="360" scope="col" id="title" class="manage-column column-title" style="cursor:pointer;" onclick="document.location='<?php echo $url_title; ?>'"><?php _e("Title", "gravityforms"); ?></th>
+                            <th width="410" scope="col" id="title" class="manage-column column-title" style="cursor:pointer;" onclick="document.location='<?php echo $url_title; ?>'"><?php _e("Title", "gravityforms"); ?></th>
                             <th scope="col" id="author" class="manage-column column-author" style=""><?php _e("Views", "gravityforms") ?></th>
                             <th scope="col" id="template" class="manage-column" style=""><?php _e("Entries", "gravityforms") ?></th>
                             <th scope="col" id="template" class="manage-column" style=""><?php _e("Conversion", "gravityforms") ?> <?php gform_tooltip("entries_conversion", "tooltip_left") ?> </th>
@@ -419,7 +424,7 @@ class GFFormList{
                             ?>
                             <th scope="col" id="active" class="manage-column column-cb check-column"></th>
                             <th scope="col" id="id" class="manage-column" style="cursor:pointer;" onclick="document.location='<?php echo $url_id; ?>'"><?php _e("Id", "gravityforms") ?></th>
-                            <th width="350" scope="col" id="title" style="cursor:pointer;" class="manage-column column-title" onclick="document.location='<?php echo $url_title; ?>'"><?php _e("Title", "gravityforms") ?></th>
+                            <th width="410" scope="col" id="title" style="cursor:pointer;" class="manage-column column-title" onclick="document.location='<?php echo $url_title; ?>'"><?php _e("Title", "gravityforms") ?></th>
                             <th scope="col" id="author" class="manage-column column-author" style=""><?php _e("Views", "gravityforms") ?></th>
                             <th scope="col" id="template" class="manage-column" style=""><?php _e("Entries", "gravityforms") ?></th>
                             <th scope="col" id="template" class="manage-column" style=""><?php _e("Conversion", "gravityforms") ?></th>
@@ -633,5 +638,3 @@ class GFFormList{
     }
 
 }
-
-?>

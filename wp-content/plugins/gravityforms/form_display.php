@@ -1,5 +1,9 @@
 <?php
 
+if(!class_exists('GFForms')){
+    die();
+}
+
 class GFFormDisplay{
 
     public static $submission = array();
@@ -10,7 +14,7 @@ class GFFormDisplay{
 
     public static function process_form($form_id){
 
-        GFCommon::log_debug("Starting to process form submission.");
+        GFCommon::log_debug( "Starting to process form (#{$form_id}) submission." );
 
         //reading form metadata
         $form = RGFormsModel::get_form_meta($form_id);
@@ -320,7 +324,7 @@ class GFFormDisplay{
     }
 
     public static function get_current_page($form_id){
-        $page_number = isset(self::$submission[$form_id]) ? self::$submission[$form_id]["page_number"] : 1;
+        $page_number = isset(self::$submission[$form_id]) ? intval(self::$submission[$form_id]["page_number"]) : 1;
         return $page_number;
     }
 
@@ -808,8 +812,8 @@ class GFFormDisplay{
             <input type='hidden' class='gform_hidden' name='gform_submit' value='{$form_id}' />
             <input type='hidden' class='gform_hidden' name='gform_unique_id' value='" . esc_attr(GFFormsModel::get_form_unique_id($form_id)) . "' />
             <input type='hidden' class='gform_hidden' name='state_{$form_id}' value='" . self::get_state($form, $field_values) . "' />
-            <input type='hidden' class='gform_hidden' name='gform_target_page_number_{$form_id}' id='gform_target_page_number_{$form_id}' value='" . $next_page . "' />
-            <input type='hidden' class='gform_hidden' name='gform_source_page_number_{$form_id}' id='gform_source_page_number_{$form_id}' value='" . $current_page . "' />
+            <input type='hidden' class='gform_hidden' name='gform_target_page_number_{$form_id}' id='gform_target_page_number_{$form_id}' value='" . esc_attr($next_page) . "' />
+            <input type='hidden' class='gform_hidden' name='gform_source_page_number_{$form_id}' id='gform_source_page_number_{$form_id}' value='" . esc_attr($current_page) . "' />
             <input type='hidden' name='gform_field_values' value='" . esc_attr($field_values_str) ."' />
             {$files_input}
         </div>";
@@ -919,15 +923,20 @@ class GFFormDisplay{
     }
 
 
-
+    /**
+     * Validates the range of the number according to the field settings.
+     *
+     * @param array $field
+     * @param array $value A decimal_dot formatted string
+     * @return true|false True on valid or false on invalid
+     */
     private static function validate_range($field, $value){
 
-        if( !GFCommon::is_numeric($value, rgar($field, "numberFormat")) )
+        if( !GFCommon::is_numeric($value, "decimal_dot") )
             return false;
 
-        $number = GFCommon::clean_number($value, rgar($field, "numberFormat"));
-        if( (is_numeric($field["rangeMin"]) && $number < $field["rangeMin"]) ||
-            (is_numeric($field["rangeMax"]) && $number > $field["rangeMax"])
+        if( (is_numeric($field["rangeMin"]) && $value < $field["rangeMin"]) ||
+            (is_numeric($field["rangeMax"]) && $value > $field["rangeMax"])
         )
             return false;
         else
@@ -1269,19 +1278,22 @@ class GFFormDisplay{
 
                         case "number" :
 
-                            if($field["numberFormat"] == "decimal_comma"){
-                                $value = GFCommon::format_number($value, $field["numberFormat"]);
-                            }
+                            // the POST value has already been converted from currency or decimal_comma to decimal_dot and then cleaned in get_field_value()
 
                             $value = GFCommon::maybe_add_leading_zero($value);
+                            $raw_value = $_POST["input_" . $field["id"]]; //Raw value will be tested against the is_numeric() function to make sure it is in the right format.
 
-                            if(!rgblank($value) && !self::validate_range($field, $value) && !GFCommon::has_field_calculation($field)) {
+                            $requires_valid_number = !rgblank($raw_value) && !GFCommon::has_field_calculation($field);
+                            $is_valid_number = self::validate_range($field, $value) && GFCommon::is_numeric($raw_value, $field["numberFormat"]);
+
+                            if( $requires_valid_number && !$is_valid_number ) {
                                 $field["failed_validation"] = true;
                                 $field["validation_message"] = empty($field["errorMessage"]) ? GFCommon::get_range_message($field) : $field["errorMessage"];
                             }
                             else if($field["type"] == "quantity" && intval($value) != $value){
                                 $field["failed_validation"] = true;
                                 $field["validation_message"] = empty($field["errorMessage"]) ? __("Please enter a valid quantity. Quantity cannot contain decimals.", "gravityforms") : $field["errorMessage"];
+
                             }
 
                         break;
@@ -1508,7 +1520,7 @@ class GFFormDisplay{
                                 $field["failed_validation"] = true;
                                 $field["validation_message"] = rgempty("errorMessage", $field) ? __("This field is required.", "gravityforms") : rgar($field, "errorMessage");
                             }
-                            else if(!empty($quantity) && (!is_numeric($quantity) || intval($quantity) != floatval($quantity)) ) {
+                            else if(!empty($quantity) && (!is_numeric($quantity) || intval($quantity) != floatval($quantity) || intval($quantity) < 0) ) {
                                 $field["failed_validation"] = true;
                                 $field["validation_message"] = __("Please enter a valid quantity", "gravityforms");
                             }
@@ -1777,7 +1789,7 @@ class GFFormDisplay{
 
     }
 
-    private static function has_conditional_logic( $form ) {
+    public static function has_conditional_logic( $form ) {
         $has_conditional_logic = self::has_conditional_logic_legwork( $form );
         return apply_filters( 'gform_has_conditional_logic', $has_conditional_logic, $form );
     }
@@ -2070,7 +2082,8 @@ class GFFormDisplay{
     public static function get_chosen_init_script($form){
         $chosen_fields = array();
         foreach($form["fields"] as $field){
-            if(rgar($field, "enableEnhancedUI"))
+            $input_type = GFFormsModel::get_input_type($field);
+            if(rgar($field, "enableEnhancedUI") && in_array($input_type, array("select", "multiselect")))
                 $chosen_fields[] = "#input_{$form["id"]}_{$field["id"]}";
         }
         return "gformInitChosenFields('" . implode(",", $chosen_fields) . "','" . esc_attr(apply_filters("gform_dropdown_no_results_text_{$form["id"]}", apply_filters("gform_dropdown_no_results_text", __("No results matched", "gravityforms"), $form["id"]), $form["id"])) . "');";

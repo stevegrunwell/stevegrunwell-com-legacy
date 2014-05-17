@@ -348,10 +348,17 @@ function gf_reset_to_default(targetId, defaultValue){
         //if value changed, trigger click event
         if(isChecked != doCheck){
             //setting input as checked or unchecked appropriately
-            jQuery(this).prop("checked", doCheck);
 
-            //need to set the prop again after the click is triggered
-            jQuery(this).trigger('click').prop('checked', doCheck);
+            if(jQuery(this).attr("type") == "checkbox"){
+                jQuery(this).trigger('click');
+            }
+            else{
+                jQuery(this).prop("checked", doCheck);
+
+                //need to set the prop again after the click is triggered
+                jQuery(this).trigger('click').prop('checked', doCheck);
+            }
+
         }
     });
 

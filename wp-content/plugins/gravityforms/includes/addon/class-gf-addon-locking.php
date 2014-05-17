@@ -1,5 +1,9 @@
 <?php
 
+if(!class_exists('GFForms')){
+    die();
+}
+
 class GFAddonLocking extends GFLocking {
     protected $_strings;
     protected $_addon;
