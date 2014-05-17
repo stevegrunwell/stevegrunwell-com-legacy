@@ -48,7 +48,7 @@ class SteveGrunwell {
         'parent_item_colon' => __( 'Portfolio', 'stevegrunwell' ),
         'menu_name' => __( 'Portfolio', 'stevegrunwell' )
       ),
-      'menu_icon' => null,
+      'menu_icon' => 'dashicons-desktop',
       'public' => true,
       'rewrite' => array(
         'slug' => 'portfolio',
@@ -86,7 +86,7 @@ class SteveGrunwell {
         'parent_item_colon' => __( 'Talks', 'stevegrunwell' ),
         'menu_name' => __( 'Talks', 'stevegrunwell' )
       ),
-      'menu_icon' => null,
+      'menu_icon' => 'dashicons-megaphone',
       'public' => true,
       'rewrite' => array(
         'slug' => 'speaking',
