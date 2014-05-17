@@ -3,8 +3,8 @@ Contributors: eskapism, MarsApril
 Donate link: http://eskapism.se/sida/donate/
 Tags: page, pages, posts, custom posts, tree, cms, dashboard, overview, drag-and-drop, rearrange, management, manage, admin
 Requires at least: 3.8
-Tested up to: 3.8.1
-Stable tag: 1.2.21
+Tested up to: 3.9
+Stable tag: 1.2.27
 
 Adds a tree view of all pages & custom posts. Get a great overview + options to drag & drop to reorder & option to add multiple pages.
 
@@ -113,8 +113,28 @@ Now the tree with the pages will be visible both on the dashboard and in the men
 
 == Changelog ==
 
+= 1.2.27 =
+
+- Add new filter "cms_tree_page_view_post_title". Use this filter to change to title being used to build the tree.
+
+= 1.2.26 =
+- Roll back the feature with permissions to move pages. Too many people had problems with it.
+
+= 1.2.25 =
+- Just a version bump because wordpress.org did not show version 1.2.24.
+
+= 1.2.24 =
+- Fix problems with users not getting permissions to move pages.
+
+= 1.2.23 =
+- Now only users with permission may move pages and custom posts and publish new posts. By default administrator and editors have these rights. Is checked using capability "move_cms_tree_view_page", so add that to any user you want to allow this for. Props mateuszdw, who made [the very first pull request for this plugin](https://github.com/bonny/WordPress-CMS-Tree-Page-View/pull/1)! Thanks a lot!
+
+= 1.2.22 =
+- Fixed top links being squashed in dashboard. Fixes http://wordpress.org/support/topic/bug-top-links-on-dashboard-widget-misaligned-in-wp-38. Props tim.wakeling.
+- Fixed: Now prevents long titles from overflowing the dashboard widget area. Prop tim.wakeling.
+
 = 1.2.21 =
-- Fixed and incompatibility issue with plugin Advanced Custom Fields.
+- Fixed incompatibility issue with plugin Advanced Custom Fields.
 
 = 1.2.20 =
 - Removed part of a comment beacuse it mentionened a file on another domain and therefore violated the repository guidelines. Also moved some sprites in CSS from loading external to loading internal.

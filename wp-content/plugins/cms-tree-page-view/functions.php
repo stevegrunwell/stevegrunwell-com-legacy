@@ -63,17 +63,17 @@ function cms_tpv_add_pages() {
 	/*
 	Array
 	(
-	    [action] => cms_tpv_add_pages
-	    [cms_tpv_add_new_pages_names] => Array
-	        (
-	            [0] => xxxxx
-	            [1] => yyyy
-	            [2] => 
-	        )
+		[action] => cms_tpv_add_pages
+		[cms_tpv_add_new_pages_names] => Array
+			(
+				[0] => xxxxx
+				[1] => yyyy
+				[2] => 
+			)
 
-	    [cms_tpv_add_type] => inside
-	    [cms_tpv_add_status] => draft
-	    [lang] => de
+		[cms_tpv_add_type] => inside
+		[cms_tpv_add_status] => draft
+		[lang] => de
 	)
 	*/
 
@@ -219,7 +219,7 @@ function cms_tpv_add_pages() {
 		$newpost_args = array(
 			"menu_order" => $new_menu_order,
 			"post_parent" => $post_parent_id,
-			"post_status" => $post_status,
+			"post_status" => ( ('publish' == $post_status) && !current_user_can('publish_posts') ? 'pending' : $post_status ),
 			"post_title" => $one_new_post_name,
 			"post_type" => $ref_post->post_type
 		);
@@ -264,19 +264,21 @@ function cms_tpv_admin_head() {
 		var CMS_TPV_URL = "<?php echo CMS_TPV_URL ?>";
 		var CMS_TPV_AJAXURL = "?action=cms_tpv_get_childs&view=";
 		var CMS_TPV_VIEW = "<?php echo $cms_tpv_view ?>";
+		//var CMS_TPV_CAN_DND = "<?php echo current_user_can( CMS_TPV_MOVE_PERMISSION ) ? "dnd" : "" ?>";
+		var CMS_TPV_CAN_DND = "dnd";
 		var cms_tpv_jsondata = {};
 		/* ]]> */
 	</script>
 
-    <!--[if IE 6]>
-    	<style>
-    		.cms_tree_view_search_form {
-    			display: none !important;
-    		}
+	<!--[if IE 6]>
+		<style>
+			.cms_tree_view_search_form {
+				display: none !important;
+			}
 			.cms_tpv_dashboard_widget .subsubsub li {
 			}
-    	</style>
-    <![endif]-->
+		</style>
+	<![endif]-->
 	<?php
 }
 
@@ -1055,9 +1057,9 @@ function cms_tpv_print_common_tree_stuff($post_type = "") {
 
 
 							<div>
-                                                                <?php _e("Status", "cms-tree-page-view") ?><br>
+								<?php _e("Status", "cms-tree-page-view") ?><br>
 								<label><input type="radio" name="cms_tpv_add_status" value="draft" checked> <?php _e("Draft", "cms-tree-page-view") ?></label>
-								<label><input type="radio" name="cms_tpv_add_status" value="published"> <?php _e("Published", "cms-tree-page-view") ?></label>
+								<label><input type="radio" name="cms_tpv_add_status" value="published"> <?php current_user_can('publish_posts') ? _e("Published", "cms-tree-page-view") : _e("Submit for Review", "cms-tree-page-view") ?></label>
 							</div>
 
 							<div>
@@ -1146,12 +1148,12 @@ function cms_tpv_get_pages($args = null) {
 
 	global $wpdb;
 
-    $defaults = array(
-    	"post_type" => "post",
+	$defaults = array(
+		"post_type" => "post",
 		"parent" => "",
 		"view" => "all" // all | public | trash
-    );
-    $r = wp_parse_args( $args, $defaults );
+	);
+	$r = wp_parse_args( $args, $defaults );
 
 	$get_posts_args = array(
 		"numberposts" => "-1",
@@ -1195,8 +1197,8 @@ function cms_tpv_get_pages($args = null) {
 
 	// filter out pages for wpml, by applying same filter as get_pages does
 	// only run if wpml is available or always?
-        // Note: get_pages filter uses orderby comma separated and with the key sort_column
-        $get_posts_args["sort_column"] = str_replace(" ", ", ", $get_posts_args["orderby"]);
+		// Note: get_pages filter uses orderby comma separated and with the key sort_column
+		$get_posts_args["sort_column"] = str_replace(" ", ", ", $get_posts_args["orderby"]);
 	$pages = apply_filters('get_pages', $pages, $get_posts_args);
 	
 	return $pages;
@@ -1286,6 +1288,9 @@ function cms_tpv_print_childs($pageID, $view = "all", $arrOpenChilds = null, $po
 			}
 			
 			$title = get_the_title($onePage->ID); // so hooks and stuff will do their work
+
+			$title = apply_filters("cms_tree_page_view_post_title", $title, $onePage);
+
 			if (empty($title)) {
 				$title = __("<Untitled page>", 'cms-tree-page-view');
 			}
@@ -1604,11 +1609,14 @@ function cms_tpv_move_page() {
 	 the node that was moved,
 	 the reference node in the move,
 	 the new position relative to the reference node (one of "before", "after" or "inside"), 
-	 	inside = man placerar den under en sida som inte har några barn?
+		inside = man placerar den under en sida som inte har några barn?
 	*/
 
 	global $wpdb;
-	
+
+	//if ( !current_user_can( CMS_TPV_MOVE_PERMISSION ) )
+	//	die("Error: you dont have permission");
+
 	$node_id = $_POST["node_id"]; // the node that was moved
 	$ref_node_id = $_POST["ref_node_id"];
 	$type = $_POST["type"];
@@ -1715,7 +1723,7 @@ function cms_tpv_move_page() {
  */
 function cms_tpv_show_annoying_box() {
 	
-	// update_option('cms_tpv_show_annoying_little_box', 1); // enable this to show box while testing
+	//update_option('cms_tpv_show_annoying_little_box', 1); // enable this to show box while testing
 
 	if ( isset($_GET["action"]) && "cms_tpv_remove_annoying_box" == $_GET["action"] ) {
 		$show_box = 0;
@@ -1723,6 +1731,7 @@ function cms_tpv_show_annoying_box() {
 	} else {
 		$show_box = get_option('cms_tpv_show_annoying_little_box', 1);
 	}
+
 	if ($show_box) {
 		?>
 		<div class="cms_tpv_annoying_little_box">
@@ -1778,6 +1787,65 @@ function cms_tpv_install() {
 
 	// set to current version
 	update_option('cms_tpv_version', CMS_TPV_VERSION);
+
+}
+
+function cms_tvp_setup_caps() {
+
+	// Add necessary capabilities to allow moving tree of cms_tpv
+	$roles = array(
+		'administrator' => array(CMS_TPV_MOVE_PERMISSION),
+		'editor' =>        array(CMS_TPV_MOVE_PERMISSION),
+		//                'author' =>        array(CMS_TPV_MOVE_PERMISSION),
+		//                'contributor' =>   array(CMS_TPV_MOVE_PERMISSION)
+	);
+
+	foreach ( $roles as $role => $caps ) {
+		add_caps_to_role( $role, $caps );
+	}
+
+}
+
+function cms_tpv_uninstall() {
+
+	// Remove capabilities to disallow moving tree of cms_tpv
+	$roles = array(
+			'administrator' => array(CMS_TPV_MOVE_PERMISSION),
+			'editor' =>        array(CMS_TPV_MOVE_PERMISSION)
+	);
+
+	foreach ( $roles as $role => $caps ) {
+			remove_caps_from_role( $role, $caps );
+	}
+
+}
+
+/**
+* Adds an array of capabilities to a role.
+*/
+function add_caps_to_role( $role, $caps ) {
+
+	global $wp_roles;
+
+	if ( $wp_roles->is_role( $role ) ) {
+		$role =& get_role( $role );
+		foreach ( $caps as $cap )
+			$role->add_cap( $cap );
+	}
+}
+
+/**
+* Remove an array of capabilities from role.
+*/
+function remove_caps_from_role( $role, $caps ) {
+
+	global $wp_roles;
+
+	if ( $wp_roles->is_role( $role ) ) {
+		$role =& get_role( $role );
+		foreach ( $caps as $cap )
+			$role->remove_cap( $cap );
+	}
 }
 
 // cms_tpv_install();
@@ -1824,14 +1892,23 @@ function cms_tpv_setup_defaults() {
  * if not = it's an upgrade. right?
  */
 function cms_tpv_plugins_loaded($a) {
+
 	$installed_version = get_option('cms_tpv_version', 0);
-	#echo "installed_version: $installed_version";
-	#echo "<br>" . CMS_TPV_VERSION;
+	
+	//echo "installed_version in options table: $installed_version";
+	//echo "<br>version according to this file" . CMS_TPV_VERSION;
+
 	if ($installed_version != CMS_TPV_VERSION) {
+		
 		// new version!
-		// upgrade stored version to current version + show that annoying litte box again
+		// upgrade stored version to current version
 		update_option('cms_tpv_version', CMS_TPV_VERSION);	
+
+		// show that annoying litte box again
 		update_option('cms_tpv_show_annoying_little_box', 1);
+
+		// setup caps/persmissions
+		cms_tvp_setup_caps();
 	}
 
 }

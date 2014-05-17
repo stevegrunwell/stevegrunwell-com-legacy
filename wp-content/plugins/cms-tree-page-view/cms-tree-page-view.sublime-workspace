@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"ignored",
+				"ignored_post_types"
+			],
+			[
 				"function",
 				"function_exists"
 			],
@@ -276,18 +280,28 @@
 	"buffers":
 	[
 		{
-			"file": "index.php",
+			"file": "functions.php",
 			"settings":
 			{
-				"buffer_size": 2943,
+				"buffer_size": 62584,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "functions.php",
+			"contents": "Searching 60 files for \"CMS_TPV_CAN_DND\"\n\n/Users/bonny/Dropbox/Plugins/GIT/cms-tree-page-view/functions.php:\n  265  		var CMS_TPV_AJAXURL = \"?action=cms_tpv_get_childs&view=\";\n  266  		var CMS_TPV_VIEW = \"<?php echo $cms_tpv_view ?>\";\n  267: 		//var CMS_TPV_CAN_DND = \"<?php echo current_user_can( CMS_TPV_MOVE_PERMISSION ) ? \"dnd\" : \"\" ?>\";\n  268: 		var CMS_TPV_CAN_DND = \"dnd\";\n  269  		var cms_tpv_jsondata = {};\n  270  		/* ]]> */\n\n/Users/bonny/Dropbox/Plugins/GIT/cms-tree-page-view/scripts/cms_tree_page_view.js:\n  200  \n  201  	treeOptions = {\n  202: 		plugins: [\"themes\",\"json_data\",\"cookies\",\"search\",CMS_TPV_CAN_DND, \"types\"],\n  203  		core: {\n  204  			\"html_titles\": true\n\n3 matches across 2 files\n",
 			"settings":
 			{
-				"buffer_size": 60398,
+				"buffer_size": 710,
+				"line_ending": "Unix",
+				"name": "Find Results",
+				"scratch": true
+			}
+		},
+		{
+			"file": "index.php",
+			"settings":
+			{
+				"buffer_size": 3156,
 				"line_ending": "Unix"
 			}
 		},
@@ -295,7 +309,23 @@
 			"file": "readme.txt",
 			"settings":
 			{
-				"buffer_size": 23633,
+				"buffer_size": 25330,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "scripts/cms_tree_page_view.js",
+			"settings":
+			{
+				"buffer_size": 29065,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "styles/styles.css",
+			"settings":
+			{
+				"buffer_size": 10635,
 				"line_ending": "Unix"
 			}
 		}
@@ -504,6 +534,10 @@
 	},
 	"file_history":
 	[
+		"/Users/bonny/Dropbox/Plugins/GIT/cms-tree-page-view/subl",
+		"/Users/bonny/Dropbox/Plugins/GIT/cms-tree-page-view/index.php",
+		"/Users/bonny/Dropbox/Plugins/GIT/cms-tree-page-view/.gitignore",
+		"/Users/bonny/Dropbox/Plugins/GIT/cms-tree-page-view/readme.txt",
 		"/Users/bonny/Dropbox/Plugins/SVN/cms-tree-page-view/tags/1.2.14/readme.txt",
 		"/Users/bonny/Dropbox/Plugins/SVN/cms-tree-page-view/trunk/cms-tree-page-view.sublime-project",
 		"/Users/bonny/Dropbox/Plugins/SVN/cms-tree-page-view/trunk/scripts/cms_tree_page_view.js",
@@ -627,11 +661,7 @@
 		"/Users/bonny/Dropbox/Localhost/EarthPeople/neverever/app/wp/wp-content/themes/neverever/404.php",
 		"/Users/bonny/Dropbox/Localhost/EarthPeople/neverever/app/wp/wp-content/themes/neverever/.bowerrc",
 		"/Users/bonny/Dropbox/Localhost/EarthPeople/neverever/app/wp/wp-content/themes/neverever/js/bower.json",
-		"/Users/bonny/Dropbox/Localhost/EarthPeople/neverever/app/wp/wp-content/themes/neverever/js/jquery/bower.json",
-		"/Users/bonny/Dropbox/Localhost/EarthPeople/neverever/app/wp/wp-content/themes/neverever/js/jquery-extra-selectors.js",
-		"/Users/bonny/Dropbox/Localhost/EarthPeople/neverever/app/wp/wp-includes/theme-compat/footer.php",
-		"/Users/bonny/Dropbox/Webb/bonnys-wordpress-stuff/ep-theme/404.php",
-		"/Users/bonny/Dropbox/Webb/bonnys-wordpress-stuff/ep-theme/parts/shared/html-header.php"
+		"/Users/bonny/Dropbox/Localhost/EarthPeople/neverever/app/wp/wp-content/themes/neverever/js/jquery/bower.json"
 	],
 	"find":
 	{
@@ -660,6 +690,39 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"title",
+			"CMS_TPV_CAN_DND",
+			"CMS_TPV_MOVE_PERMISSION",
+			"cms_tpv_version",
+			"wp_roles =",
+			"change",
+			"cms_tvp_setup_caps",
+			"add_caps_to_role",
+			"is_role",
+			"loaded",
+			"is_role",
+			"CMS_TPV_MOVE_PERMISSION",
+			"cms_tpv_plugins_loaded",
+			"cms_tpv_install",
+			"CMS_TPV_MOVE_PERMISSION",
+			"[if IE 6]>",
+			"[action] => cms_tpv_add_pa",
+			"label><input type=\"radio\" name=\"cms_tpv_add_",
+			"CMS_TPV_CAN_DND",
+			"cms_tpv_install",
+			"CMS_TPV_CAN_DND",
+			"cms_tpv_install",
+			"cms_tpv_setup_defaults",
+			"dd necessary capabilities to allo",
+			"cms_tpv_container",
+			"cms_tpv_show_annoying_box",
+			"show",
+			".cms_tpv_wrapper",
+			"view-switch-cstpv-icon-added",
+			"change",
+			"20",
+			"cms_tpv_post_type_is_ignored",
+			"settings",
 			"menu_order, post_title",
 			"get_userdata",
 			"cms_tpv_get_the_modified_author",
@@ -754,40 +817,7 @@
 			"ja, jag har läst",
 			"submit-confession-confirmation-message",
 			"u med och tävlar elle",
-			"n get_term_by",
-			"get_term_by",
-			"require",
-			"functions",
-			"require(",
-			"include",
-			"overr",
-			"media_handle_sideload",
-			"post_id",
-			"wp_handle_sideload",
-			"sideload",
-			"is_image",
-			"is_iamge",
-			"elms.body",
-			"elms.bo",
-			"document.body",
-			"elms.body",
-			"wook",
-			".ConfessionsList",
-			"ConfessionsList--",
-			"add_menus",
-			"thumb",
-			"mest gillade",
-			"moderni",
-			"/home/earthpeople/.htpasswd",
-			"40%",
-			".SubmitConfession-button",
-			"ladda upp en bild",
-			"handleb",
-			"template-",
-			"x-tmpl",
-			"x-templ",
-			"close",
-			"<button"
+			"n get_term_by"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -816,160 +846,24 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "index.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2943,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								442,
-								442
-							]
-						],
-						"settings":
-						{
-							"annotations":
-							[
-								"TODO",
-								"README",
-								"FIXME"
-							],
-							"csslint_options":
-							{
-								"adjoining-classes": "warning",
-								"box-model": true,
-								"box-sizing": "warning",
-								"compatible-vendor-prefixes": "warning",
-								"display-property-grouping": true,
-								"duplicate-background-images": "warning",
-								"duplicate-properties": true,
-								"empty-rules": true,
-								"errors": true,
-								"fallback-colors": "warning",
-								"floats": "warning",
-								"font-faces": "warning",
-								"font-sizes": "warning",
-								"gradients": "warning",
-								"ids": "warning",
-								"import": "warning",
-								"important": "warning",
-								"known-properties": true,
-								"outline-none": "warning",
-								"overqualified-elements": "warning",
-								"qualified-headings": "warning",
-								"regex-selectors": "warning",
-								"rules-count": "warning",
-								"shorthand": "warning",
-								"star-property-hack": "warning",
-								"text-indent": "warning",
-								"underscore-property-hack": "warning",
-								"unique-headings": "warning",
-								"universal-selector": "warning",
-								"vendor-prefix": true,
-								"zero-units": "warning"
-							},
-							"gjslint_ignore":
-							[
-								110
-							],
-							"gjslint_options":
-							[
-							],
-							"javascript_linter": "jshint",
-							"jshint_options":
-							{
-								"browser": true,
-								"evil": true,
-								"regexdash": true,
-								"sub": true,
-								"trailing": true,
-								"wsh": true
-							},
-							"pep8": true,
-							"pep8_ignore":
-							[
-								"E501"
-							],
-							"perl_linter": "perlcritic",
-							"pyflakes_ignore":
-							[
-							],
-							"pyflakes_ignore_import_*": true,
-							"sublimelinter": true,
-							"sublimelinter_delay": 2,
-							"sublimelinter_disable":
-							[
-							],
-							"sublimelinter_executable_map":
-							{
-							},
-							"sublimelinter_fill_outlines": false,
-							"sublimelinter_gutter_marks": true,
-							"sublimelinter_gutter_marks_theme": "simple",
-							"sublimelinter_mark_style": "none",
-							"sublimelinter_notes": false,
-							"sublimelinter_objj_check_ascii": false,
-							"sublimelinter_popup_errors_on_save": false,
-							"sublimelinter_syntax_map":
-							{
-								"C++": "c",
-								"Python Django": "python",
-								"Ruby on Rails": "ruby"
-							},
-							"sublimelinter_wrap_find": true,
-							"syntax": "Packages/PHP/PHP.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "functions.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 60398,
+						"buffer_size": 62584,
 						"regions":
 						{
-							"bookmarks":
-							{
-								"flags": 144,
-								"icon": "bookmark",
-								"regions":
-								[
-									[
-										11534,
-										11534
-									],
-									[
-										40539,
-										40539
-									]
-								],
-								"scope": "bookmarks"
-							}
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								41340,
+								41369
 							]
 						],
 						"settings":
@@ -1014,6 +908,7 @@
 								"vendor-prefix": true,
 								"zero-units": "warning"
 							},
+							"function_name_status_row": 1291,
 							"gjslint_ignore":
 							[
 								110
@@ -1067,19 +962,134 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
+						"translation.y": 21615.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 710,
+						"regions":
+						{
+							"match":
+							{
+								"flags": 112,
+								"regions":
+								[
+									[
+										250,
+										265
+									],
+									[
+										355,
+										370
+									],
+									[
+										610,
+										625
+									]
+								],
+								"scope": ""
+							}
+						},
+						"selection":
+						[
+							[
+								605,
+								605
+							]
+						],
+						"settings":
+						{
+							"detect_indentation": false,
+							"function_name_status_row": 13,
+							"line_numbers": false,
+							"output_tag": 1,
+							"result_base_dir": "",
+							"result_file_regex": "^([A-Za-z\\\\/<].*):$",
+							"result_line_regex": "^ +([0-9]+):",
+							"scroll_past_end": true,
+							"syntax": "Packages/Default/Find Results.hidden-tmLanguage"
+						},
+						"translation.x": 0.0,
 						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "index.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3156,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2397,
+								2415
+							]
+						],
+						"settings":
+						{
+							"function_name_status_row": 64,
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 705.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "readme.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 25330,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3835,
+								3835
+							]
+						],
+						"settings":
+						{
+							"function_name_status_row": 116,
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1649.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "readme.txt",
+					"buffer": 4,
+					"file": "scripts/cms_tree_page_view.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 23633,
+						"buffer_size": 29065,
 						"regions":
 						{
 						},
@@ -1092,102 +1102,591 @@
 						],
 						"settings":
 						{
-							"annotations":
-							[
-								"TODO",
-								"README",
-								"FIXME"
-							],
-							"csslint_options":
-							{
-								"adjoining-classes": "warning",
-								"box-model": true,
-								"box-sizing": "warning",
-								"compatible-vendor-prefixes": "warning",
-								"display-property-grouping": true,
-								"duplicate-background-images": "warning",
-								"duplicate-properties": true,
-								"empty-rules": true,
-								"errors": true,
-								"fallback-colors": "warning",
-								"floats": "warning",
-								"font-faces": "warning",
-								"font-sizes": "warning",
-								"gradients": "warning",
-								"ids": "warning",
-								"import": "warning",
-								"important": "warning",
-								"known-properties": true,
-								"outline-none": "warning",
-								"overqualified-elements": "warning",
-								"qualified-headings": "warning",
-								"regex-selectors": "warning",
-								"rules-count": "warning",
-								"shorthand": "warning",
-								"star-property-hack": "warning",
-								"text-indent": "warning",
-								"underscore-property-hack": "warning",
-								"unique-headings": "warning",
-								"universal-selector": "warning",
-								"vendor-prefix": true,
-								"zero-units": "warning"
-							},
-							"gjslint_ignore":
-							[
-								110
-							],
-							"gjslint_options":
-							[
-							],
-							"javascript_linter": "jshint",
-							"jshint_options":
-							{
-								"browser": true,
-								"evil": true,
-								"regexdash": true,
-								"sub": true,
-								"trailing": true,
-								"wsh": true
-							},
-							"pep8": true,
-							"pep8_ignore":
-							[
-								"E501"
-							],
-							"perl_linter": "perlcritic",
-							"pyflakes_ignore":
-							[
-							],
-							"pyflakes_ignore_import_*": true,
-							"sublimelinter": true,
-							"sublimelinter_delay": 2,
-							"sublimelinter_disable":
-							[
-							],
-							"sublimelinter_executable_map":
-							{
-							},
-							"sublimelinter_fill_outlines": false,
-							"sublimelinter_gutter_marks": true,
-							"sublimelinter_gutter_marks_theme": "simple",
-							"sublimelinter_mark_style": "none",
-							"sublimelinter_notes": false,
-							"sublimelinter_objj_check_ascii": false,
-							"sublimelinter_popup_errors_on_save": false,
-							"sublimelinter_syntax_map":
-							{
-								"C++": "c",
-								"Python Django": "python",
-								"Ruby on Rails": "ruby"
-							},
-							"sublimelinter_wrap_find": true,
-							"syntax": "Packages/Markdown/Markdown.tmLanguage"
+							"function_name_status_row": 0,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "styles/styles.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10635,
+						"regions":
+						{
+							"gutter_color_10040":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/FAFAFA.png",
+								"regions":
+								[
+									[
+										10040,
+										10067
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_10068":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/dddddd.png",
+								"regions":
+								[
+									[
+										10068,
+										10092
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_1091":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/999999.png",
+								"regions":
+								[
+									[
+										1095,
+										1108
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_1095":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/999999.png",
+								"regions":
+								[
+									[
+										1095,
+										1108
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_1318":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/ffefba.png",
+								"regions":
+								[
+									[
+										1322,
+										1349
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_1322":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/ffefba.png",
+								"regions":
+								[
+									[
+										1322,
+										1349
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_1696":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/999999.png",
+								"regions":
+								[
+									[
+										1700,
+										1713
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_1700":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/999999.png",
+								"regions":
+								[
+									[
+										1700,
+										1713
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_2044":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/f86210.png",
+								"regions":
+								[
+									[
+										2048,
+										2084
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_2048":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/f86210.png",
+								"regions":
+								[
+									[
+										2048,
+										2084
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_2436":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/25b61a.png",
+								"regions":
+								[
+									[
+										2440,
+										2476
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_2440":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/25b61a.png",
+								"regions":
+								[
+									[
+										2440,
+										2476
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_2594":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/0069e0.png",
+								"regions":
+								[
+									[
+										2598,
+										2634
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_2598":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/0069e0.png",
+								"regions":
+								[
+									[
+										2598,
+										2634
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_4702":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/DFDFDF.png",
+								"regions":
+								[
+									[
+										4706,
+										4733
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_4706":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/DFDFDF.png",
+								"regions":
+								[
+									[
+										4706,
+										4733
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_5029":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/DFDFDF.png",
+								"regions":
+								[
+									[
+										5033,
+										5098
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_5033":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/DFDFDF.png",
+								"regions":
+								[
+									[
+										5033,
+										5098
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_5529":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/d8f5fa.png",
+								"regions":
+								[
+									[
+										5533,
+										5560
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_5533":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/d8f5fa.png",
+								"regions":
+								[
+									[
+										5533,
+										5560
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_5842":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/21759B.png",
+								"regions":
+								[
+									[
+										5846,
+										5862
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_5846":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/21759B.png",
+								"regions":
+								[
+									[
+										5846,
+										5862
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_6000":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/aaaaaa.png",
+								"regions":
+								[
+									[
+										6004,
+										6034
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_6004":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/aaaaaa.png",
+								"regions":
+								[
+									[
+										6004,
+										6034
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_6206":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/d54e21.png",
+								"regions":
+								[
+									[
+										6210,
+										6226
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_6210":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/d54e21.png",
+								"regions":
+								[
+									[
+										6210,
+										6226
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_628":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/666666.png",
+								"regions":
+								[
+									[
+										632,
+										645
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_632":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/666666.png",
+								"regions":
+								[
+									[
+										632,
+										645
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_6609":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/aaaaaa.png",
+								"regions":
+								[
+									[
+										6613,
+										6642
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_6613":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/aaaaaa.png",
+								"regions":
+								[
+									[
+										6613,
+										6642
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_6969":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/333333.png",
+								"regions":
+								[
+									[
+										6973,
+										6986
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_6973":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/333333.png",
+								"regions":
+								[
+									[
+										6973,
+										6986
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_7096":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/999999.png",
+								"regions":
+								[
+									[
+										7100,
+										7113
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_7100":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/999999.png",
+								"regions":
+								[
+									[
+										7100,
+										7113
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_7738":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/E3E3E3.png",
+								"regions":
+								[
+									[
+										7742,
+										7774
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_7742":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/E3E3E3.png",
+								"regions":
+								[
+									[
+										7742,
+										7774
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_7892":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/dddddd.png",
+								"regions":
+								[
+									[
+										7896,
+										7920
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_7896":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/dddddd.png",
+								"regions":
+								[
+									[
+										7896,
+										7920
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_9898":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/FAFAFA.png",
+								"regions":
+								[
+									[
+										10040,
+										10067
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_9902":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/FAFAFA.png",
+								"regions":
+								[
+									[
+										10040,
+										10067
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_9926":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/dddddd.png",
+								"regions":
+								[
+									[
+										10068,
+										10092
+									]
+								],
+								"scope": "gutter_color"
+							},
+							"gutter_color_9930":
+							{
+								"flags": 144,
+								"icon": "Cache/GutterColor/dddddd.png",
+								"regions":
+								[
+									[
+										10068,
+										10092
+									]
+								],
+								"scope": "gutter_color"
+							}
+						},
+						"selection":
+						[
+							[
+								9232,
+								9170
+							]
+						],
+						"settings":
+						{
+							"function_name_status_row": 469,
+							"syntax": "Packages/CSS/CSS.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 7605.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
 					"type": "text"
 				}
 			]
@@ -1243,6 +1742,10 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"readm",
+				"readme.txt"
+			],
 			[
 				"read",
 				"readme.txt"
@@ -1522,10 +2025,6 @@
 			[
 				"class_simple_fields_field.php",
 				"class_simple_fields_field.php"
-			],
-			[
-				"readm",
-				"readme.txt"
 			],
 			[
 				"js",
