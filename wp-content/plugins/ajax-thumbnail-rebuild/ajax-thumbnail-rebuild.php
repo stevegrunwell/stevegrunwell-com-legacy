@@ -3,9 +3,9 @@
    Plugin URI: http://breiti.cc/wordpress/ajax-thumbnail-rebuild
    Author: junkcoder
    Author URI: http://breiti.cc
-   Version: 1.11
+   Version: 1.12
    Description: Rebuild all thumbnails
-   Max WP Version: 3.6.1
+   Max WP Version: 3.9
    Text Domain: ajax-thumbnail-rebuild
 
     This program is free software; you can redistribute it and/or modify
@@ -43,7 +43,6 @@ class AjaxThumbnailRebuild {
 	 * @return array
 	 */
 	function addRebuildSingle($fields, $post) {
-		global $post;
 		$thumbnails = array();
 		foreach ( ajax_thumbnail_rebuild_get_sizes() as $s )
 			$thumbnails[] = 'thumbnails[]='.$s['name'];
