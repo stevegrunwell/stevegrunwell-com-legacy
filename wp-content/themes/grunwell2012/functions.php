@@ -6,7 +6,9 @@
  * @author Steve Grunwell <steve@stevegrunwell.com>
  */
 
-require_once dirname( __FILE__ ) . '/functions/advanced-custom-fields.php';
+if ( ! defined( 'ACF_USE_LOCAL_CONFIGURATION' ) || ! ACF_USE_LOCAL_CONFIGURATION ) {
+  require_once dirname( __FILE__ ) . '/functions/advanced-custom-fields.php';
+}
 
 /**
  * Register scripts and styles
