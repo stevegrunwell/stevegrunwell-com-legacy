@@ -1,7 +1,7 @@
 <?php
 /**
  * Integrate image optimizers into WordPress.
- * @version 1.8.5
+ * @version 1.9.0
  * @package EWWW_Image_Optimizer
  */
 /*
@@ -10,7 +10,7 @@ Plugin URI: http://wordpress.org/extend/plugins/ewww-image-optimizer/
 Description: Reduce file sizes for images within WordPress including NextGEN Gallery and GRAND FlAGallery. Uses jpegtran, optipng/pngout, and gifsicle.
 Author: Shane Bishop
 Text Domain: ewww-image-optimizer
-Version: 1.8.5
+Version: 1.9.0
 Author URI: http://www.shanebishop.net/
 License: GPLv3
 */
@@ -23,7 +23,7 @@ define('EWWW_IMAGE_OPTIMIZER_TOOL_PATH', WP_CONTENT_DIR . '/ewww/');
 define('EWWW_IMAGE_OPTIMIZER_PLUGIN_FILE', __FILE__);
 // this is the full system path to the plugin folder
 define('EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('EWWW_IMAGE_OPTIMIZER_VERSION', '185');
+define('EWWW_IMAGE_OPTIMIZER_VERSION', '190');
 
 require_once(EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'common.php');
 
@@ -43,7 +43,7 @@ function ewww_image_optimizer_init() {
 		ewww_image_optimizer_set_defaults();
 		update_option('ewww_image_optimizer_version', EWWW_IMAGE_OPTIMIZER_VERSION);
 	}
-	ewww_image_optimizer_cloud_verify();
+//	ewww_image_optimizer_cloud_verify();
 	if (!defined('EWWW_IMAGE_OPTIMIZER_CLOUD') && ewww_image_optimizer_get_option('ewww_image_optimizer_cloud_jpg') && ewww_image_optimizer_get_option('ewww_image_optimizer_cloud_png') && ewww_image_optimizer_get_option('ewww_image_optimizer_cloud_gif')) {
 		define('EWWW_IMAGE_OPTIMIZER_CLOUD', TRUE);
 		wp_enqueue_style('ewww-nocloud', plugins_url('nocloud.css', __FILE__));
@@ -143,6 +143,8 @@ function ewww_image_optimizer_admin_init() {
 			update_site_option('ewww_image_optimizer_delay', intval($_POST['ewww_image_optimizer_delay']));
 			if (empty($_POST['ewww_image_optimizer_interval'])) $_POST['ewww_image_optimizer_interval'] = '';
 			update_site_option('ewww_image_optimizer_interval', intval($_POST['ewww_image_optimizer_interval']));
+			if (empty($_POST['ewww_image_optimizer_skip_size'])) $_POST['ewww_image_optimizer_skip_size'] = '';
+			update_site_option('ewww_image_optimizer_skip_size', intval($_POST['ewww_image_optimizer_skip_size']));
 			add_action('network_admin_notices', 'ewww_image_optimizer_network_settings_saved');
 		}
 	}
@@ -184,6 +186,7 @@ function ewww_image_optimizer_admin_init() {
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_enable_cloudinary');
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_delay', 'intval');
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_interval', 'intval');
+	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_skip_size', 'intval');
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_import_status');
 	// setup scheduled optimization if the user has enabled it, and it isn't already scheduled
 	if (ewww_image_optimizer_get_option('ewww_image_optimizer_auto') == TRUE && !wp_next_scheduled('ewww_image_optimizer_auto')) {
@@ -386,14 +389,14 @@ function ewww_image_optimizer_tool_found($path, $tool) {
 			}
 			break;
 		case 'o': // optipng
-			exec($path . ' -v', $optipng_version);
+			exec($path . ' -v 2>&1', $optipng_version);
 			if (!empty($optipng_version)) $ewww_debug .= "$path: $optipng_version[0]<br>";
 			if (!empty($optipng_version) && strpos($optipng_version[0], 'OptiPNG') === 0) {
 				return $optipng_version[0];
 			}
 			break;
 		case 'g': // gifsicle
-			exec($path . ' --version', $gifsicle_version);
+			exec($path . ' --version 2>&1', $gifsicle_version);
 			if (!empty($gifsicle_version)) $ewww_debug .= "$path: $gifsicle_version[0]<br>";
 			if (!empty($gifsicle_version) && strpos($gifsicle_version[0], 'LCDF Gifsicle') === 0) {
 				return $gifsicle_version[0];
@@ -407,14 +410,14 @@ function ewww_image_optimizer_tool_found($path, $tool) {
 			}
 			break;
 		case 'q': // pngquant
-			exec($path . ' -V', $pngquant_version);
+			exec($path . ' -V 2>&1', $pngquant_version);
 			if (!empty($pngquant_version)) $ewww_debug .= "$path: $pngquant_version[0]<br>";
 			if (!empty($pngquant_version) && strpos($pngquant_version[0], '2.0') === 0) {
 				return $pngquant_version[0];
 			}
 			break;
 		case 'i': // ImageMagick
-			exec("$path -version", $convert_version);
+			exec("$path -version 2>&1", $convert_version);
 			if (!empty($convert_version)) $ewww_debug .= "$path: $convert_version[0]<br>";
 			if (!empty($convert_version) && strpos($convert_version[0], 'ImageMagick')) {
 				return $convert_version[0];
@@ -439,7 +442,7 @@ function ewww_image_optimizer_tool_found($path, $tool) {
 			}
 			break;
 		case 't': // tar
-			exec("$path --version", $tar_version);
+			exec("$path --version 2>&1", $tar_version);
 			if (!empty($tar_version[0])) $ewww_debug .= "$path: $tar_version[0]<br>";
 			if (!empty($tar_version[0]) && preg_match('/bsdtar/', $tar_version[0])) {
 				return $tar_version[0];
@@ -1046,8 +1049,17 @@ function ewww_image_optimizer($file, $gallery_type, $converted, $new, $fullsize 
 	global $ewww_debug;
 	$ewww_debug .= "<b>ewww_image_optimizer()</b><br>";
 	// if the plugin gets here without initializing, we need to run through some things first
-	if (!defined('EWWW_IMAGE_OPTIMIZER_CLOUD'))
+	if ( ! defined( 'EWWW_IMAGE_OPTIMIZER_CLOUD' ) ) {
 		ewww_image_optimizer_init();
+	}
+	$bypass_optimization = apply_filters( 'ewww_image_optimizer_bypass', false, $file );
+	if (true === $bypass_optimization) {
+		// tell the user optimization was skipped
+		$msg = __( "Optimization skipped", EWWW_IMAGE_OPTIMIZER_DOMAIN );
+		$ewww_debug .= "optimization bypassed: $file <br>";
+		// send back the above message
+		return array(false, $msg, $converted, $file);
+	}
 	// initialize the original filename 
 	$original = $file;
 	$result = '';
@@ -1138,6 +1150,13 @@ function ewww_image_optimizer($file, $gallery_type, $converted, $new, $fullsize 
 	// get the original image size
 	$orig_size = filesize($file);
 	$ewww_debug .= "original filesize: $orig_size<br>";
+	if ( $orig_size < ewww_image_optimizer_get_option( 'ewww_image_optimizer_skip_size' ) ) {
+		// tell the user optimization was skipped
+		$msg = __( "Optimization skipped", EWWW_IMAGE_OPTIMIZER_DOMAIN );
+		$ewww_debug .= "optimization bypassed due to filesize: $file <br>";
+		// send back the above message
+		return array(false, $msg, $converted, $file);
+	}
 	// initialize $new_size with the original size
 	$new_size = $orig_size;
 	// set the optimization process to OFF
@@ -1837,7 +1856,7 @@ function ewww_image_optimizer_options () {
 	<script type='text/javascript'>
 		jQuery(document).ready(function($) {$('.fade').fadeTo(5000,1).fadeOut(3000);});
 	</script>
-	<div class="wrap">
+	<div class="wrap" style="clear: both"><div id="ewww-container-left" style="float: left; margin-right: 200px;">
 		<div id="icon-options-general" class="icon32"><br /></div>
 		<h2>EWWW <?php _e('Image Optimizer Settings', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></h2>
 		<p><a href="http://wordpress.org/extend/plugins/ewww-image-optimizer/"><?php _e('Plugin Home Page', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></a> |
@@ -1852,8 +1871,19 @@ function ewww_image_optimizer_options () {
 		<p><?php printf(__('New images uploaded to the Media Library will be optimized automatically. If you have existing images you would like to optimize, you can use the %s tool.', EWWW_IMAGE_OPTIMIZER_DOMAIN), $bulk_link); ?></p>
 		<div id="status" style="border: 1px solid #ccc; padding: 0 8px; border-radius: 12px;">
 			<h3>Plugin Status</h3>
-			<?php
+	<?php 
+	global $wpdb;
+	$total_query = "SELECT orig_size-image_size FROM $wpdb->ewwwio_images";
+	$savings = $wpdb->get_results($total_query, ARRAY_N);
+	$total_savings = 0;
+	foreach ($savings as $saved) {
+		$total_savings += $saved[0];
+	}
+	// get a human readable filesize
+	$readable_savings = size_format( $total_savings, 2 );
+			echo "<b>" . __('Total Savings:', EWWW_IMAGE_OPTIMIZER_DOMAIN) . "</b> $readable_savings<br>";
 			if (ewww_image_optimizer_get_option('ewww_image_optimizer_cloud_key')) {
+				// TODO: translatablify this string
 				echo '<p><b>Cloud API Key:</b> ';
 				$verify_cloud = ewww_image_optimizer_cloud_verify(false); 
 				if (preg_match('/great/', $verify_cloud)) {
@@ -2003,6 +2033,7 @@ function ewww_image_optimizer_options () {
 					<b><a href="http://wordpress.org/support/plugin/ewww-image-optimizer"><?php _e('Please submit a support request in the forums to have folders created by a particular plugin auto-included in the future.', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></a></b></p></td></tr>
 				<tr><th><label for="ewww_image_optimizer_delay"><?php _e('Bulk Delay', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></label></th><td><input type="text" id="ewww_image_optimizer_delay" name="ewww_image_optimizer_delay" size="5" value="<?php echo ewww_image_optimizer_get_option('ewww_image_optimizer_delay'); ?>"> <?php _e('Choose how long to pause between images (in seconds, 0 = disabled)', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></td></tr>
 <!--				<tr><th><label for="ewww_image_optimizer_interval"><?php _e('Image Batch Size', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></label></th><td><input type="text" id="ewww_image_optimizer_interval" name="ewww_image_optimizer_interval" size="5" value="<?php echo ewww_image_optimizer_get_option('ewww_image_optimizer_interval'); ?>"> <?php _e('Choose how many images should be processed before each delay', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></td></tr>-->
+				<tr><th><label for="ewww_image_optimizer_skip_size"><?php _e('Skip Images', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></label></th><td><input type="text" id="ewww_image_optimizer_skip_size" name="ewww_image_optimizer_skip_size" size="8" value="<?php echo ewww_image_optimizer_get_option('ewww_image_optimizer_skip_size'); ?>"> <?php _e('Do not optimize images smaller than this (in bytes)', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></td></tr>
 				<tr class="nocloud"><th><label for="ewww_image_optimizer_skip_bundle"><?php _e('Use System Paths', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></label></th><td><input type="checkbox" id="ewww_image_optimizer_skip_bundle" name="ewww_image_optimizer_skip_bundle" value="true" <?php if (ewww_image_optimizer_get_option('ewww_image_optimizer_skip_bundle') == TRUE) { ?>checked="true"<?php } ?> /> <?php printf(__('If you have already installed the utilities in a system location, such as %s or %s, use this to force the plugin to use those versions and skip the auto-installers.', EWWW_IMAGE_OPTIMIZER_DOMAIN), '/usr/local/bin', '/usr/bin'); ?></td></tr>
 				<tr class="nocloud"><th><label for="ewww_image_optimizer_disable_jpegtran"><?php _e('disable', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?> jpegtran</label></th><td><input type="checkbox" id="ewww_image_optimizer_disable_jpegtran" name="ewww_image_optimizer_disable_jpegtran" <?php if (ewww_image_optimizer_get_option('ewww_image_optimizer_disable_jpegtran') == TRUE) { ?>checked="true"<?php } ?> /></td></tr>
 				<tr class="nocloud"><th><label for="ewww_image_optimizer_disable_optipng"><?php _e('disable', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?> optipng</label></th><td><input type="checkbox" id="ewww_image_optimizer_disable_optipng" name="ewww_image_optimizer_disable_optipng" <?php if (ewww_image_optimizer_get_option('ewww_image_optimizer_disable_optipng') == TRUE) { ?>checked="true"<?php } ?> /></td></tr>
@@ -2062,8 +2093,23 @@ function ewww_image_optimizer_options () {
 			</table>
 			</div></div>
 			<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save Changes', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?>" /></p>
-		</form>
-		<p>I recommend hosting your Wordpress site with <a href="http://www.dreamhost.com/r.cgi?132143">Dreamhost.com</a> or <a href="http://www.bluehost.com/track/nosilver4u">Bluehost.com</a>. Using these referral links will allow you to support future development of this plugin: <a href=http://www.dreamhost.com/r.cgi?132143">Dreamhost</a> | <a href="http://www.bluehost.com/track/nosilver4u">Bluehost</a>. Alternatively, you can contribute directly by <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MKMQKCBFFG3WW">donating with Paypal</a>.</p>
+		</form></div><!-- end container left -->
+		<div id="ewww-container-right" style="border: 1px solid #ccc; padding: 0 8px; border-radius: 12px; float: right; margin-left: -200px; display: inline-block; width: 174px;">
+			<h3>Support EWWW I.O.</h3>
+			<p>Would you like to help support development of this plugin? Use any of these referral links to keep me working on this plugin:</p>
+			<p><b>Web Hosting:</b><br>
+				<a href="http://www.dreamhost.com/r.cgi?132143">Dreamhost</a><br>
+				<a href="http://www.bluehost.com/track/nosilver4u">Bluehost</a><br>
+				<a href="http://www.liquidweb.com/?RID=nosilver4u">liquidweb</a><br>
+				<a href="http://www.stormondemand.com/?RID=nosilver4u">Storm on Demand</a>
+			</p>
+			<p><b>VPS:</b><br>
+				<a href="https://www.digitalocean.com/?refcode=89ef0197ec7e">DigitalOcean</a><br>
+				<a href="https://clientarea.ramnode.com/aff.php?aff=1469">RamNode</a>
+			</p>
+			<p><b>CDN Networks:</b><br>Add the MaxCDN content delivery network to increase website speeds dramatically! <a target="_blank" href="http://tracking.maxcdn.com/c/91625/36539/378">Sign Up Now and Save 25%</a> (100% Money Back Guarantee for 30 days). Integrate it within Wordpress using the W3 Total Cache plugin.</p>
+<p>Contribute directly by <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MKMQKCBFFG3WW">donating with Paypal</a>.</p>
+		</div>
 	</div>
 	<?php
 }

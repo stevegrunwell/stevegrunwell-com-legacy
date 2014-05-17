@@ -3,8 +3,8 @@ Contributors: nosilver4u
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MKMQKCBFFG3WW
 Tags: images, image, attachments, attachment, optimize, optimization, nextgen, buddypress, flagallery, flash-gallery, lossless, lossy, photos, photo, picture, pictures, seo, compression, image-store, imstore, slider, image editor, gmagick, wp-symposium, meta-slider, metaslider, jpegtran, gifsicle, optipng, pngout, pngquant
 Requires at least: 3.5
-Tested up to: 3.8.1
-Stable tag: 1.8.5
+Tested up to: 3.9.0
+Stable tag: 1.9.0
 License: GPLv3
 
 Reduce file sizes for images within WordPress including NextGEN, GRAND FlAGallery and more. Uses jpegtran, optipng, pngout, pngquant, and gifsicle.
@@ -195,11 +195,20 @@ That's not a question, but since I made it up, I'll answer it. See the Image Opt
 
 = future =
 * these are possible future bugfixes and/or feature requests, if you see a feature you like here, go vote for it in the support forum
-* NextCellent Gallery support - this will likely replace support for legacy NextGEN installs at some point in the future. If you think that is a BAD idea, go comment in the forums!
-* show statistics: display cumulative savings and computation time in status section
+* full GMedia support
 * webp support
 * jpegmini server integration for cloud users
 * huge thanks to those who have done localization/translation for Dutch, Romanian, and Spanish. If you would like to help translate this plugin in your language, post a thread on the support forums.
+
+= 1.9.0 =
+* changed: verification results for cloud optimization are still cached, but actual optimization requires pre-verification to maintain load-balancing
+* added: NextCellent Gallery support - no future development will be done for NextGEN 1.9.13, all future development will be on NextCellent.
+* updated translations for Romanian and Dutch
+* fixed some warnings and notices
+* added GMedia folder to Scan and Optimize function
+* show cumulative savings in status section
+* added: filter to bypass optimization for developer use
+* added: option to bypass optimization for small images
 
 = 1.8.5 =
 * fixed: images with empty metadata count as unoptimized images on Bulk Optimize

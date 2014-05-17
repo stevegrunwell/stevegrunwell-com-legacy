@@ -56,6 +56,10 @@ if (is_plugin_active('nextgen-gallery/nggallery.php') || (function_exists('is_pl
 	}
 }
 
+// include the file that loads the nextcellent (nextgen legacy) optimization functions
+if (is_plugin_active('nextcellent-gallery-nextgen-legacy/nggallery.php') || (function_exists('is_plugin_active_for_network') && is_plugin_active_for_network('nextcellent-gallery-nextgen-legacy/nggallery.php'))) {
+	require(EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'nextcellent-integration.php');
+}
 // include the file that loads the grand flagallery optimization functions
 if (is_plugin_active('flash-album-gallery/flag.php') || (function_exists('is_plugin_active_for_network') && is_plugin_active_for_network('flash-album-gallery/flag.php'))) {
 	require( EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'flag-integration.php' );
@@ -663,6 +667,7 @@ function ewww_image_optimizer_delete ($id) {
 
 // submits the api key for verification
 function ewww_image_optimizer_cloud_verify ( $cache = true ) {
+	// TODO: possibly remove the caching, and only run it when needed instead... remove from bulk page
 	global $ewww_debug;
 	global $ewww_cloud_ip;
 	$ewww_debug .= "<b>ewww_image_optimizer_cloud_verify()</b><br>";
@@ -763,6 +768,7 @@ function ewww_image_optimizer_cloud_quota() {
 */
 function ewww_image_optimizer_cloud_optimizer($file, $type, $convert = false, $newfile = null, $newtype = null, $fullsize = false, $jpg_params = array('r' => '255', 'g' => '255', 'b' => '255', 'quality' => null)) {
 	global $ewww_debug;
+	ewww_image_optimizer_cloud_verify(false); 
 	global $ewww_exceed;
 	global $ewww_cloud_ip;
 	$ewww_debug .= "<b>ewww_image_optimizer_cloud_optimizer()</b><br>";
@@ -1009,7 +1015,6 @@ function ewww_image_optimizer_resize_from_meta_data($meta, $ID = null, $log = tr
 	global $ewww_debug;
 	global $wpdb;
 	// may also need to track their attachment ID as well
-	// TODO: also have some doo-dad that tracks total file savings
 	$ewww_debug .= "<b>ewww_image_optimizer_resize_from_meta_data()</b><br>";
 	$gallery_type = 1;
 	$ewww_debug .= "attachment id: $ID<br>";
@@ -1121,8 +1126,10 @@ function ewww_image_optimizer_resize_from_meta_data($meta, $ID = null, $log = tr
 					$meta['sizes'][$size]['real_orig_file'] = str_replace($base_dir, '', $resize_path);
 					$ewww_debug .= "resize path: $resize_path<br>";
 				}
-				// update the filename
-				$meta['sizes'][$size]['file'] = str_replace($base_dir, '', $optimized_file);
+				if ($optimized_file !== false) {
+					// update the filename
+					$meta['sizes'][$size]['file'] = str_replace($base_dir, '', $optimized_file);
+				}
 				// update the optimization results
 				$meta['sizes'][$size]['ewww_image_optimizer'] = $results;
 			}
@@ -1286,12 +1293,16 @@ function ewww_image_optimizer_attachment_path($meta, $ID) {
 		}
 		return array($file_path, $upload_path);
 	}
-	$file_path = $meta['file'];
-	if (is_file($file_path))
-		return array($file_path, $upload_path);
-	$file_path = $upload_path . $file_path;
-	if (is_file($file_path))
-		return array($file_path, $upload_path);
+	if ( ! empty( $meta['file'] ) ) {
+		$file_path = $meta['file'];
+		if (is_file($file_path)) {
+			return array($file_path, $upload_path);
+		}
+		$file_path = $upload_path . $file_path;
+		if (is_file($file_path)) {
+			return array($file_path, $upload_path);
+		}
+	}
 	return array('', $upload_path);
 }
 
