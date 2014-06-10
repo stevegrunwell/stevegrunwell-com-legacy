@@ -21,6 +21,39 @@ class SteveGrunwell {
   public function __construct() {
     $this->register_portfolio_cpt();
     $this->register_talk_cpt();
+
+    add_filter( 'rewrite_rules_array', array( &$this, 'add_rewrite_rules' ) );
+    add_filter( 'post_type_link', array( &$this, 'filter_post_type_link' ), 10, 2 );
+  }
+
+  /**
+   * Tell WordPress how to interpret our speaking/ URL structure
+   *
+   * @param array $rules Existing rewrite rules
+   * @return array
+   */
+  public function add_rewrite_rules( $rules ) {
+    $new = array();
+    $new['speaking/feed/?$'] = 'index.php?post_type=grunwell_talk&feed=rss2';
+    $new['speaking/([^/]+)/?$'] = 'index.php?grunwell_talk=$matches[1]';
+
+    return array_merge( $new, $rules ); // Ensure our rules come first
+  }
+
+  /**
+   * Handle the '%grunwell_talk%' URL placeholder
+   *
+   * @param str $link The link to the post
+   * @param WP_Post object $post The post object
+   * @return str
+   */
+  public function filter_post_type_link( $link, $post ) {
+    if ( $post->post_type == 'grunwell_talk' ) {
+      if ( $cats = get_the_terms( $post->ID, 'grunwell_talk' ) ) {
+        $link = str_replace( '%grunwell_talk%', $post->post_name, $link );
+      }
+    }
+    return $link;
   }
 
   /**
@@ -70,6 +103,7 @@ class SteveGrunwell {
     $args = array(
       'can_export' => true,
       'has_archive' => false,
+      'feeds' => true,
       'hierarchical' => false,
       'labels' => array(
         'name' => __( 'Talks', 'stevegrunwell' ),
@@ -89,8 +123,8 @@ class SteveGrunwell {
       'menu_icon' => 'dashicons-megaphone',
       'public' => true,
       'rewrite' => array(
-        'slug' => 'speaking',
-        'with_front' => false
+        'slug' => 'speaking/%grunwell_talk%',
+        'with_front' => true
       ),
       'supports' => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
       'taxonomies' => array( 'post_tag' )
