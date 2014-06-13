@@ -123,8 +123,8 @@ class SteveGrunwell {
       'menu_icon' => 'dashicons-megaphone',
       'public' => true,
       'rewrite' => array(
-        'slug' => 'speaking/%grunwell_talk%',
-        'with_front' => true
+        'slug' => 'speaking',
+        'with_front' => false
       ),
       'supports' => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
       'taxonomies' => array( 'post_tag' )
