@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: images, image, attachments, attachment, optimize, optimization, nextgen, buddypress, flagallery, flash-gallery, lossless, lossy, photos, photo, picture, pictures, seo, compression, image-store, imstore, slider, image editor, gmagick, wp-symposium, meta-slider, metaslider, jpegtran, gifsicle, optipng, pngout, pngquant, gmedia
 Requires at least: 3.5
 Tested up to: 3.9.1
-Stable tag: 1.9.1
+Stable tag: 1.9.3
 License: GPLv3
 
 Reduce file sizes for images within WordPress including NextGEN, GRAND FlAGallery and more. Uses jpegtran, optipng, pngout, pngquant, and gifsicle.
@@ -203,7 +203,20 @@ That's not a question, but since I made it up, I'll answer it. See the Image Opt
 * webp support
 * jpegmini server integration for cloud users
 * If you would like to help translate this plugin in your language, post a thread on the support forums.
-* looking for new maintainer for Spanish translation
+
+= 1.9.3 =
+* added: fallback mode when totals for resizes and unoptimized images cannot be determined by the bulk optimize tool
+* added: up to 30 second retry when import is interrupted on bulk optimize page
+* fixed: suppress 'empty server response' messages for cloud users, instead correctly report No Savings
+
+= 1.9.2 =
+* fixed: memory limit exceeded when counting total savings on settings page
+* fixed: application/octet-stream is accepted as valid output for mimetype check on executables
+* added: PngOptimizerCL for even better optimization of PNG images on cloud service
+* changed: cloud processing nodes upgraded for faster image processing
+* changed: made queries for resuming bulk operations more efficient to avoid running into max query length problems
+* fixed: images that were not processed (cloud or otherwise) can be optimized later (they are no longer stored in ewwwio_images table)
+* changed: more efficient verification of cloud api keys
 
 = 1.9.1 =
 * fixed: escapeshellarg command breaks Windows filenames

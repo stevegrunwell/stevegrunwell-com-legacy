@@ -1,7 +1,7 @@
 <?php
 /**
  * Integrate image optimizers into WordPress.
- * @version 1.9.1
+ * @version 1.9.3
  * @package EWWW_Image_Optimizer
  */
 /*
@@ -10,7 +10,7 @@ Plugin URI: http://wordpress.org/extend/plugins/ewww-image-optimizer/
 Description: Reduce file sizes for images within WordPress including NextGEN Gallery and GRAND FlAGallery. Uses jpegtran, optipng/pngout, and gifsicle.
 Author: Shane Bishop
 Text Domain: ewww-image-optimizer
-Version: 1.9.1
+Version: 1.9.3
 Author URI: http://www.shanebishop.net/
 License: GPLv3
 */
@@ -23,8 +23,8 @@ define('EWWW_IMAGE_OPTIMIZER_TOOL_PATH', WP_CONTENT_DIR . '/ewww/');
 define('EWWW_IMAGE_OPTIMIZER_PLUGIN_FILE', __FILE__);
 // this is the full system path to the plugin folder
 define('EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('EWWW_IMAGE_OPTIMIZER_VERSION', '191');
-
+define('EWWW_IMAGE_OPTIMIZER_VERSION', '193');
+// TODO: see if we can move more things into common by splitting out init functions further
 require_once(EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'common.php');
 
 $ewww_debug .= 'EWWW IO version: ' . EWWW_IMAGE_OPTIMIZER_VERSION . '<br>';
@@ -43,7 +43,6 @@ function ewww_image_optimizer_init() {
 		ewww_image_optimizer_set_defaults();
 		update_option('ewww_image_optimizer_version', EWWW_IMAGE_OPTIMIZER_VERSION);
 	}
-//	ewww_image_optimizer_cloud_verify();
 	if (!defined('EWWW_IMAGE_OPTIMIZER_CLOUD') && ewww_image_optimizer_get_option('ewww_image_optimizer_cloud_jpg') && ewww_image_optimizer_get_option('ewww_image_optimizer_cloud_png') && ewww_image_optimizer_get_option('ewww_image_optimizer_cloud_gif')) {
 		define('EWWW_IMAGE_OPTIMIZER_CLOUD', TRUE);
 		wp_enqueue_style('ewww-nocloud', plugins_url('nocloud.css', __FILE__));
@@ -62,6 +61,10 @@ function ewww_image_optimizer_admin_init() {
 		ewww_image_optimizer_install_tools ();
 	}
 	ewww_image_optimizer_init();
+/*	if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) && ! get_option( 'ewww_image_optimizer_cloud_verified' ) && ! ewww_image_optimizer_cloud_verify( false ) ) {
+		add_action('network_admin_notices', 'ewww_image_optimizer_notice_cloud_failed');
+		add_action('admin_notices', 'ewww_image_optimizer_notice_cloud_failed');
+	}*/
 	// Check if this is an unsupported OS (not Linux or Mac OSX or FreeBSD or Windows or SunOS)
 	if(EWWW_IMAGE_OPTIMIZER_CLOUD) {
 		ewww_image_optimizer_disable_tools();
@@ -176,7 +179,7 @@ function ewww_image_optimizer_admin_init() {
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_aux_resume');
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_aux_attachments');
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_aux_type');
-	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_cloud_key');
+	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_cloud_key', 'ewww_image_optimizer_cloud_key_sanitize');
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_cloud_jpg');
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_cloud_png');
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_cloud_png_compress');
@@ -361,7 +364,7 @@ function ewww_image_optimizer_mimetype($path, $case) {
 		}
 	}
 	// if we are dealing with a binary, and found an executable
-	if ($case == 'b' && preg_match('/executable/', $type)) {
+	if ($case == 'b' && preg_match('/executable|octet-stream/', $type)) {
 		return $type;
 	// otherwise, if we are dealing with an image
 	} elseif ($case == 'i') {
@@ -1158,8 +1161,9 @@ function ewww_image_optimizer($file, $gallery_type, $converted, $new, $fullsize 
 		// send back the above message
 		return array(false, $msg, $converted, $file);
 	}
-	// initialize $new_size with the original size
-	$new_size = $orig_size;
+	// initialize $new_size with the original size, HOW ABOUT A ZERO...
+	//$new_size = $orig_size;
+	$new_size = 0;
 	// set the optimization process to OFF
 	$optimize = false;
 	// toggle the convert process to ON
@@ -1293,6 +1297,9 @@ function ewww_image_optimizer($file, $gallery_type, $converted, $new, $fullsize 
 			// if the conversion process is turned ON, or if this is a resize and the full-size was converted
 			if ($convert && !ewww_image_optimizer_get_option('ewww_image_optimizer_cloud_jpg')) {
 				$ewww_debug .= "attempting to convert JPG to PNG: $pngfile <br>";
+				if (empty($new_size)) {
+					$new_size = $orig_size;
+				}
 				// retrieve version info for ImageMagick
 				$convert_path = ewww_image_optimizer_find_binary('convert', 'i');
 				// convert the JPG to PNG
@@ -1503,6 +1510,9 @@ function ewww_image_optimizer($file, $gallery_type, $converted, $new, $fullsize 
 			// if conversion is on and the PNG doesn't have transparency or the user set a background color to replace transparency
 			if ($convert && (!ewww_image_optimizer_png_alpha($file) || ewww_image_optimizer_jpg_background())) {
 				$ewww_debug .= "attempting to convert PNG to JPG: $jpgfile <br>";
+				if (empty($new_size)) {
+					$new_size = $orig_size;
+				}
 				// retrieve version info for ImageMagick
 				$convert_path = ewww_image_optimizer_find_binary('convert', 'i');
 				// convert the PNG to a JPG with all the proper options
@@ -1705,6 +1715,9 @@ function ewww_image_optimizer($file, $gallery_type, $converted, $new, $fullsize 
 			$new_size = filesize($file);
 			// if conversion is ON and the GIF isn't animated
 			if ($convert && !ewww_image_optimizer_is_animated($file)) {
+				if (empty($new_size)) {
+					$new_size = $orig_size;
+				}
 				// if optipng is enabled
 				if (!ewww_image_optimizer_get_option('ewww_image_optimizer_disable_optipng') && $tools['OPTIPNG']) {
 					// retrieve the optipng optimization level
@@ -1873,16 +1886,7 @@ function ewww_image_optimizer_options () {
 		<div id="status" style="border: 1px solid #ccc; padding: 0 8px; border-radius: 12px;">
 			<h3>Plugin Status</h3>
 	<?php 
-	global $wpdb;
-	$total_query = "SELECT orig_size-image_size FROM $wpdb->ewwwio_images";
-	$savings = $wpdb->get_results($total_query, ARRAY_N);
-	$total_savings = 0;
-	foreach ($savings as $saved) {
-		$total_savings += $saved[0];
-	}
-	// get a human readable filesize
-	$readable_savings = size_format( $total_savings, 2 );
-			echo "<b>" . __('Total Savings:', EWWW_IMAGE_OPTIMIZER_DOMAIN) . "</b> $readable_savings<br>";
+			echo "<b>" . __('Total Savings:', EWWW_IMAGE_OPTIMIZER_DOMAIN) . "</b> <span id='total_savings'>" . __('Calculating...', EWWW_IMAGE_OPTIMIZER_DOMAIN) . "</span><br>";
 			if (ewww_image_optimizer_get_option('ewww_image_optimizer_cloud_key')) {
 				echo '<p><b>Cloud API Key:</b> ';
 				$verify_cloud = ewww_image_optimizer_cloud_verify(false); 
@@ -2060,7 +2064,7 @@ function ewww_image_optimizer_options () {
 			<div>
 			<table class="form-table">
 				<tr><th><label for="ewww_image_optimizer_jpegtran_copy"><?php _e('Remove metadata', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></label></th>
-				<td><input type="checkbox" id="ewww_image_optimizer_jpegtran_copy" name="ewww_image_optimizer_jpegtran_copy" value="true" <?php if (ewww_image_optimizer_get_option('ewww_image_optimizer_jpegtran_copy') == TRUE) { ?>checked="true"<?php } ?> /> <?php _e('This wil remove ALL metadata: EXIF and comments.', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></td></tr>
+				<td><input type="checkbox" id="ewww_image_optimizer_jpegtran_copy" name="ewww_image_optimizer_jpegtran_copy" value="true" <?php if (ewww_image_optimizer_get_option('ewww_image_optimizer_jpegtran_copy') == TRUE) { ?>checked="true"<?php } ?> /> <?php _e('This will remove ALL metadata: EXIF and comments.', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></td></tr>
 				<tr class="nocloud"><th><label for="ewww_image_optimizer_optipng_level">optipng <?php _e('optimization level', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></label></th>
 				<td><span><select id="ewww_image_optimizer_optipng_level" name="ewww_image_optimizer_optipng_level">
 				<option value="1"<?php if (ewww_image_optimizer_get_option('ewww_image_optimizer_optipng_level') == 1) { echo ' selected="selected"'; } echo '>' . sprintf(__('Level %d', EWWW_IMAGE_OPTIMIZER_DOMAIN), 1) . ': ' . sprintf(__('%d trial', EWWW_IMAGE_OPTIMIZER_DOMAIN), 1); ?></option>
@@ -2107,7 +2111,10 @@ function ewww_image_optimizer_options () {
 		</form></div><!-- end container left -->
 		<div id="ewww-container-right" style="border: 1px solid #ccc; padding: 0 8px; border-radius: 12px; float: right; margin-left: -200px; display: inline-block; width: 174px;">
 			<h3>Support EWWW I.O.</h3>
-			<p>Would you like to help support development of this plugin? Use any of these referral links to keep me working on this plugin:</p>
+			<p>Would you like to help support development of this plugin?<br />
+			<p>Contribute directly by <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MKMQKCBFFG3WW">donating with Paypal</a>.</p>
+			<b>OR</b><br />
+			Use any of these referral links to show your appreciation:</p>
 			<p><b>Web Hosting:</b><br>
 				<a href="http://www.dreamhost.com/r.cgi?132143">Dreamhost</a><br>
 				<a href="http://www.bluehost.com/track/nosilver4u">Bluehost</a><br>
@@ -2120,7 +2127,6 @@ function ewww_image_optimizer_options () {
 				<a href="https://clientarea.ramnode.com/aff.php?aff=1469">RamNode</a>
 			</p>
 			<p><b>CDN Networks:</b><br>Add the MaxCDN content delivery network to increase website speeds dramatically! <a target="_blank" href="http://tracking.maxcdn.com/c/91625/36539/378">Sign Up Now and Save 25%</a> (100% Money Back Guarantee for 30 days). Integrate it within Wordpress using the W3 Total Cache plugin.</p>
-<p>Contribute directly by <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MKMQKCBFFG3WW">donating with Paypal</a>.</p>
 		</div>
 	</div>
 	<?php

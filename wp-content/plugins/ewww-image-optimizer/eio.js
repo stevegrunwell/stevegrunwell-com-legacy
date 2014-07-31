@@ -1,4 +1,24 @@
 jQuery(document).ready(function($) {
+	var ewww_error_counter = 30;
+	var sleep_action = 'ewww_sleep';
+	if (!ewww_vars.attachments) {
+		if (!ewww_vars.savings_todo) {
+			$('#total_savings').text('0');
+			return false;
+		}
+		var savings_counter = 0;
+		var savings_total = 0;
+		var savings_todo = parseInt(ewww_vars.savings_todo);
+		var savings_action = 'ewww_savings_loop';
+		var savings_data = {
+		        action: savings_action,
+			_wpnonce: ewww_vars._wpnonce,
+			savings_counter: savings_counter,
+			savings_todo: savings_todo,
+		};
+		loopSavings();
+		return false;
+	} else {
 	// sliders for the bulk page
 	/*$(function() {
 		$("#ewww-interval-slider").slider({
@@ -228,6 +248,34 @@ jQuery(document).ready(function($) {
 		startOpt();
 		return false;
 	});
+	}
+	function loopSavings() {
+	        $.post(ajaxurl, savings_data, function(response) {
+			savings_total = savings_total + parseInt(response);
+		//		$('#total_savings').text(savings_total + ' ' + savings_todo + ' ' + savings_counter);
+			if (savings_todo < 0) {
+				savings_action = 'ewww_savings_finish';
+				savings_data = {
+				        action: savings_action,
+					_wpnonce: ewww_vars._wpnonce,
+					savings_total: savings_total,
+				};
+	        		$.post(ajaxurl, savings_data, function(response) {
+					$('#total_savings').text(response);
+				});
+			} else {
+				savings_data = {
+				        action: savings_action,
+					_wpnonce: ewww_vars._wpnonce,
+					savings_counter: savings_counter,
+					savings_todo: savings_todo,
+				};
+				savings_todo -= 1000;
+				savings_counter += 1000;
+				loopSavings();
+			}
+	        });
+	}
 	function startOpt () {
 		k = 0;
 		$('#bulk-stop').submit(function() {
@@ -247,9 +295,9 @@ jQuery(document).ready(function($) {
 		}
 		$('.aux-table').hide();
 		$('#bulk-stop').show();
-				$('.bulk-form').hide();
-				$('.bulk-info').hide();
-				$('h3').hide();
+		$('.bulk-form').hide();
+		$('.bulk-info').hide();
+		$('h3').hide();
 	        $.post(ajaxurl, init_data, function(response) {
 	                $('#bulk-loading').html(response);
 			$('#bulk-progressbar').progressbar({ max: attachments.length });
@@ -326,6 +374,7 @@ jQuery(document).ready(function($) {
 			var unfinished=/^\d+$/m;
 			if (unfinished.test(response)) {
 				$('#bulk-status').html(response + '/' + import_total);
+				ewww_error_counter = 30;
 				bulkImport();
 			}
 			else {
@@ -334,7 +383,20 @@ jQuery(document).ready(function($) {
 			}
 	        })
 		.fail(function() { 
-			$('#bulk-status').html('<p style="color: red"><b>Operation Interrupted</b></p>');
+			var sleep_data = {
+				action: sleep_action,
+				sleep: 1,
+			};
+			if (ewww_error_counter == 0) {
+				$('#ewww-loading').hide();
+				$('#bulk-status').html('<p style="color: red"><b>Operation Interrupted</b></p>');
+			} else {
+				$('#bulk-status').html('<p style="color: red"><b>Temporary failure, retrying for ' + ewww_error_counter + ' more seconds.</b></p>');
+				ewww_error_counter--;
+				setTimeout(function() {
+					bulkImport();
+				}, 1000);
+			}
 		});
 	}
 	function auxCleanup() {
