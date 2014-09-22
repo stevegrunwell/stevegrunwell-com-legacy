@@ -6,7 +6,8 @@ function ewww_image_optimizer_bulk_preview() {
 //	ewww_image_optimizer_cloud_verify(false); 
 	// retrieve the attachment IDs that were pre-loaded in the database
 	list($fullsize_count, $unoptimized_count, $resize_count, $unoptimized_resize_count) = ewww_image_optimizer_count_optimized ('media');
-	$upload_import = get_option('ewww_image_optimizer_imported');
+//	$upload_import = get_option('ewww_image_optimizer_imported');
+	$upload_import = true;
 ?>
 	<div class="wrap"> 
 	<div id="icon-upload" class="icon32"><br /></div><h2><?php _e('Bulk Optimize', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></h2>
@@ -38,11 +39,9 @@ function ewww_image_optimizer_bulk_preview() {
 <?php			return;
 		} ?>
 		<form class="bulk-form">
-			<p><label for="ewww-force" style="font-weight: bold"><?php _e('Force re-optimize for Media Library', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></label>&emsp;<input type="checkbox" id="ewww-force" name="ewww-force"></p>
+			<p><label for="ewww-force" style="font-weight: bold"><?php _e('Force re-optimize', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></label>&emsp;<input type="checkbox" id="ewww-force" name="ewww-force"></p>
 			<p><label for="ewww-delay" style="font-weight: bold"><?php _e('Choose how long to pause between images (in seconds, 0 = disabled)', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></label>&emsp;<input type="text" id="ewww-delay" name="ewww-delay" value="<?php if ($delay = ewww_image_optimizer_get_option ( 'ewww_image_optimizer_delay' ) ) { echo $delay; } else { echo 0; } ?>"></p>
 			<div id="ewww-delay-slider" style="width:50%"></div>
-<!--			<p><label for="ewww-interval" style="font-weight: bold"><?php _e('Choose how many images should be processed before each delay', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></label>&emsp;<input type="text" id="ewww-interval" name="ewww-interval" value="<?php if ($interval = ewww_image_optimizer_get_option ( 'ewww_image_optimizer_interval' ) ) { echo $interval; } else { echo 1; } ?>"></p>
-			<div id="ewww-interval-slider" style="width:50%"></div>-->
 		</form>
 		<h3><?php _e('Optimize Media Library', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></h3>
 <?php		if ($fullsize_count < 1) {
@@ -166,7 +165,12 @@ function ewww_image_optimizer_count_optimized ($gallery) {
 			$offset = 0;
 			while ( $attachments = $wpdb->get_col( "SELECT meta_data FROM $wpdb->nggpictures $attachment_query LIMIT $offset, $max_query" ) ) {
 				foreach ($attachments as $attachment) {
-					$meta = unserialize( $attachment );
+					if (class_exists('Ngg_Serializable')) {
+				        	$serializer = new Ngg_Serializable();
+				        	$meta = $serializer->unserialize( $attachment );
+					} else {
+						$meta = unserialize( $attachment );
+					}
 					if ( ! is_array( $meta ) ) {
 						continue;
 					}

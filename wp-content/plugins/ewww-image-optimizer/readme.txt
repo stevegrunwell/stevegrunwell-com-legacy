@@ -1,23 +1,17 @@
 === EWWW Image Optimizer ===
 Contributors: nosilver4u
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MKMQKCBFFG3WW
-Tags: images, image, attachments, attachment, optimize, optimization, nextgen, buddypress, flagallery, flash-gallery, lossless, lossy, photos, photo, picture, pictures, seo, compression, image-store, imstore, slider, image editor, gmagick, wp-symposium, meta-slider, metaslider, jpegtran, gifsicle, optipng, pngout, pngquant, gmedia
+Tags: image, attachment, optimize, optimization, nextgen, flagallery, lossless, lossy, photo, picture, seo, compression, image-store, imstore, slider, image editor, gmagick, wp-symposium, meta-slider, metaslider, jpegtran, gifsicle, optipng, pngout, pngquant, gmedia, jpegmini, tinypng, webp, cwebp
 Requires at least: 3.5
-Tested up to: 3.9.1
-Stable tag: 1.9.3
+Tested up to: 4.0
+Stable tag: 2.0.1
 License: GPLv3
 
-Reduce file sizes for images within WordPress including NextGEN, GRAND FlAGallery and more. Uses jpegtran, optipng, pngout, pngquant, and gifsicle.
+Reduce file sizes for images in WordPress including NextGEN, GRAND FlAGallery and more using lossless/lossy methods and image format conversion.
 
 == Description ==
 
-The EWWW Image Optimizer is a WordPress plugin that will automatically and losslessly optimize your images as you upload them to your blog. It can also optimize the images that you have already uploaded in the past. It is also possible to convert your images automatically to the file format that will produce the smallest image size (make sure you read the WARNINGS). It can also optionally apply lossy reductions for PNG images.
-
-By default, EWWW Image Optimizer uses lossless optimization techniques, so your image quality will be exactly the same before and after the optimization. The only thing that will change is your file size. The one small exception to this is GIF animations. While the optimization is technically lossless, you will not be able to properly edit the animation again without performing an --unoptimize operation with gifsicle. The gif2png and jpg2png conversions are also lossless but the png2jpg process is not lossless. Lossy optimization is available for PNG files. While pngquant tries very hard to maintain visual quality, lossy compression always has the potential for quality loss.
-
-Images are optimized using the [jpegtran](http://jpegclub.org/jpegtran/), [optipng](http://optipng.sourceforge.net/), [pngout](http://advsys.net/ken/utils.htm), [pngquant](http://pngquant.org/), and [gifsicle](http://www.lcdf.org/gifsicle/) image tools (available for free). For PNG files, optipng or pngout can be used for lossless compression, and pngquant is available for lossy compression. If you want the best optimization, install all three, set optipng to level 3 (beyond that is just crazy and rarely yields significant gains) and pngout to level 0. Images are converted using the above tools and GD or 'convert' (ImageMagick).
-
-EWWW Image Optimizer calls optimization utilities directly which is well suited to shared hosting situations where these utilities may already be installed. Pre-compiled binaries/executables are provided for optipng, gifsicle, and jpegtran. Pngout can be installed with one-click from the settings page. If none of that works, there is a cloud option that will work for those who cannot run the optimizers on their own server.
+The EWWW Image Optimizer is a WordPress plugin that will automatically optimize your images as you upload them to your blog. It can optimize the images that you have already uploaded, convert your images automatically to the file format that will produce the smallest image size (make sure you read the WARNINGS), and optionally apply lossy reductions for PNG and JPG images.
 
 **Why use EWWW Image Optimizer?**
 
@@ -25,9 +19,16 @@ EWWW Image Optimizer calls optimization utilities directly which is well suited 
 1. **Faster backups.** Smaller image sizes also means faster backups.
 1. **Less bandwidth usage.** Optimizing your images can save you hundreds of KB per image, which means significantly less bandwidth usage.
 1. **Super fast.** The plugin can run on your own server, so you don’t have to wait for a third party service to receive, process, and return your images. You can optimize hundreds of images in just a few minutes. PNG files take the longest, but you can adjust the settings for your situation.
+1. **Best JPG optimization.** With JPEGmini integration, nothing else comes close (requires an API subscription).
 1. **Better PNG optimization.** You can use pngout, optipng, and pngquant in conjunction.
 1. **Root access not needed** Pre-compiled binaries are made available to install directly within the Wordpress folder, and cloud optimization is provided for those who cannot run the binaries locally.
 1. **Optimize almost anything** Using the Optimize More tool, and the wp_image_editor class extension, any image in Wordpress can be optimized.
+
+By default, EWWW Image Optimizer uses lossless optimization techniques, so your image quality will be exactly the same before and after the optimization. The only thing that will change is your file size. The one small exception to this is GIF animations. While the optimization is technically lossless, you will not be able to properly edit the animation again without performing an --unoptimize operation with gifsicle. The gif2png and jpg2png conversions are also lossless but the png2jpg process is not lossless. Lossy optimization is available for PNG files. While pngquant tries very hard to maintain visual quality, lossy compression always has the potential for quality loss.
+
+Images are optimized using the [jpegtran](http://jpegclub.org/jpegtran/), [optipng](http://optipng.sourceforge.net/), [pngout](http://advsys.net/ken/utils.htm), [pngquant](http://pngquant.org/), and [gifsicle](http://www.lcdf.org/gifsicle/) image tools (available for free). For PNG files, optipng or pngout can be used for lossless compression, and pngquant is available for lossy compression. If you want the best optimization, install all three, set optipng to level 3 (beyond that is just crazy and rarely yields significant gains) and pngout to level 0. Images are converted using the above tools and GD or 'convert' (ImageMagick).
+
+EWWW Image Optimizer calls optimization utilities directly which is well suited to shared hosting situations where these utilities may already be installed. Pre-compiled binaries/executables are provided for optipng, gifsicle, and jpegtran. Pngout can be installed with one-click from the settings page. If none of that works, there is a cloud option that will work for those who cannot run the optimizers on their own server.
 
 If you need a version of this plugin for cloud use only, see [EWWW Image Optimizer Cloud](http://wordpress.org/plugins/ewww-image-optimizer-cloud/). It is much more compact as it does not contain any binaries or any mention of the exec() function.
 
@@ -68,16 +69,13 @@ Uploads are automatically optimized. Look for Optimize under the Image Store (Ga
 = Translations =
 
 Translators: 
-Romanian translation by MediasInfo.ro.
-Spanish translation by Andrew Kurtis of WebHostingHub, looking for new maintainer.
-Dutch translation by Ludo Rubben.
+Romanian translation by MediasInfo.ro
+Spanish translation by Manuel Ballesta Ruiz
+Dutch translation by Ludo Rubben
+Polish translation by Grzegorz Janoszka
+Russian translation by Elvis of turkenichev.ru
 
-1. Please post in the support forums announcing your intent to translate the plugin into a particular language. 
-1. Download ewww-image-optimizer.pot from the plugin /languages/ folder.
-1. Fill in the msgstr for each msgid and complete the header information as best as you can (recommended to use PoEdit).
-1. Save it as a .po file.
-1. Submit it via the form at http://www.shanebishop.net/contact-me/
-
+If you would like to translate this plugin, get more information here: http://www.shanebishop.net/ewww-io-plugin-translators/
 
 == Installation ==
 
@@ -90,13 +88,10 @@ Dutch translation by Ludo Rubben.
 1. *Optional* Visit the settings page to enable/disable specific tools and turn on advanced optimization features.
 1. Done!
 
-The videos below are somewhat outdated, but still give you a good idea of the capabilities and functions of the plugin.
-
 EWWW IO Installation and Configuration:
-[youtube http://www.youtube.com/watch?v=uEU4DbDm3r0]
-
+[youtube http://www.youtube.com/watch?v=CLBjjcaJ2pw]
 Using EWWW IO:
-[youtube http://www.youtube.com/watch?v=6NKBfmE00vM]
+[youtube http://www.youtube.com/watch?v=1AvyVeE4kUo]
 
 = Installing pngout =
 
@@ -147,6 +142,16 @@ Pngout is not enabled by default because it is resource intensive. Optipng is th
 1. If you have root access, install it with *make install*
 1. If not, copy the binary from */pngquant-2.0.2/pngquant* to the ewww tool folder (wordpress/wp-content/ewww/pngquant-custom).
 
+= Installing webp =
+
+1. WebP (cwebp) is bundled with the plugin. If it isn't working for you, keep going...
+1. Download the latest version of [libwebp](https://code.google.com/p/webp/downloads/list) to your server
+1. Uncompress libwebp: *tar xvzf libwebp-0.4.0.tar.gz && cd libwebp-0.4.0
+1. Make sure you have libjpeg && libpng installed (possibly libjpeg-dev and libpng-dev also)
+1. Configure and compile cwebp: *./configure --disable-shared && make*
+1. If you have root access, install it with *make install*
+1. If not, copy the binary from */libwebp-0.4.0/examples/cwebp* to the ewww tool folder (wordpress/wp-content/ewww/cwebp-custom).
+
 == Frequently Asked Questions ==
 
 = Does the plugin replace existing images? =
@@ -155,11 +160,11 @@ Yes, but only if the optimized version is smaller. The plugin should NEVER creat
 
 = Can I resize my images with this plugin? =
 
-No, that would be a lossy operation, and we try to avoid that. Use Imsanity.
+No, we leave that to other plugins like Imsanity.
 
 = Can I lower the compression setting for JPGs to save more space? =
 
-Again, that would be a lossy operation, and we try to avoid that. Use Imsanity.
+The lossy JPG optimization using JPEGmini will determine the ideal quality setting and save even more space. You cannot manually set the quality with this plugin, but Imsanity (and many others) will do that if you really want to. But you should REALLY try JPEGmini first.
 
 = The bulk optimizer doesn't seem to be working, what can I do? =
 
@@ -181,13 +186,9 @@ There are three parts (and all are optional). First, using the command *pngquant
 
 Using the command *gifsicle -b -O3 --careful original file*. This is particularly useful for animated GIFs, and can also streamline your color palette. That said, if your GIF is not animated, you should strongly consider converting it to a PNG. PNG files are almost always smaller, they just don't do animations. The following command would do this for you on a Linux system with imagemagick: *convert somefile.gif somefile.png*
 
-= Why not just convert GIFs to PNGs then? =
-
-Go for it, version 1.2+ makes this possible so long as you have either one of the PNG optimizers available.
-
 = I want to know more about image optimization, and why you chose these options/tools. =
 
-That's not a question, but since I made it up, I'll answer it. See the Image Optimization sections for [Yslow - Yahoo](http://developer.yahoo.com/performance/rules.html#opt_images) and [Google PageSpeed](https://developers.google.com/speed/docs/best-practices/payload#CompressImages). Pngout was suggested by a user and in tests optimizes better than Optipng, and best (usually) when they are used together.
+That's not a question, but since I made it up, I'll answer it. See the Image Optimization sections for [Yslow - Yahoo](http://developer.yahoo.com/performance/rules.html#opt_images) and [Google PageSpeed](https://developers.google.com/speed/docs/best-practices/payload#CompressImages). Pngout was suggested by a user and in tests optimizes better than Optipng, and best (usually) when they are used together. Pngquant was another excellent recommendation, and is used by TinyPNG.com also.
 
 == Screenshots ==
 
@@ -197,12 +198,50 @@ That's not a question, but since I made it up, I'll answer it. See the Image Opt
 
 == Changelog ==
 
+= IMPORTANT =
+NOTE: The WebP naming scheme has been changed to avoid conflicts when JPGs and PNGs have identical filenames. You will need to update your rewrite rules via the settings page, and run the WebP upgrade script. Every image in the Media Library with a WebP version using the old naming scheme will have a link to the upgrade process (in list view, not grid view).
+
 = future =
 * these are current feature requests, if you see something you like here, go vote for it in the support forum
 * full GMedia support
-* webp support
-* jpegmini server integration for cloud users
-* If you would like to help translate this plugin in your language, post a thread on the support forums.
+* mozjpeg for improved lossless jpeg optimization (cloud only)
+* If you would like to help translate this plugin in your language, get more information here: http://www.shanebishop.net/ewww-io-plugin-translators/
+
+= 2.0.1 =
+* fixed: naming conflict with webp when jpg/png files have identical names, read NOTE above
+* fixed: folders to optimize are not retrieved properly on settings page
+* fixed: undefined variable in permissions check for cwebp on Mac OSX
+* fixed: prevent excess calls for cwebp
+* fixed: wpdb->prepare should have two arguments
+* updated: Spanish translation
+* added: Russian translation
+* changed: alternative binaries for jpegtran and cwebp use -alt suffix to avoid conflict with user-compiled binaries
+* removed: deprecated import process from bulk optimize page
+* removed: empty table option from bulk optimize page, use the Force checkbox instead
+* changed: force re-optimize checkbox applies to Media Library AND the Scan and Optimize function
+* changed: plugin status auto-collapses to save screen space, unless something needs your attention
+* changed: settings tabs have been moved below the status section (directly above the settings area) to enhance usability
+
+= 2.0.0 =
+* NOTE: while this is a release with new features, it is not a rewrite, only the next number in the decimal system, just like the WP numbering scheme
+* added: webp generation (wahooooooooo)
+* added: jpegmini support (more wahooooo, but requires a cloud subscription)
+* fixed: jpeg quality not being set properly for 4.0 on resizes
+* changed: settings page, feel free to give me feedback on the new menubar
+* fixed: some settings not being validated properly for multi-site
+* added: up to 30 second retry when bulk optimize is interrupted
+* changed: various code cleanup
+* fixed: prevent excess warnings/notices when binaries can't be installed
+* fixed: prevent binary installer from firing on unsupported operating systems
+* changed: better verification when saving settings for multi-site
+* changed: all cloud transactions are now secured (https)
+* fixed: use nextgen2's unserialize function to query metadata during bulk optimize
+* added: Polish translation
+* updated: Dutch and Romanian translations
+* updated: Tutorial videos on the Installation page have updated finally
+* updated: new binaries for optipng, gifsicle, and pngquant
+* updated: recompiled jpegtran binaries to be smaller
+* fixed: import failed if nextgen classes aren't available during import
 
 = 1.9.3 =
 * added: fallback mode when totals for resizes and unoptimized images cannot be determined by the bulk optimize tool
@@ -322,7 +361,7 @@ That's not a question, but since I made it up, I'll answer it. See the Image Opt
 * changed: bulk_attachment variables are not autoloaded to improve performance
 
 = 1.7.2 =
-* added: internationalization - need volunteers to provide translations. If interested, post a support thread with the language you would like to help with.
+* added: internationalization - need volunteers to provide translations.
 * fixed: Import button not shown on Optimize More in some cases
 * fixed: Bulk Optimize for Nextgen was broken
 * changed: file comparison from md5sum to filesize for Optimize More to improve load time
@@ -580,6 +619,12 @@ That's not a question, but since I made it up, I'll answer it. See the Image Opt
 
 == Upgrade Notice ==
 
+= 2.0.1 =
+* Webp naming scheme has changed, read changelog for more information
+
+= 2.0.0 =
+* You must upgrade to this version before uploading JPG images in Wordpress 4.0 to avoid serious quality loss in your resizes
+
 = 1.8.2 = 
 * All cloud users must apply this update to avoid service degradation
 
@@ -642,9 +687,88 @@ Improved performance for PNGs by specifying proper optimization level
 
 == Contact and Credits ==
 
-Written by [Shane Bishop](http://www.shanebishop.net). Based upon CW Image Optimizer, which was written by [Jacob Allred](http://www.jacoballred.com/) at [Corban Works, LLC](http://www.corbanworks.com/). CW Image Optimizer was based on WP Smush.it.
+Written by [Shane Bishop](http://www.shanebishop.net). Based upon CW Image Optimizer, which was written by [Jacob Allred](http://www.jacoballred.com/) at [Corban Works, LLC](http://www.corbanworks.com/). CW Image Optimizer was based on WP Smush.it. Jpegtran is the work of the Independent JPEG Group.
 [Hammer](http://thenounproject.com/noun/hammer/#icon-No1306) designed by [John Caserta](http://thenounproject.com/johncaserta) from The Noun Project.
 [Images](http://thenounproject.com/noun/images/#icon-No22772) designed by [Simon Henrotte](http://thenounproject.com/Gizmodesbois) from The Noun Project.
+
+= optipng =
+Copyright (C) 2001-2014 Cosmin Truta and the Contributing Authors.
+For the purpose of copyright and licensing, the list of Contributing
+Authors is available in the accompanying AUTHORS file.
+
+This software is provided 'as-is', without any express or implied
+warranty.  In no event will the author(s) be held liable for any damages
+arising from the use of this software.
+
+= pngquant.c =
+
+   © 1989, 1991 by Jef Poskanzer.
+
+   Permission to use, copy, modify, and distribute this software and its
+   documentation for any purpose and without fee is hereby granted, provided
+   that the above copyright notice appear in all copies and that both that
+   copyright notice and this permission notice appear in supporting
+   documentation.  This software is provided "as is" without express or
+   implied warranty.
+
+= pngquant.c and rwpng.c/h =
+
+   © 1997-2002 by Greg Roelofs; based on an idea by Stefan Schneider.
+   © 2009-2014 by Kornel Lesiński.
+
+   All rights reserved.
+
+   Redistribution and use in source and binary forms, with or without modification,
+   are permitted provided that the following conditions are met:
+
+   1. Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+
+   2. Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+   DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+   FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+   DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+   OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+= WebP =
+Copyright (c) 2010, Google Inc. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+  * Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+  * Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the
+    distribution.
+
+  * Neither the name of Google nor the names of its contributors may
+    be used to endorse or promote products derived from this software
+    without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 == Webhosts ==
 

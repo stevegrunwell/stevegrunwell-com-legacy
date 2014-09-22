@@ -2,6 +2,70 @@ jQuery(document).ready(function($) {
 	var ewww_error_counter = 30;
 	var sleep_action = 'ewww_sleep';
 	if (!ewww_vars.attachments) {
+		$('#webp-rewrite').submit(function() {
+			var webp_rewrite_action = 'ewww_webp_rewrite';
+			var webp_rewrite_data = {
+				action: webp_rewrite_action,
+				_wpnonce: ewww_vars._wpnonce,
+			};
+			$.post(ajaxurl, webp_rewrite_data, function(response) {
+				$('#webp-rewrite-status').html('<b>' + response + '</b>');
+				ewww_webp_image = document.getElementById("webp-image").src;
+				document.getElementById("webp-image").src = ewww_webp_image + '#' + new Date().getTime();
+			});
+			return false;
+		});
+		$('#ewww-status-expand').click(function() {
+			$('#ewww-collapsible-status').show();
+			$('#ewww-status-expand').hide();
+			$('#ewww-status-collapse').show();
+		});
+		$('#ewww-status-collapse').click(function() {
+			$('#ewww-collapsible-status').hide();
+			$('#ewww-status-expand').show();
+			$('#ewww-status-collapse').hide();
+		});
+		$('#cloud-settings').hide();
+		$('#general-settings').show();
+		$('li.general-nav').addClass('ewww-selected');
+		$('#optimization-settings').hide();
+		$('#conversion-settings').hide();
+		$('.cloud-nav').click(function() {
+			$('.ewww-tab-nav li').removeClass('ewww-selected');
+			$('li.cloud-nav').addClass('ewww-selected');
+			$('.ewww-tab a').blur();
+			$('#cloud-settings').show();
+			$('#general-settings').hide();
+			$('#optimization-settings').hide();
+			$('#conversion-settings').hide();
+		});
+		$('.general-nav').click(function() {
+			$('.ewww-tab-nav li').removeClass('ewww-selected');
+			$('li.general-nav').addClass('ewww-selected');
+			$('.ewww-tab a').blur();
+			$('#cloud-settings').hide();
+			$('#general-settings').show();
+			$('#optimization-settings').hide();
+			$('#conversion-settings').hide();
+		});
+		$('.optimization-nav').click(function() {
+			$('.ewww-tab-nav li').removeClass('ewww-selected');
+			$('li.optimization-nav').addClass('ewww-selected');
+			$('.ewww-tab a').blur();
+			$('#cloud-settings').hide();
+			$('#general-settings').hide();
+			$('#optimization-settings').show();
+			$('#conversion-settings').hide();
+		});
+		$('.conversion-nav').click(function() {
+			$('.ewww-tab-nav li').removeClass('ewww-selected');
+			$('li.conversion-nav').addClass('ewww-selected');
+			$('.ewww-tab a').blur();
+			$('#cloud-settings').hide();
+			$('#general-settings').hide();
+			$('#optimization-settings').hide();
+			$('#conversion-settings').show();
+		});
 		if (!ewww_vars.savings_todo) {
 			$('#total_savings').text('0');
 			return false;
@@ -19,17 +83,6 @@ jQuery(document).ready(function($) {
 		loopSavings();
 		return false;
 	} else {
-	// sliders for the bulk page
-	/*$(function() {
-		$("#ewww-interval-slider").slider({
-			min: 1,
-			max: 25,
-			value: $("#ewww-interval").val(),
-			slide: function(event, ui) {
-				$("#ewww-interval").val(ui.value);
-			}
-		});
-	});*/
 	$(function() {
 		$("#ewww-delay-slider").slider({
 			min: 0,
@@ -47,10 +100,7 @@ jQuery(document).ready(function($) {
 	var k = 0;
 	var import_total = 0;
 	var ewww_force = 0;
-	var ewww_interval = 0;
 	var ewww_delay = 0;
-	var ewww_countdown = 0;
-	var ewww_sleep = 0;
 	var ewww_aux = false;
 	var ewww_main = false;
 	// initialize the ajax actions for the appropriate bulk page
@@ -101,8 +151,12 @@ jQuery(document).ready(function($) {
 		filename_action = 'bulk_aux_images_filename';
 		loop_action = 'bulk_aux_images_loop';
 		cleanup_action = 'bulk_aux_images_cleanup';
+		if ($('#ewww-force:checkbox:checked').val()) {
+			ewww_force = 1;
+		}
 		var scan_data = {
 			action: scan_action,
+			force: ewww_force,
 			scan: true,
 		};
 		$('#aux-start').hide();
@@ -252,7 +306,6 @@ jQuery(document).ready(function($) {
 	function loopSavings() {
 	        $.post(ajaxurl, savings_data, function(response) {
 			savings_total = savings_total + parseInt(response);
-		//		$('#total_savings').text(savings_total + ' ' + savings_todo + ' ' + savings_counter);
 			if (savings_todo < 0) {
 				savings_action = 'ewww_savings_finish';
 				savings_data = {
@@ -283,15 +336,10 @@ jQuery(document).ready(function($) {
 			$('#bulk-stop').hide();
 			return false;
 		});
-		ewww_interval = 1;
 		if ( ! $('#ewww-delay').val().match( /^[1-9][0-9]*$/) ) {
 			ewww_delay = 0;
 		} else {
 			ewww_delay = $('#ewww-delay').val();
-		}
-		ewww_countdown = ewww_interval;
-		if ($('#ewww-force:checkbox:checked').val()) {
-			ewww_force = 1;
 		}
 		$('.aux-table').hide();
 		$('#bulk-stop').show();
@@ -306,10 +354,6 @@ jQuery(document).ready(function($) {
 	        });
 	}
 	function processImage () {
-		if (ewww_countdown == 0) {
-			ewww_sleep = ewww_delay;
-			ewww_countdown = ewww_interval;
-		}
 		attachment_id = attachments[i];
 	        var filename_data = {
 	                action: filename_action,
@@ -321,11 +365,14 @@ jQuery(document).ready(function($) {
 		        	$('#bulk-loading').html(response);
 			}
 		});
+		if ($('#ewww-force:checkbox:checked').val()) {
+			ewww_force = 1;
+		}
 	        var loop_data = {
 	                action: loop_action,
 			_wpnonce: ewww_vars._wpnonce,
 			attachment: attachment_id,
-			sleep: ewww_sleep,
+			sleep: ewww_delay,
 			force: ewww_force,
 	        };
 	        var jqxhr = $.post(ajaxurl, loop_data, function(response) {
@@ -343,10 +390,6 @@ jQuery(document).ready(function($) {
 				$('#bulk-loading').html('<p style="color: red"><b>Optimization stopped, reload page to resume.</b></p>');
 			}
 			else if (i < attachments.length) {
-				if (ewww_countdown > 0) {
-					ewww_countdown--;
-				}
-				ewww_sleep = 0;
 				processImage();
 			}
 			else {
@@ -362,7 +405,15 @@ jQuery(document).ready(function($) {
 			}
 	        })
 		.fail(function() { 
-			$('#bulk-loading').html('<p style="color: red"><b>Operation Interrupted</b></p>');
+			if (ewww_error_counter == 0) {
+				$('#bulk-loading').html('<p style="color: red"><b>Operation Interrupted</b></p>');
+			} else {
+				$('#bulk-loading').html('<p style="color: red"><b>Temporary failure, retrying for ' + ewww_error_counter + ' more seconds.</b></p>');
+				ewww_error_counter--;
+				setTimeout(function() {
+					processImage();
+				}, 1000);
+			}
 		});
 	}
 	function bulkImport() {
@@ -383,10 +434,6 @@ jQuery(document).ready(function($) {
 			}
 	        })
 		.fail(function() { 
-			var sleep_data = {
-				action: sleep_action,
-				sleep: 1,
-			};
 			if (ewww_error_counter == 0) {
 				$('#ewww-loading').hide();
 				$('#bulk-status').html('<p style="color: red"><b>Operation Interrupted</b></p>');
