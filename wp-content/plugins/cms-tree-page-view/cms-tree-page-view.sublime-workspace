@@ -283,7 +283,7 @@
 			"file": "functions.php",
 			"settings":
 			{
-				"buffer_size": 62584,
+				"buffer_size": 62751,
 				"line_ending": "Unix"
 			}
 		},
@@ -317,7 +317,7 @@
 			"file": "readme.txt",
 			"settings":
 			{
-				"buffer_size": 25458,
+				"buffer_size": 25602,
 				"line_ending": "Unix"
 			}
 		},
@@ -710,6 +710,12 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"add_sub",
+			"CMS_TPV_NAME",
+			"cms_tree_page_view_page_title",
+			"apply_fil",
+			"CMS_TPV_NAME",
+			"menu",
 			"changel",
 			"changelog",
 			"cms_tree_page_view_post_title",
@@ -831,13 +837,7 @@
 			"back",
 			"HeadlineCompaniesOnNPM",
 			"str",
-			"swfobject",
-			".photoBrowser",
-			"photoBrowser-close",
-			"font-fam",
-			"font",
-			"-close",
-			"close"
+			"swfobject"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -875,19 +875,20 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 62584,
+						"buffer_size": 62751,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								15705,
-								15705
+								18351,
+								18351
 							]
 						],
 						"settings":
 						{
+							"SideBarAutoAddFoldersForOpenedFiles": 1,
 							"annotations":
 							[
 								"TODO",
@@ -928,7 +929,7 @@
 								"vendor-prefix": true,
 								"zero-units": "warning"
 							},
-							"function_name_status_row": 528,
+							"function_name_status_row": 606,
 							"gjslint_ignore":
 							[
 								110
@@ -982,7 +983,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 9267.0,
+						"translation.y": 9728.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -1089,22 +1090,22 @@
 						"selection":
 						[
 							[
-								1310,
-								1310
+								1323,
+								1335
 							]
 						],
 						"settings":
 						{
-							"function_name_status_row": 29,
+							"function_name_status_row": 30,
 							"syntax": "Packages/PHP/PHP.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 584.0,
+						"translation.y": 125.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
@@ -1113,15 +1114,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 25458,
+						"buffer_size": 25602,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								289,
-								289
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1133,7 +1134,7 @@
 						"translation.y": 2.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{

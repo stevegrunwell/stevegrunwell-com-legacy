@@ -4,7 +4,7 @@ Donate link: http://eskapism.se/sida/donate/
 Tags: page, pages, posts, custom posts, tree, cms, dashboard, overview, drag-and-drop, rearrange, management, manage, admin
 Requires at least: 3.8
 Tested up to: 3.9
-Stable tag: 1.2.28
+Stable tag: 1.2.30
 
 Adds a tree view of all pages & custom posts. Get a great overview + options to drag & drop to reorder & option to add multiple pages.
 
@@ -83,6 +83,8 @@ This plugin is available in the following languages:
 * Estonian
 * Finnish
 * Japanese
+* Ukrainian, by [getvoip.com](http://getvoip.com)
+* Slovak
 
 #### Always show your pages in the admin area
 If you want to always have a list of your pages available in your WordPress admin area, please check out the plugin
@@ -112,6 +114,14 @@ Now the tree with the pages will be visible both on the dashboard and in the men
 
 
 == Changelog ==
+
+= 1.2.30 =
+
+- Updated German translation. Thank you translator!
+
+= 1.2.29 =
+
+- Added Slovak translation. Thank you translator!
 
 = 1.2.28 =
 
@@ -193,7 +203,7 @@ Now the tree with the pages will be visible both on the dashboard and in the men
 - Updated POT file for translators
 
 = 1.2.10 =
-- New fix for wp-Typography. Thanks to eceleste for digging into the problem and fixing it. 
+- New fix for wp-Typography. Thanks to eceleste for digging into the problem and fixing it.
 
 = 1.2.9 =
 - Fixed an incompatibility with wp-Typography (http://wordpress.org/extend/plugins/wp-typography/). Fixes http://wordpress.org/support/topic/html-in-titles.
@@ -205,7 +215,7 @@ Now the tree with the pages will be visible both on the dashboard and in the men
 - Fix some notice errors/warning. Props damienwhaley. Fixes http://wordpress.org/support/topic/fix-for-three-non-fatal-errors.
 
 = 1.2.6 =
-- Fixed loading CSS over HTTPS. 
+- Fixed loading CSS over HTTPS.
 Fixes http://wordpress.org/support/topic/update-noticonscss-reference-in-stylescss-for-https-sites-too.
 - Fixed some styling issues in IE 8.
 
@@ -330,7 +340,7 @@ Fixes http://wordpress.org/support/topic/update-noticonscss-reference-in-stylesc
 - Polish translation added.
 
 = 0.8 =
-- Added: You can now show the tree for regular posts. Appearently there are som plugins that use the hierarchy on posts. 
+- Added: You can now show the tree for regular posts. Appearently there are som plugins that use the hierarchy on posts.
 - Fixed: The capability required to show the tree for a post type should now be correct. Previously it was hard-coded to "edit_pages". Thanks to Kevin Behrens, author of plugin Role Scoper, for solving this.
 
 = 0.7.20 =
@@ -437,7 +447,7 @@ http://wordpress.org/support/topic/plugin-cms-tree-page-view-broken-for-language
 = 0.6.2 =
 - Was released only as a public beta together with wpml.org, to test the wpml-integration
 - Now supports custom post types.
-- Now compatible with WPML Multilangual CMS (wpml.org). 
+- Now compatible with WPML Multilangual CMS (wpml.org).
 - Uses WordPress own functions at some more places.
 - When searching and no posts found you now get a message so you know that there were no matches.
 - German translation added, by Thomas Dullnig (www.sevenspire.com). Thank you!
@@ -452,7 +462,7 @@ http://wordpress.org/support/topic/plugin-cms-tree-page-view-broken-for-language
 = 0.6 =
 - updated french translation
 - new box for mouse-over/pop-up - please let me know what you think about it
-- new box: it's bigger so it's less likely that you slide out of it with your mouse (happend to me all the time! very annoying...) . 
+- new box: it's bigger so it's less likely that you slide out of it with your mouse (happend to me all the time! very annoying...) .
 - new box: more information can be fitted there. let me know if there is any information you would like to see in the popup (right now it will show you the last modified date + the id of the page)
 - new box: edit and view links are real links now, so you can edit or view pages in for example a new tab
 - new box: oh.. and it's much better looking! :)
@@ -545,5 +555,3 @@ http://wordpress.org/support/topic/plugin-cms-tree-page-view-broken-for-language
 
 = 0.1a =
 - First public version.
-
-
