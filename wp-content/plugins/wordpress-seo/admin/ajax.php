@@ -118,7 +118,7 @@ function wpseo_ajax_replace_vars() {
 
 	$post = get_post( $_POST['post_id'] );
 	$omit = array( 'excerpt', 'excerpt_only', 'title' );
-	echo wpseo_replace_vars( $_POST['string'], $post, $omit );
+	echo wpseo_replace_vars( stripslashes( $_POST['string'] ), $post, $omit );
 	die;
 }
 
@@ -158,6 +158,10 @@ function wpseo_upsert_new_title( $post_id, $new_title, $original_title ) {
  * about the information updated and the results or the meta update.
  */
 function wpseo_upsert_meta( $post_id, $new_meta_value, $orig_meta_value, $meta_key, $return_key ) {
+
+	$post_id                   = intval( $post_id );
+	$sanitized_new_meta_value  = wp_strip_all_tags( $new_meta_value );
+	$orig_meta_value           = wp_strip_all_tags( $orig_meta_value );
 
 	$upsert_results = array(
 		'status'                 => 'success',
@@ -201,7 +205,14 @@ function wpseo_upsert_meta( $post_id, $new_meta_value, $orig_meta_value, $meta_k
 
 	}
 
-	$res = update_post_meta( $post_id, $meta_key, $new_meta_value );
+	if ( $sanitized_new_meta_value === $orig_meta_value && $sanitized_new_meta_value !== $new_meta_value ) {
+		$upsert_results['status']  = 'failure';
+		$upsert_results['results'] = __( 'You have used HTML in your value which is not allowed.', 'wordpress-seo' );
+
+		return $upsert_results;
+	}
+
+	$res = update_post_meta( $post_id, $meta_key, $sanitized_new_meta_value );
 
 	$upsert_results['status']  = ( $res !== false ) ? 'success' : 'failure';
 	$upsert_results['results'] = $res;
