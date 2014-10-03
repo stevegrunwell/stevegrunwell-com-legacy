@@ -1,7 +1,7 @@
 <?php
 /**
  * Integrate image optimizers into WordPress.
- * @version 2.0.1
+ * @version 2.0.2
  * @package EWWW_Image_Optimizer
  */
 /*
@@ -10,7 +10,7 @@ Plugin URI: http://wordpress.org/extend/plugins/ewww-image-optimizer/
 Description: Reduce file sizes for images within WordPress including NextGEN Gallery and GRAND FlAGallery. Uses jpegtran, optipng/pngout, and gifsicle.
 Author: Shane Bishop
 Text Domain: ewww-image-optimizer
-Version: 2.0.1
+Version: 2.0.2
 Author URI: http://www.shanebishop.net/
 License: GPLv3
 */
@@ -58,8 +58,10 @@ function ewww_image_optimizer_exec_init() {
 			update_site_option('ewww_image_optimizer_skip_check', $_POST['ewww_image_optimizer_skip_check']);
 			if (empty($_POST['ewww_image_optimizer_skip_bundle'])) $_POST['ewww_image_optimizer_skip_bundle'] = '';
 			update_site_option('ewww_image_optimizer_skip_bundle', $_POST['ewww_image_optimizer_skip_bundle']);
-			update_site_option('ewww_image_optimizer_optipng_level', $_POST['ewww_image_optimizer_optipng_level']);
-			update_site_option('ewww_image_optimizer_pngout_level', $_POST['ewww_image_optimizer_pngout_level']);
+			if ( ! empty( $_POST['ewww_image_optimizer_optipng_level'] ) ) {
+				update_site_option('ewww_image_optimizer_optipng_level', $_POST['ewww_image_optimizer_optipng_level']);
+				update_site_option('ewww_image_optimizer_pngout_level', $_POST['ewww_image_optimizer_pngout_level']);
+			}
 			if (empty($_POST['ewww_image_optimizer_disable_jpegtran'])) $_POST['ewww_image_optimizer_disable_jpegtran'] = '';
 			update_site_option('ewww_image_optimizer_disable_jpegtran', $_POST['ewww_image_optimizer_disable_jpegtran']);
 			if (empty($_POST['ewww_image_optimizer_disable_optipng'])) $_POST['ewww_image_optimizer_disable_optipng'] = '';
