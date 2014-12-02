@@ -3,8 +3,8 @@ Contributors: stevegrunwell, VanPattenMedia
 Donate link: http://stevegrunwell.com/wp-password-generator
 Tags: password, password generator, users, wp_generate_password, pluggable
 Requires at least: 3.2
-Tested up to: 3.9.1
-Stable tag: 2.6
+Tested up to: 4.0
+Stable tag: 2.7
 License: GPLv2 or later
 
 WP Password Generator takes the hassle out of creating new WordPress users by generating random, secure passwords with one click.
@@ -106,6 +106,13 @@ WordPress Multisite already generates random passwords for new Multisite users s
 
 == Changelog ==
 
+= 2.7 =
+* Tested with WordPress 4.0
+* Added banners for WordPress.org
+* Added Russian translation (thanks to Rig Kruger)
+* Added Portuguese translation (thanks to André Mácola)
+* Added Serbian translation (thanks to Ogi Djuraskovic of [firstsiteguide.com](http://firstsiteguide.com/))
+
 = 2.6 =
 * Added a filter `wp_password_generator_args` which allows to modify the args supplied to the built-in `wp_generate_password()` function
 * Fixed bug where a "0" was always being appended to the end of generated passwords (thank you to Rig Kruger and [Peter Berce](http://berce.us/) for bringing it to my attention!)
@@ -157,6 +164,9 @@ WordPress Multisite already generates random passwords for new Multisite users s
 
 == Upgrade Notice ==
 
+= 2.7 =
+Tested with WordPress 4.0, added Russian, Serbian, and Portuguese translations.
+
 = 2.6 =
 Fixed bug where a "0" was always being appended to generated passwords. Password generator arguments can now be controlled via the `wp_password_generator_args` filter. Added Dutch translation.
 
@@ -184,4 +194,4 @@ Generated passwords now vary between 7 and 16 characters in length, rather than 
 
 == Special Thanks ==
 
-Special thanks goes out to [Greg Laycock](http://76horsepower.com/) for his input during the ongoing development of this plug-in. Additional thanks to WordPress users pampfelimetten for suggesting the plugin hook into the strength indicator and michapixel for recommending the 'Show password' feature. [Dave Griffin](https://github.com/davegriffin) and Marcel Kuiper also convinced me to expand to the user edit screen for version 2.5. David Mosterd of (CodePress)[http://www.codepress.nl/] also contributed to the development of 2.6. Finally, Chris Van Patten of [Van Patten Media](http://vanpattenmedia.com/) has also contributed immensely to the ongoing development and refinement of the plugin.
+Special thanks goes out to [Greg Laycock](http://76horsepower.com/) for his input during the ongoing development of this plug-in. Additional thanks to WordPress users pampfelimetten for suggesting the plugin hook into the strength indicator and michapixel for recommending the 'Show password' feature. [Dave Griffin](https://github.com/davegriffin) and Marcel Kuiper also convinced me to expand to the user edit screen for version 2.5. David Mosterd of [CodePress](http://www.codepress.nl/) also contributed to the development of 2.6. Finally, Chris Van Patten of [Van Patten Media](http://vanpattenmedia.com/) has also contributed immensely to the ongoing development and refinement of the plugin.
