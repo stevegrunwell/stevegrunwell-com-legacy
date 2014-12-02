@@ -1,7 +1,7 @@
 <?php
 /**
  * Integrate image optimizers into WordPress.
- * @version 2.0.2
+ * @version 2.1.0
  * @package EWWW_Image_Optimizer
  */
 /*
@@ -10,14 +10,12 @@ Plugin URI: http://wordpress.org/extend/plugins/ewww-image-optimizer/
 Description: Reduce file sizes for images within WordPress including NextGEN Gallery and GRAND FlAGallery. Uses jpegtran, optipng/pngout, and gifsicle.
 Author: Shane Bishop
 Text Domain: ewww-image-optimizer
-Version: 2.0.2
+Version: 2.1.0
 Author URI: http://www.shanebishop.net/
 License: GPLv3
 */
 
-// TODO: git remote add origin git@github.com:nosilver4u/ewww-image-optimizer.git
-//	git push -u origin master
-// need to compile optipng & pngquant for freebsd and linux, and then everything else. and cwebp-linux 8, 864, and 664
+// TODO: make mention of wp-plugins/ewwwio repo on github
 
 
 // Constants
@@ -1170,6 +1168,13 @@ function ewww_image_optimizer($file, $gallery_type, $converted, $new, $fullsize 
 		$ewww_debug .= "optimization bypassed due to filesize: $file <br>";
 		// send back the above message
 		return array(false, $msg, $converted, $file);
+	}
+	if ( $type == 'image/png' && ewww_image_optimizer_get_option( 'ewww_image_optimizer_skip_png_size' ) && $orig_size > ewww_image_optimizer_get_option( 'ewww_image_optimizer_skip_png_size' ) ) {
+		// tell the user optimization was skipped
+		$msg = __( "Optimization skipped", EWWW_IMAGE_OPTIMIZER_DOMAIN );
+		$ewww_debug .= "optimization bypassed due to filesize: $file <br>";
+		// send back the above message
+		return array($file, $msg, $converted, $file);
 	}
 	// initialize $new_size with the original size, HOW ABOUT A ZERO...
 	//$new_size = $orig_size;
