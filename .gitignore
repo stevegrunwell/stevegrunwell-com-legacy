@@ -1,6 +1,7 @@
 # Exclude these files from the git repo
 wp-content/backups
 wp-content/ewww
+wp-content/plugins/ewww-image-optimizer/*.log
 wp-content/themes/grunwell2012/css/ie8.css
 wp-content/themes/grunwell2012/css/style.css
 wp-content/themes/twenty*
