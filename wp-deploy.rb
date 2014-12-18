@@ -26,7 +26,7 @@ task :production do
   set :app_environment, "production"
   set :branch, "master"
   set :keep_releases, 5
-  set :deploy_to, "/var/www/vhosts/stevegrunwell.com/httpdocs"
+  set :deploy_to, "/var/www/stevegrunwell.com/httpdocs"
 end
 
 namespace :deploy do
