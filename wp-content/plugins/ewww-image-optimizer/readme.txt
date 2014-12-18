@@ -3,8 +3,8 @@ Contributors: nosilver4u
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MKMQKCBFFG3WW
 Tags: image, attachment, optimize, optimization, lossless, lossy, photo, picture, seo, compression, image editor, gmagick, jpegtran, gifsicle, optipng, pngout, pngquant, jpegmini, tinypng, webp, cwebp
 Requires at least: 3.5
-Tested up to: 4.0
-Stable tag: 2.1.0
+Tested up to: 4.1
+Stable tag: 2.1.2
 License: GPLv3
 
 Reduce file sizes for images in WordPress including NextGEN, GRAND FlAGallery and more using lossless/lossy methods and image format conversion.
@@ -73,6 +73,7 @@ Spanish translation by Manuel Ballesta Ruiz
 Dutch translation by Ludo Rubben
 Polish translation by Grzegorz Janoszka
 Russian translation by Elvis of turkenichev.ru
+Portuguese translation by Pedro Marcelo de Sá Alves
 
 If you would like to translate this plugin, get more information here: http://www.shanebishop.net/ewww-io-plugin-translators/
 
@@ -83,7 +84,7 @@ If you would like to translate this plugin, get more information here: http://ww
 1. Ensure jpegtran, optipng, pngout and gifsicle are installed on your Linux server (basic installation instructions are below if they are not). You will receive a warning when you activate the plugin if they are not present. This message will go away once you have them installed.
 1. The plugin will attempt to install jpegtran, optipng, and gifsicle automatically for you. This requires that the wp-content folder is writable by the user running the web server.
 1. If the automatic install did not work, find the appropriate binaries for your system in the ewww-image-optimizer plugin folder, copy them to wp-content/ewww/ and remove the OS 'tag' (like -linux or -fbsd). No renaming is necessary on Windows, just copy the .exe files to the wp-content/ewww folder. IMPORTANT: Do not symlink or modify the binaries in any way, or they will not pass the security checks. If you transfer files via FTP, be sure to transfer in binary mode, not ascii or text.
-1. If the binaries don't run locally, you can sign up for the EWWW IO cloud service to run them via a third-party server: http://www.exactlywww.com/cloud/
+1. If the binaries don't run locally, you can sign up for the EWWW IO cloud service to run them via a third-party server: http://ewww.io/plans/
 1. *Optional* Visit the settings page to enable/disable specific tools and turn on advanced optimization features.
 1. Done!
 
@@ -206,9 +207,29 @@ NOTE: The WebP naming scheme has been changed to avoid conflicts when JPGs and P
 
 = future =
 * these are current feature requests, if you see something you like here, go vote for it in the support forum
+* option to disable real-time hooks
 * full GMedia support
 * mozjpeg for improved lossless jpeg optimization (cloud only)
-* If you would like to help translate this plugin in your language, get more information here: http://www.shanebishop.net/ewww-io-plugin-translators/
+* If you would like to help translate this plugin in your language, get more information here: http://translate.ewww.io/projects/ewww-image-optimizer/
+
+= 2.1.2 =
+*fixed: post-processing call to Amazon S3 and Cloudfront was broken when upgrading it to .7 or higher, fixed to allow both .6 and .7 to work with EWWW IO
+
+= 2.1.1 =
+* broken: optimize on upload currently broken for flagallery
+* deprecated: NextGEN legacy support will be removed in 2.2 unless I hear from anyone still using it, Nextcellent will continue to be supported
+* changed: all image types are enabled when cloud API key is validated (but only if you do not choose individual options)
+* changed: prefixed javascript/request variables to avoid potential conflicts
+* fixed: undefined variable $log when uploading images
+* fixed: undefined variable $force when running scheduled optimize
+* fixed: undefined index JPG Support when GD is missing
+* added: memory logging in memory.log when WP_DEBUG is turned on in wp-config.php
+* fixed: bulk actions for Nextcellent were missing
+* fixed: notices generated because webp versions do not have height and width when WP is scanning resizes
+* fixed: notices generated due to no optimization status during bulk optimization for webp versions
+* fixed: error when trying to unserialize an array for Image Store Optimize page
+* changed: binary installation and checking only on specific admin pages instead of all admin pages, please report breakages ASAP
+* added: Portuguese translation (pt_BR), props to Pedro Marcelo de Sá Alves
 
 = 2.1.0 =
 * security: ssl strengthened for cloud users, no more SSLv3 (thanks POODLE), and other additional encryption tweaks, please report related errors ASAP

@@ -1,5 +1,4 @@
 <?php
-// TODO: extend wpthumb classes, in particular for hammy plugin 
 if ( class_exists( 'Bbpp_Animated_Gif' ) ) {
 	class EWWWIO_GD_Editor extends Bbpp_Animated_Gif {
 		public function save( $filename = null, $mime_type = null ) {
@@ -17,6 +16,7 @@ if ( class_exists( 'Bbpp_Animated_Gif' ) ) {
 				$ewww_debug .= "image editor size: $image_size <br>";
 				ewww_image_optimizer_debug_log();
 			}
+	ewwwio_memory( __FUNCTION__ );
 			return $saved;
 		}
 		public function multi_resize( $sizes ) {
@@ -37,6 +37,7 @@ if ( class_exists( 'Bbpp_Animated_Gif' ) ) {
 				$ewww_debug .= "image editor size: $image_size <br>";
 			}
 			ewww_image_optimizer_debug_log();
+	ewwwio_memory( __FUNCTION__ );
 			return $metadata;
 		}
 	}
@@ -57,6 +58,7 @@ if ( class_exists( 'Bbpp_Animated_Gif' ) ) {
 				$ewww_debug .= "image editor size: $image_size <br>";
 				ewww_image_optimizer_debug_log();
 			}
+	ewwwio_memory( __FUNCTION__ );
 			return $saved;
 		}
 	}
@@ -77,6 +79,7 @@ if ( class_exists( 'Bbpp_Animated_Gif' ) ) {
 				$ewww_debug = "$ewww_debug image editor size: $image_size <br>";
 				ewww_image_optimizer_debug_log();
 			}
+	ewwwio_memory( __FUNCTION__ );
 			return $saved;
 		}
 	}
@@ -98,6 +101,7 @@ if (class_exists('WP_Thumb_Image_Editor_Imagick')) {
 				$ewww_debug .= "image editor size: $image_size <br>";
 				ewww_image_optimizer_debug_log();
 			}
+	ewwwio_memory( __FUNCTION__ );
 			return $saved;
 		}
 	}
@@ -118,6 +122,7 @@ if (class_exists('WP_Thumb_Image_Editor_Imagick')) {
 				$ewww_debug .= "image editor size: $image_size <br>";
 				ewww_image_optimizer_debug_log();
 			}
+	ewwwio_memory( __FUNCTION__ );
 			return $saved;
 		}
 	}
@@ -139,6 +144,7 @@ if (class_exists('WP_Image_Editor_Gmagick')) {
 				$ewww_debug .= "image editor size: $image_size <br>";
 				ewww_image_optimizer_debug_log();
 			}
+	ewwwio_memory( __FUNCTION__ );
 			return $saved;
 		}
 	}
