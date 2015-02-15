@@ -38,7 +38,7 @@ class ewwwngg {
 			// construct the absolute path of the current image
 			$file_path = trailingslashit($gallery_path) . $image['filename'];
 			// run the optimizer on the current image
-			$res = ewww_image_optimizer(ABSPATH . $file_path, 2, false, false, ewww_image_optimizer_get_option('ewww_image_optimizer_lossy_skip_full'));
+			$res = ewww_image_optimizer(ABSPATH . $file_path, 2, false, false, true);
 			// update the metadata for the optimized image
 			nggdb::update_image_meta($image['id'], array('ewww_image_optimizer' => $res[1]));
 		}
@@ -76,8 +76,9 @@ class ewwwngg {
 		ob_end_flush();
 		// process each image
 		foreach ($images as $id) {
-			// give each image 50 seconds (php only, doesn't include any commands issued by exec()
-			set_time_limit (50);
+			if ( ini_get( 'max_execution_time' ) < 60 ) {
+				set_time_limit (0);
+			}
 			$current++;
 			echo "<p>" . __('Processing', EWWW_IMAGE_OPTIMIZER_DOMAIN) . " $current/$total: ";
 			// get the metadata
@@ -118,7 +119,7 @@ class ewwwngg {
 		// retrieve the image path
 		$file_path = $meta->image->imagePath;
 		// run the optimizer on the current image
-		$res = ewww_image_optimizer($file_path, 2, false, false, ewww_image_optimizer_get_option('ewww_image_optimizer_lossy_skip_full'));
+		$res = ewww_image_optimizer($file_path, 2, false, false, true);
 		// update the metadata for the optimized image
 		nggdb::update_image_meta($id, array('ewww_image_optimizer' => $res[1]));
 		// get the filepath of the thumbnail image
@@ -162,7 +163,7 @@ class ewwwngg {
 					// if jpegtran is missing, tell the user
                 	                if(!EWWW_IMAGE_OPTIMIZER_JPEGTRAN && !EWWW_IMAGE_OPTIMIZER_CLOUD) {
                         	                $valid = false;
-	     	                                $msg = '<br>' . sprintf(__('% is missing', EWWW_IMAGE_OPTIMIZER_DOMAIN), '<em>jpegtran</em>');
+	     	                                $msg = '<br>' . sprintf(__('%s is missing', EWWW_IMAGE_OPTIMIZER_DOMAIN), '<em>jpegtran</em>');
 	                                }
 					break;
 				case 'image/png':
@@ -381,7 +382,7 @@ class ewwwngg {
 		// retrieve the filepath
 		$file_path = $meta->image->imagePath;
 		// run the optimizer on the current image
-		$fres = ewww_image_optimizer($file_path, 2, false, false, ewww_image_optimizer_get_option('ewww_image_optimizer_lossy_skip_full'));
+		$fres = ewww_image_optimizer($file_path, 2, false, false, true);
 		// update the metadata of the optimized image
 		nggdb::update_image_meta($id, array('ewww_image_optimizer' => $fres[1]));
 		// output the results of the optimization
